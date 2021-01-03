@@ -1,0 +1,3 @@
+const GET_ALL_CV = 'GET_ALL_CV';
+const GET_ALL_COVERSS = 'GET_ALL_CV';
+const GET_ALL_TEMPLATES = 'GET_ALL_CV';

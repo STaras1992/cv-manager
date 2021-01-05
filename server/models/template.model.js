@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('template', {
+  return sequelize.define('template', {
     id: {
       allowNull: false,
       autoIncrement: true,

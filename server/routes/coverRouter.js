@@ -3,6 +3,8 @@ const coverController = require('../controllers/coverController.js');
 
 const router = express.Router();
 
-router.get('/', coverController.getCovers);
+router.get('/', coverController.getAllCovers);
+router.post('/', coverController.createCover);
+router.delete('/:id', coverController.deleteCover);
 
 module.exports = router;

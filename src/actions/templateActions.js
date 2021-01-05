@@ -1,10 +1,10 @@
-import { GET_ALL_TEMPLATES } from '../consts/actionTypes.js';
+import { UPDATE_MY_TEMPLATES } from '../consts/actionTypes.js';
 import api from '../api/api.js';
 
-const getAllTemplates = (items) => ({ type: GET_ALL_TEMPLATES, payload: items });
+const getAllTemplates = (items) => ({ type: UPDATE_MY_TEMPLATES, payload: items });
 
-export const requestMyCv = () => async (dispatch) => {
-  const result = await api.fetchTemplates();
+export const updateMyCv = () => async (dispatch) => {
+  const result = await api.addTemplate();
   if (result.status === 200) {
     dispatch(getAllTemplates(result.data));
   }

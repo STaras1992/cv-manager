@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('cover', {
+  return sequelize.define('cover', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -9,15 +9,15 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
     },
     name: {
-      allowNull: false,
+      //allowNull: false,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
         len: [1, 30],
       },
     },
-    text: {
-      allowNull: false,
+    content: {
+      // allowNull: false,
       type: DataTypes.TEXT,
       validate: {
         notEmpty: true,

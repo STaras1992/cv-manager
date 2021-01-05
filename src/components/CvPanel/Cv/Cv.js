@@ -14,17 +14,20 @@ import FileIcon from '@material-ui/icons/InsertDriveFile';
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItem-container': {
-      width: '500px',
+      maxWidth: '80%',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      flexWrap: 'wrap',
     },
   },
 }));
 
-const Cv = ({ name, type, link }) => {
+const Cv = ({ name, type, link, deleteCv }) => {
   const classes = useStyles(useStyles());
+
+  const onDeleteClick = (e) => {
+    deleteCv(name);
+  };
 
   return (
     <div className={classes.root}>
@@ -36,7 +39,7 @@ const Cv = ({ name, type, link }) => {
         </ListItemAvatar>
         <ListItemText primary={name} secondary={type} />
         <ListItemSecondaryAction>
-          <IconButton edge='end' aria-label='delete'>
+          <IconButton edge='end' aria-label='delete' onClick={onDeleteClick}>
             <DeleteIcon />
           </IconButton>
           <IconButton href={link} target='_blank' rel='noopener noreferrer' edge='end' aria-label='file'>

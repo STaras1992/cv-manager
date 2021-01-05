@@ -3,9 +3,9 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 
 const menuItems = [
-  { name: 'My CV', icon: <FileIcon /> },
-  { name: 'My summarys', icon: <SubjectIcon /> },
-  { name: 'My templates', icon: <EventNoteIcon /> },
+  { name: 'My CV', icon: <FileIcon />, to: '/cv' },
+  { name: 'My summarys', icon: <SubjectIcon />, to: '/cover' },
+  { name: 'My templates', icon: <EventNoteIcon />, to: '/template' },
 ];
 
 export const getMenuItems = () => {

@@ -1,11 +1,30 @@
-import { GET_ALL_COVERS } from '../consts/actionTypes.js';
-import api from '../api/api.js';
+import { ADD_MY_COVER, UPDATE_MY_COVERS, DELETE_MY_COVER } from '../consts/actionTypes.js';
+import * as api from '../api/api.js';
 
-const getAllCovers = (items) => ({ type: GET_ALL_COVERS, payload: items });
+const updateCovers = (items) => ({ type: UPDATE_MY_COVERS, payload: items });
+const addCover = (item) => ({ type: ADD_MY_COVER, payload: item });
+const deleteCover = (item) => ({ type: DELETE_MY_COVER, payload: item });
 
-export const requestMyCv = () => async (dispatch) => {
-  const result = await api.fetchCovers();
-  if (result.status === 200) {
-    dispatch(getAllCovers(result.data));
+export const updateMyCovers = () => async (dispatch) => {
+  const response = await api.getAllCovers();
+  if (response.status === 200) {
+    await dispatch(updateCovers(response.data.items));
+  }
+};
+
+export const addNewCover = (data) => async (dispatch) => {
+  const response = await api.addCover(data);
+  if (response.status === 200) {
+    //updateMyCv(dispatch);
+    await dispatch(addCover(response.data.item));
+  }
+};
+
+export const deleteMyCover = (data) => async (dispatch) => {
+  const response = await api.deleteCover(data);
+
+  if (response.status === 200) {
+    //updateMyCv(dispatch);
+    await dispatch(deleteCover(response.data.name));
   }
 };

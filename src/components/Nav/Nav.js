@@ -18,6 +18,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { getMenuItems } from '../../utills/menu.js';
 import { SIDE_PANEL_WIDTH } from '../../consts/measures.js';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -155,7 +156,7 @@ const Nav = (props) => {
         <Divider />
         <List>
           {menuItems.map((item) => (
-            <ListItem button key={item.name}>
+            <ListItem button key={item.name} component={Link} to={item.to}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.name} />
             </ListItem>

@@ -1,4 +1,4 @@
-import { GET_ALL_CV } from '../consts/actionTypes.js';
+import { UPDATE_MY_CV, ADD_MY_CV, DELETE_MY_CV } from '../consts/actionTypes.js';
 
 const initState = {
   items: [],
@@ -7,16 +7,26 @@ const initState = {
 
 const cvReducer = (state = initState, action) => {
   switch (action.type) {
-    case GET_ALL_CV:
+    case UPDATE_MY_CV:
+      // console.log('UPDATE_MY_CV:\n' + JSON.stringify(action.payload));
       return {
         ...state,
-        items: [...action.items],
+        items: [...action.payload],
+      };
+    case ADD_MY_CV:
+      // console.log('ADD_MY_CV:\n' + JSON.stringify(action.payload));
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+      };
+    case DELETE_MY_CV:
+      return {
+        ...state,
+        items: state.items.filter((item) => item.name !== action.payload),
       };
     default:
       return state;
   }
 };
-
-const getAllCv = (items) => ({ type: GET_ALL_CV, payload: items });
 
 export default cvReducer;

@@ -1,4 +1,4 @@
-import { GET_ALL_COVERS } from '../consts/actionTypes.js';
+import { UPDATE_MY_COVERS, ADD_MY_COVER, DELETE_MY_COVER } from '../consts/actionTypes.js';
 
 const initState = {
   items: [],
@@ -7,10 +7,20 @@ const initState = {
 
 const coverReducer = (state = initState, action) => {
   switch (action.type) {
-    case GET_ALL_COVERS:
+    case UPDATE_MY_COVERS:
       return {
         ...state,
-        items: [...action.items],
+        items: [...action.payload],
+      };
+    case ADD_MY_COVER:
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+      };
+    case DELETE_MY_COVER:
+      return {
+        ...state,
+        items: state.items.filter((item) => item.name !== action.payload),
       };
     default:
       return state;

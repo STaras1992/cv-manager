@@ -1,3 +1,9 @@
-const GET_ALL_CV = 'GET_ALL_CV';
-const GET_ALL_COVERSS = 'GET_ALL_CV';
-const GET_ALL_TEMPLATES = 'GET_ALL_CV';
+export const UPDATE_MY_CV = 'UPDATE_MY_CV';
+export const ADD_MY_CV = 'ADD_MY_CV';
+export const DELETE_MY_CV = 'DELETE_MY_CV';
+export const UPDATE_MY_COVERS = 'UPDATE_MY_COVERS';
+export const ADD_MY_COVER = 'ADD_MY_COVER';
+export const DELETE_MY_COVER = 'DELETE_MY_COVER';
+export const UPDATE_MY_TEMPLATES = 'UPDATE_MY_TEMPLATES';
+export const ADD_MY_TEMPLATE = 'ADD_MY_TEMPLATE';
+export const DELETE_MY_TEMPLATE = 'DELETE_MY_TEMPLATE';

@@ -1,4 +1,4 @@
-import { GET_ALL_TEMPLATES } from '../consts/actionTypes.js';
+import { UPDATE_MY_TEMPLATES } from '../consts/actionTypes.js';
 
 const initState = {
   items: [],
@@ -7,10 +7,10 @@ const initState = {
 
 const templateReducer = (state = initState, action) => {
   switch (action.type) {
-    case GET_ALL_TEMPLATES:
+    case UPDATE_MY_TEMPLATES:
       return {
         ...state,
-        items: [...action.items],
+        items: [action.items],
       };
     default:
       return state;

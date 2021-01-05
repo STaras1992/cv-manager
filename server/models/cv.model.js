@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('cv', {
+  return sequelize.define('cv', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -17,14 +17,14 @@ module.exports = (sequelize) => {
       },
     },
     title: {
-      allowNull: false,
+      // allowNull: false,
       type: DataTypes.STRING,
       validate: {
         len: [1, 30],
       },
     },
     type: {
-      allowNull: false,
+      // allowNull: false,
       type: DataTypes.STRING,
       validate: {
         isIn: [['pdf', 'doc', 'docx']],

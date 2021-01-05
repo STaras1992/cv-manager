@@ -1,16 +1,23 @@
 import './App.css';
-import Header from './components/Header/Header.js';
+import { Route, Switch } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
 import Nav from './components/Nav/Nav.js';
 import CvPanel from './components/CvPanel/CvPanel.js';
 import CoverPanel from './components/CoverPanel/CoverPanel.js';
+import TemplatePanel from './components/TemplatePanel/TemplatePanel.js';
 
 function App() {
   return (
     <div className='app'>
-      <header className='App-header'>
-        <Nav />
-        <CoverPanel />
-      </header>
+      {/* <Container> */}
+      <Nav />
+      <Switch>
+        <Route exact path='/cv' render={(routeParams) => <CvPanel {...routeParams} />} />
+        <Route exact path='/cover' render={(routeParams) => <CoverPanel {...routeParams} />} />
+        <Route exact path='/template' render={(routeParams) => <TemplatePanel {...routeParams} />} />
+        <Route exact path='/' render={() => <CvPanel />} />
+      </Switch>
+      {/* </Container> */}
     </div>
   );
 }

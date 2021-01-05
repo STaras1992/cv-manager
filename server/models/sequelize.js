@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const reset = require('../database/reset');
 const { applyExtraSetup } = require('./extra-setup');
 
 const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, process.env.SQL_PASSWORD, {
@@ -17,6 +18,8 @@ const modelDefiners = [require('./cv.model'), require('./cover.model'), require(
 for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
+
+//reset(sequelize);
 
 applyExtraSetup(sequelize);
 

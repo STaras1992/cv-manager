@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import FilledInput from '@material-ui/core/FilledInput';
 import Container from '@material-ui/core/Container';
 import FileBase64 from 'react-file-base64';
 import CheckIcon from '@material-ui/icons/Check';
+import InputTextField from '../common/InputTextField.js';
+import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../consts/colors.js';
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -14,8 +18,10 @@ const useStyle = makeStyles((theme) => ({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginTop: '50px',
+    padding: 0,
   },
   fileButton: {
+    background: LIGHT,
     margin: '10px 0',
   },
   submitButton: {
@@ -30,9 +36,10 @@ const useStyle = makeStyles((theme) => ({
   },
   inputStatusIcon: {
     '& svg': {
-      fontSize: '40px',
+      fontSize: '45px',
+      fontWeight: 'bold',
       paddingBottom: '5px',
-      color: 'green',
+      color: '#24FE41',
     },
     marginLeft: '10px',
   },
@@ -84,34 +91,21 @@ const Form = ({ saveCv }) => {
   return (
     <form onSubmit={handleSubmit} onReset={handleReset}>
       <Container className={classes.root}>
-        <TextField
-          variant='outlined'
-          label='name'
-          name='name'
-          value={name}
-          error={error}
-          helperText={error && 'Maximum name length is 30 characters'}
-          onChange={handleInputChange}
-        />
+        <InputTextField name='name' value={name} error={error} handleInputChange={handleInputChange} />
         <div className={classes.inputContainer}>
-          <Button className={classes.fileButton} disabled={file !== null} variant='contained' component='label'>
+          <Button className={classes.fileButton} variant='contained' component='label'>
             Upload File
             <div className={classes.fileInput}>
               <FileBase64 onDone={handleFileSelect} />
             </div>
           </Button>
-
           <div className={clsx(classes.inputStatusIcon, { [classes.hide]: !file })}>
             <CheckIcon />
           </div>
         </div>
         <div className={classes.submitContainer}>
-          <Button className={classes.submitButton} type='submit' variant='contained'>
-            Save
-          </Button>
-          <Button className={classes.submitButton} type='reset' variant='contained'>
-            Cancel
-          </Button>
+          <MyButton name='Save' type='dark' />
+          <MyButton name='Cancel' type='dark' />
         </div>
       </Container>
     </form>

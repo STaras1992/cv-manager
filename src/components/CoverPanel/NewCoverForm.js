@@ -6,6 +6,9 @@ import Container from '@material-ui/core/Container';
 import FileBase64 from 'react-file-base64';
 import CheckIcon from '@material-ui/icons/Check';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import InputTextField from '../common/InputTextField.js';
+import InputTextArea from '../common/InputTextArea.js';
+import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
 
 const useStyle = makeStyles((theme) => ({
@@ -18,20 +21,14 @@ const useStyle = makeStyles((theme) => ({
     marginLeft: 0,
     paddingLeft: 0,
   },
-  textArea: {
-    //background: '#e3eeff',
-    minWidth: '250px',
-    maxWidth: '650px',
-    marginBottom: '10px',
-    marginTop: '10px',
-  },
 
-  submitButton: {
-    margin: '10px 0',
-  },
   inputContainer: {
+    width: '50%',
     display: 'flex',
-    alignItems: 'flex-end',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginBottom: '20px',
   },
 
   submitContainer: {
@@ -79,33 +76,16 @@ const Form = ({ saveCover }) => {
   return (
     <form onSubmit={handleSubmit} onReset={handleReset}>
       <Container className={classes.root}>
-        <TextField
-          variant='outlined'
-          label='name'
-          name='name'
-          value={name}
-          error={error}
-          helperText={error && 'Maximum name length is 30 characters'}
-          onChange={handleInputChange}
-        />
         <div className={classes.inputContainer}>
-          <TextareaAutosize
-            className={classes.textArea}
-            label='Content'
-            name='content'
-            rowsMin={5}
-            value={content}
-            onChange={handleInputChange}
-          />
+          <InputTextField name='name' value={name} error={error} handleInputChange={handleInputChange} />
+          <div style={{ marginTop: '10px' }}>
+            <InputTextArea name='content' value={content} error={error} handleInputChange={handleInputChange} />
+          </div>
           {/* <div className={error ? classes.messageErrorShow : classes.messageError}>Message is required</div> */}
         </div>
         <div className={classes.submitContainer}>
-          <Button className={classes.submitButton} type='submit' variant='contained'>
-            Save
-          </Button>
-          <Button className={classes.submitButton} type='reset' variant='contained'>
-            Cancel
-          </Button>
+          <MyButton name='Save' type='dark' />
+          <MyButton name='Cancel' type='dark' />
         </div>
       </Container>
     </form>

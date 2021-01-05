@@ -10,14 +10,21 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FileIcon from '@material-ui/icons/InsertDriveFile';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItem-container': {
+      background: LIGHT,
       maxWidth: '80%',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      marginBottom: '5px',
+      borderRadius: '2px',
+    },
+    '& svg': {
+      color: DARK,
     },
   },
 }));

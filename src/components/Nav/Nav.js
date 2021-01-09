@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,8 +18,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { getMenuItems } from '../../utills/menu.js';
-import { SIDE_PANEL_WIDTH } from '../../consts/measures.js';
+import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT } from '../../consts/measures.js';
 import { Link } from 'react-router-dom';
+import { openSidePanel, closeSidePanel } from '../../actions/optionsActions.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,42 +43,40 @@ const useStyles = makeStyles((theme) => ({
   },
 
   appBarShift: {
-    marginLeft: SIDE_PANEL_WIDTH,
-    width: `calc(100% - ${SIDE_PANEL_WIDTH}px)`,
+    marginLeft: SIDE_PANEL_WIDTH_WIDE,
+    width: `calc(100% - ${SIDE_PANEL_WIDTH_WIDE}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    [theme.breakpoints.down('xs')]: {
-      width: `calc(100% - 70px)`,
-    },
+    // [theme.breakpoints.down('xs')]: {
+    //   width: `calc(100% - ${SIDE_PANEL_WIDTH_SHORT})`,
+    // },
   },
 
-  menuButton: {},
-
   drawer: {
-    width: SIDE_PANEL_WIDTH,
+    width: SIDE_PANEL_WIDTH_WIDE,
     whiteSpace: 'nowrap',
   },
 
   drawerOpen: {
-    width: SIDE_PANEL_WIDTH,
-    transition: theme.transitions.create('width', {
+    width: SIDE_PANEL_WIDTH_WIDE,
+    transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    [theme.breakpoints.down('xs')]: {
-      width: 70,
-    },
+    // [theme.breakpoints.down('xs')]: {
+    //   width: SIDE_PANEL_WIDTH_SHORT,
+    // },
   },
 
   drawerClose: {
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: 70,
+    width: SIDE_PANEL_WIDTH_SHORT,
   },
 
   toolbar: {
@@ -95,17 +95,27 @@ const useStyles = makeStyles((theme) => ({
 
 const Nav = (props) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const open = useSelector((state) => state.options.isSidePanelOpen);
+  //const [open, setOpen] = useState(false);
   const [menuItems] = useState(getMenuItems());
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    //setOpen(true);
+    dispatch(openSidePanel);
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    //setOpen(false);
+    dispatch(closeSidePanel);
   };
+
+  const menuListItems = menuItems.map((item) => (
+    <ListItem button key={item.name} component={Link} to={item.to}>
+      <ListItemIcon>{item.icon}</ListItemIcon>
+      <ListItemText primary={item.name} />
+    </ListItem>
+  ));
 
   return (
     <div className={classes.root}>
@@ -150,18 +160,11 @@ const Nav = (props) => {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            <ChevronLeftIcon />
           </IconButton>
         </div>
         <Divider />
-        <List>
-          {menuItems.map((item) => (
-            <ListItem button key={item.name} component={Link} to={item.to}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.name} />
-            </ListItem>
-          ))}
-        </List>
+        <List>{menuListItems}</List>
         <Divider />
       </Drawer>
     </div>

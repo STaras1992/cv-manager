@@ -1,49 +1,65 @@
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME, RED_ERROR } from '../../consts/colors.js';
 
 const styles = {
   root: {
-    width: '100%',
+    width: '80%',
+    margin: '15px 0px',
     '& .MuiTextField-root': {
       width: '100%',
       color: 'white',
       '& .MuiInputBase-root': {
         color: 'white',
       },
-      '& label': {
-        color: '#12D8FA',
-      },
-      '& label.Mui-focused': {
-        color: '#12D8FA',
-      },
-
-      '& input:valid + fieldset, textarea': {
-        borderColor: 'white',
-        borderWidth: 2,
+      '& input:valid:focus + fieldset': {
+        borderLeftWidth: 6,
+        padding: '4px !important',
       },
       '& input:invalid + fieldset': {
         borderColor: 'red',
         borderWidth: 2,
       },
-      '& input:valid:focus + fieldset': {
-        borderLeftWidth: 6,
-        padding: '4px !important',
-      },
     },
   },
+
+  valid: {
+    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'white',
+    },
+    '& label': {
+      color: LIME,
+    },
+    '& label.Mui-focused': {
+      color: LIME,
+    },
+  },
+
+  error: {},
 };
 
-const InputTextField = ({ name, value, error, handleInputChange, classes }) => (
-  <div className={classes.root}>
+const InputTextField = ({
+  name,
+  value,
+  error,
+  errorMessage = 'error',
+  required = false,
+  handleInputChange,
+  placeholder = '',
+  classes,
+}) => (
+  <div className={clsx(classes.root, { [classes.error]: error, [classes.valid]: !error })}>
     <TextField
       variant='outlined'
       label={name}
       name={name}
       value={value}
       error={error}
-      autoComplete='false'
-      placeholder='Enter file name'
-      helperText={error && 'Maximum name length is 30 characters'}
+      required={required}
+      autoComplete='off'
+      placeholder={placeholder}
+      helperText={error && errorMessage}
       onChange={handleInputChange}
     />
   </div>

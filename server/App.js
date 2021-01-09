@@ -5,26 +5,29 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const fileupload = require('express-fileupload');
 const xss = require('xss-clean');
 const cvRouter = require('./routes/cvRouter.js');
 const coverRouter = require('./routes/coverRouter.js');
 const templateRouter = require('./routes/templateRouter.js');
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 app.use(helmet());
 app.use(cors());
+// app.use(morgan('dev'));
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept');
   next();
 });
-const { models } = require('./models/sequelize');
+app.use(fileupload());
+// const { models } = require('./models/sequelize');
 
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
+  max: 20,
+  windowMs: 60000, //1min
   message: 'Too many requests from this IP,try later',
 });
 app.use('/api', limiter);

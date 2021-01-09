@@ -1,24 +1,23 @@
 import Button from '@material-ui/core/Button';
+import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../consts/colors.js';
 
 const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: 0,
-  },
+  root: {},
 
   buttonDarkToLight: {
     padding: '2px',
     background: 'black',
     color: 'white',
     border: `3px solid ${LIGHT}`,
+    borderRadius: '10px',
     boxShadow: '0 10px 6px -6px white',
     textTransform: 'none',
     fontFamily: 'Russo One, sans-serif',
-    fontSize: '1.3rem',
+    fontSize: '1.2rem',
     [theme.breakpoints.up('md')]: {
-      fontSize: '1.5rem',
+      fontSize: '1.4rem',
     },
 
     '&:hover': {
@@ -30,7 +29,7 @@ const styles = (theme) => ({
   },
 
   buttonLightToDark: {
-    padding: '2px',
+    padding: '2 6px',
     background: 'white',
     color: 'black',
     border: `3px solid ${DARK_BLUE}`,
@@ -38,9 +37,9 @@ const styles = (theme) => ({
     boxShadow: '0 10px 6px -6px black',
     textTransform: 'none',
     fontFamily: 'Russo One, sans-serif',
-    fontSize: '1.3rem',
+    fontSize: '1.2rem',
     [theme.breakpoints.up('md')]: {
-      fontSize: '1.5rem',
+      fontSize: '1.4rem',
     },
 
     '&:hover': {
@@ -52,8 +51,17 @@ const styles = (theme) => ({
   },
 });
 
-const MyButton = ({ name, type, classes }) => (
-  <Button className={type === 'dark' ? classes.buttonDarkToLight : classes.buttonLightToDark} variant='contained'>
+const MyButton = ({ name, theme, type = 'button', onClick, classes }) => (
+  <Button
+    className={clsx(classes.root, {
+      [classes.buttonDarkToLight]: theme === 'dark',
+      [classes.buttonLightToDark]: theme === 'light',
+    })}
+    //className={theme === 'dark' ? classes.buttonDarkToLight : classes.buttonLightToDark}
+    type={type}
+    variant='contained'
+    onClick={onClick}
+  >
     {name}
   </Button>
 );

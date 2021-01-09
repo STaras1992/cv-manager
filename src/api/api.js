@@ -9,11 +9,15 @@ export const getAllCv = async () => {
 };
 
 export const addCv = async (data) => {
-  return await axiosInstance.post('/cv', data);
+  return await axiosInstance.post('/cv', data, { headers: { 'Content-Type': 'multipart/form-data' } });
 };
 
-export const deleteCv = async (name) => {
-  return await axiosInstance.delete(`/cv/${name}`);
+export const deleteCv = async (id) => {
+  return await axiosInstance.delete(`/cv/${id}`);
+};
+
+export const getCv = async (id) => {
+  return await axiosInstance.get(`/cv/${id}`);
 };
 
 export const getAllCovers = async () => {

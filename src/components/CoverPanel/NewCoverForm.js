@@ -10,6 +10,7 @@ import InputTextField from '../common/InputTextField.js';
 import InputTextArea from '../common/InputTextArea.js';
 import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
+import { MAX_NAME_LENGTH, MAX_COVER_LENGTH } from '../../consts/measures.js';
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -22,14 +23,14 @@ const useStyle = makeStyles((theme) => ({
     paddingLeft: 0,
   },
 
-  inputContainer: {
-    width: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    marginBottom: '20px',
-  },
+  // inputContainer: {
+  //   width: '50%',
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   justifyContent: 'flex-start',
+  //   alignItems: 'flex-start',
+  //   marginBottom: '20px',
+  // },
 
   submitContainer: {
     '& button': {
@@ -47,45 +48,105 @@ const Form = ({ saveCover }) => {
 
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({ nameError: false, contentError: false });
+  const [initFlag, setInitFlag] = useState(true);
+  const [visited, setVisited] = useState({ nameVisit: false, contentVisit: false });
 
   const handleInputChange = async (e) => {
-    if (e.target.name === 'name') await setName(e.target.value);
-    else if (e.target.name === 'content') await setContent(e.target.value);
+    const { name, value } = e.target;
+
+    if (name === 'name') {
+      if (!visited.nameVisit) setVisited((prevState) => ({ ...prevState, ['nameVisit']: true }));
+      setName(value);
+    } else if (name === 'content') {
+      if (!visited.contentVisit) setVisited((prevState) => ({ ...prevState, ['contentVisit']: true }));
+      setContent(value);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    saveCover(name, content);
-  };
 
-  const handleReset = async () => {
-    await setName('');
-    await setContent('');
-    await setError(false);
+    if (initFlag) {
+      setVisited((prevState) => ({
+        ...prevState,
+        ['nameVisit']: true,
+        ['contentVisit']: true,
+      }));
+      setInitFlag(false);
+    }
+    if (!(error.nameError || error.contentError)) {
+      saveCover(name, content);
+    }
   };
 
   useEffect(() => {
-    if (name.length >= 30) {
-      setError(true);
-    } else {
-      setError(false);
-    }
+    validate('name');
   }, [name]);
+
+  useEffect(() => {
+    validate('content');
+  }, [content]);
+
+  useEffect(() => {
+    validate('name');
+    validate('content');
+  }, [visited]);
+
+  const handleReset = async () => {
+    setName('');
+    setContent('');
+    setInitFlag(true);
+    await setVisited({ nameVisit: false, contentVisit: false });
+    await setError({ nameError: false, contentError: false });
+  };
+
+  const validate = async (input) => {
+    switch (input) {
+      case 'name':
+        if (name.length >= MAX_NAME_LENGTH && visited.nameVisit) {
+          setError((prevState) => ({ ...prevState, ['nameError']: true }));
+        } else if (error.nameError) {
+          setError((prevState) => ({ ...prevState, ['nameError']: false }));
+        }
+        break;
+      case 'content':
+        if (content.length >= MAX_COVER_LENGTH && visited.contentVisit) {
+          setError((prevState) => ({ ...prevState, ['contentError']: true }));
+        } else if (error.descriptionError) {
+          setError((prevState) => ({ ...prevState, ['contentError']: false }));
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} onReset={handleReset}>
       <Container className={classes.root}>
-        <div className={classes.inputContainer}>
-          <InputTextField name='name' value={name} error={error} handleInputChange={handleInputChange} />
-          <div style={{ marginTop: '10px' }}>
-            <InputTextArea name='content' value={content} error={error} handleInputChange={handleInputChange} />
-          </div>
-          {/* <div className={error ? classes.messageErrorShow : classes.messageError}>Message is required</div> */}
-        </div>
+        <InputTextField
+          name='name'
+          value={name}
+          error={error.nameError}
+          placeholder='Enter cover name'
+          required={visited.nameVisit}
+          errorMessage={`Max name length is ${MAX_NAME_LENGTH} characters`}
+          handleInputChange={handleInputChange}
+        />
+        <InputTextArea
+          name='content'
+          value={content}
+          error={error.contentError}
+          placeholder='Enter cover content name'
+          required={false}
+          errorMessage={`Max cover length is ${MAX_COVER_LENGTH} characters`}
+          handleInputChange={handleInputChange}
+        />
+        {/* <div className={error ? classes.messageErrorShow : classes.messageError}>Message is required</div> */}
         <div className={classes.submitContainer}>
-          <MyButton name='Save' type='dark' />
-          <MyButton name='Cancel' type='dark' />
+          <MyButton name='Save' theme='dark' type='submit' />
+          <MyButton name='Cancel' theme='dark' type='reset' />
         </div>
       </Container>
     </form>

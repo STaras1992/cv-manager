@@ -9,6 +9,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,24 +27,26 @@ const useStyles = makeStyles((theme) => ({
       '&$expanded': {
         margin: 'auto',
       },
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         maxWidth: '100%',
       },
     },
     '& .MuiAccordionSummary-root': {
-      backgroundColor: 'rgba(0, 0, 0, .03)',
+      backgroundColor: LIGHT,
       borderBottom: '1px solid rgba(0, 0, 0, .125)',
       marginBottom: -1,
-      minHeight: 56,
+      minHeight: '56px',
       '&$expanded': {
-        minHeight: 56,
+        minHeight: '56px',
       },
       '& .MuiAccordionSummary-content': {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        flexWrap: 'no-wrap',
+        '& svg': {
+          fontSize: '36px',
+        },
         '&$expanded': {
           margin: '12px 0',
         },
@@ -53,24 +56,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Cover = ({ name, content, expanded, deleteCover, handleChange }) => {
+const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChange }) => {
   const classes = useStyles();
 
   const onDeleteClick = () => {
     deleteCover(name);
   };
 
+  const onEditClick = () => {
+    editCover(id, content);
+  };
+
   return (
     <div className={classes.root}>
-      <Accordion square expanded={expanded === name} onChange={handleChange(name)}>
+      <Accordion square expanded={expanded === id} onChange={handleChange(id)}>
         <AccordionSummary>
-          <Typography>{name}</Typography>
-          <IconButton edge='end' aria-label='delete' onClick={onDeleteClick}>
-            <DeleteIcon />
-          </IconButton>
+          <Typography variant='h6'>{name}</Typography>
+          <div className={classes.actionsContainer}>
+            <IconButton edge='end' aria-label='edit' onClick={onEditClick}>
+              <EditIcon />
+            </IconButton>
+            <IconButton edge='end' aria-label='delete' onClick={onDeleteClick}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>{content}</Typography>
+          <Typography style={{ wordBreak: 'break-all' }}>{content}</Typography>
         </AccordionDetails>
       </Accordion>
     </div>

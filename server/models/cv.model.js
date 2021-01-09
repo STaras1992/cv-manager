@@ -13,22 +13,25 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        len: [1, 30],
+        len: [1, 40],
       },
     },
-    title: {
-      // allowNull: false,
-      type: DataTypes.STRING,
+    description: {
+      type: DataTypes.STRING(512),
       validate: {
-        len: [1, 30],
+        len: [0, 150],
       },
     },
     type: {
       // allowNull: false,
       type: DataTypes.STRING,
       validate: {
-        isIn: [['pdf', 'doc', 'docx']],
+        isIn: [['pdf', 'doc', 'docx', 'txt']],
       },
+    },
+    file: {
+      allowNull: false,
+      type: DataTypes.STRING(512),
     },
   });
 };

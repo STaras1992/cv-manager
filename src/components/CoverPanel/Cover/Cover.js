@@ -59,12 +59,14 @@ const useStyles = makeStyles((theme) => ({
 const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChange }) => {
   const classes = useStyles();
 
-  const onDeleteClick = () => {
-    deleteCover(name);
+  const onDeleteClick = (e) => {
+    e.stopPropagation();
+    deleteCover(id);
   };
 
-  const onEditClick = () => {
-    editCover(id, content);
+  const onEditClick = (e) => {
+    e.stopPropagation();
+    editCover(id, name, content);
   };
 
   return (

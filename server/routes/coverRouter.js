@@ -6,5 +6,6 @@ const router = express.Router();
 router.get('/', coverController.getAllCovers);
 router.post('/', coverController.createCover);
 router.delete('/:id', coverController.deleteCover);
+router.patch('/', coverController.updateCover);
 
 module.exports = router;

@@ -6,6 +6,7 @@ import Container from '@material-ui/core/Container';
 import FileBase64 from 'react-file-base64';
 import CheckIcon from '@material-ui/icons/Check';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Typography from '@material-ui/core/Typography';
 import InputTextField from '../common/InputTextField.js';
 import InputTextArea from '../common/InputTextArea.js';
 import MyButton from '../common/MyButton.js';
@@ -22,17 +23,15 @@ const useStyle = makeStyles((theme) => ({
     marginLeft: 0,
     paddingLeft: 0,
   },
-
-  // inputContainer: {
-  //   width: '50%',
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   justifyContent: 'flex-start',
-  //   alignItems: 'flex-start',
-  //   marginBottom: '20px',
-  // },
-
+  formTitle: {
+    width: '100%',
+    color: 'white',
+    textAlign: 'left',
+    marginTop: '50px',
+    marginBottom: '10px',
+  },
   submitContainer: {
+    marginTop: '50px',
     '& button': {
       width: '100px',
       marginRight: '10px',
@@ -43,11 +42,11 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const Form = ({ saveCover }) => {
+const Form = ({ initName = '', initContent = '', mode = 'new', saveCover }) => {
   const classes = useStyle();
 
-  const [name, setName] = useState('');
-  const [content, setContent] = useState('');
+  const [name, setName] = useState(initName);
+  const [content, setContent] = useState(initContent);
   const [error, setError] = useState({ nameError: false, contentError: false });
   const [initFlag, setInitFlag] = useState(true);
   const [visited, setVisited] = useState({ nameVisit: false, contentVisit: false });
@@ -93,6 +92,14 @@ const Form = ({ saveCover }) => {
     validate('content');
   }, [visited]);
 
+  useEffect(() => {
+    setName(initName);
+  }, [initName]);
+
+  useEffect(() => {
+    setContent(initContent);
+  }, [initContent]);
+
   const handleReset = async () => {
     setName('');
     setContent('');
@@ -125,6 +132,9 @@ const Form = ({ saveCover }) => {
   return (
     <form onSubmit={handleSubmit} onReset={handleReset}>
       <Container className={classes.root}>
+        <Typography className={classes.formTitle} variant='h4'>
+          {mode === 'edit' ? 'Edit cover:' : 'New cover:'}
+        </Typography>
         <InputTextField
           name='name'
           value={name}

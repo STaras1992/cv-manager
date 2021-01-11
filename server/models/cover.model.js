@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
     },
     name: {
-      //allowNull: false,
+      allowNull: false,
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
@@ -17,11 +17,7 @@ module.exports = (sequelize) => {
       },
     },
     content: {
-      // allowNull: false,
       type: DataTypes.TEXT,
-      validate: {
-        notEmpty: true,
-      },
     },
   });
 };

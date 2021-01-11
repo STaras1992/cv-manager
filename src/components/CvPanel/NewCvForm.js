@@ -25,6 +25,13 @@ const useStyle = makeStyles((theme) => ({
     marginBottom: '50px',
     padding: 0,
   },
+  formTitle: {
+    width: '100%',
+    color: 'white',
+    textAlign: 'left',
+    marginTop: '50px',
+    marginBottom: '10px',
+  },
   fileButton: {
     background: LIGHT,
     margin: '10px 0',
@@ -74,15 +81,15 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const Form = ({ saveCv }) => {
+const Form = ({ initName = '', initDescription = '', initFile = null, mode = 'new', saveCv }) => {
   const classes = useStyle();
-
-  const [name, setName] = useState('');
-  const [file, setFile] = useState(null);
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState(initName);
+  const [file, setFile] = useState(initFile);
+  const [description, setDescription] = useState(initDescription);
   const [error, setError] = useState({ nameError: false, descriptionError: false, fileError: false });
   const [initFlag, setInitFlag] = useState(true);
   const [visited, setVisited] = useState({ nameVisit: false, descriptionVisit: false, fileVisit: false });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -116,7 +123,7 @@ const Form = ({ saveCv }) => {
 
     //if no error continue submitting
     if (!(error.nameError || error.descriptionError || error.fileError)) {
-      saveCv({ name: name, description: description, file: file });
+      saveCv(name, description, file);
     }
   };
 
@@ -137,6 +144,18 @@ const Form = ({ saveCv }) => {
     validate('name');
     validate('description');
   }, [visited]);
+
+  useEffect(() => {
+    setName(initName);
+  }, [initName]);
+
+  useEffect(() => {
+    setDescription(initDescription);
+  }, [initDescription]);
+
+  useEffect(() => {
+    setFile(initFile);
+  }, [initFile]);
 
   const handleReset = async () => {
     setName('');
@@ -184,6 +203,9 @@ const Form = ({ saveCv }) => {
   return (
     <form onSubmit={handleSubmit} onReset={handleReset}>
       <Container className={classes.root}>
+        <Typography className={classes.formTitle} variant='h4'>
+          {mode === 'edit' ? 'Edit CV:' : 'New CV:'}
+        </Typography>
         <InputTextField
           name='name'
           value={name}

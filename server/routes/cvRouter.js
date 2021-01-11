@@ -7,5 +7,6 @@ router.get('/', cvController.getAllCv);
 router.get('/:id', cvController.getCv);
 router.post('/', cvController.createCv);
 router.delete('/:id', cvController.deleteCv);
+router.patch('/', cvController.updateCv);
 
 module.exports = router;

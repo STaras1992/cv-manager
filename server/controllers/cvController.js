@@ -1,7 +1,7 @@
 const { models } = require('../models/sequelize');
 const {
   parseAllCvItemsResponse,
-  parseSelectedFileResponse,
+  parseSingleCvResponse,
   fileTypeFromName,
   bucketKeyCreator,
 } = require('../utills/parseHelper.js');
@@ -30,7 +30,7 @@ exports.getCv = async (req, res, next) => {
     // console.log('result:', JSON.stringify(result));
     res.status(200).json({
       status: 'success',
-      item: parseSelectedFileResponse(result),
+      item: parseSingleCvResponse(result),
     });
   } catch (err) {
     console.log(err.message);
@@ -62,8 +62,6 @@ exports.createCv = async (req, res, next) => {
       type: type,
     });
 
-    // console.log('rdsResult:\n', rdsResult);
-
     const s3Result = await uploadFile(file, name, '' + rdsResult.id);
 
     // Problem with upload to s3 bucket.Remove SQL instance
@@ -74,20 +72,16 @@ exports.createCv = async (req, res, next) => {
       throw new Error('S3 update failed');
     }
 
-    // console.log('s3Result:\n', s3Result);
-
     const updated = await models.cv.update({ file: s3Result.Location }, { where: { id: rdsResult.id } });
 
-    //Problem with update SQL instance,Remove RDS and S3 instances.
     if (updated[0] === 0) {
       const key = bucketKeyCreator(name, rdsResult.id, type);
       deleteFile(key);
       models.cv.destroy({
-        where: { id: rdsResult.id }, //TODO more keys
+        where: { id: rdsResult.id },
       });
       throw new Error('RDS update failed'); //DEV
     }
-    //console.log('rdsResult:\n', rdsResult);
 
     res.status(200).json({
       status: 'success',
@@ -100,7 +94,7 @@ exports.createCv = async (req, res, next) => {
       },
     });
   } catch (err) {
-    //console.log(err.message);
+    console.log(err.message);
     res.status(500).json({
       status: 'fail',
       message: err.message, //DEV
@@ -111,13 +105,11 @@ exports.createCv = async (req, res, next) => {
 exports.deleteCv = async (req, res, next) => {
   try {
     const item = await models.cv.findByPk(req.params.id);
-    // console.log('item delete:\n' + JSON.stringify(item));
     const key = bucketKeyCreator(item.name, item.id, item.type);
     const awsResult = await deleteFile(key);
-    //console.log('aws result:\n' + JSON.stringify(awsResult));
 
     const result = await models.cv.destroy({
-      where: { id: item.id }, //TODO more keys
+      where: { id: item.id },
     });
 
     if (result !== 0) {
@@ -133,6 +125,57 @@ exports.deleteCv = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err.message);
+    res.status(500).json({
+      status: 'fail',
+      message: err.message, //DEV
+    });
+  }
+};
+
+exports.updateCv = async (req, res, next) => {
+  try {
+    const id = req.body.id;
+    const name = req.body.name;
+    const description = req.body.description;
+    let type = null;
+    let file = null;
+    console.log(JSON.stringify(req.body));
+
+    //File alredy exist in db.file is link to doc.
+    if (!req.files) {
+      file = req.body.file;
+      type = fileTypeFromName(file);
+    }
+    //New file,rewrite with same key new file and get link.
+    else {
+      file = req.files.file;
+      const s3Result = await uploadFile(file, name, '' + id); // TODO check  without '' +
+      if (s3Result) {
+        type = fileTypeFromName(file.name);
+        file = s3Result.Location;
+      } else {
+        throw new Error('Faile to upload new file to S3 bucket');
+      }
+    }
+
+    const updated = await models.cv.update(
+      { description: description, name: name, type: type, file: file },
+      { where: { id: id } }
+    );
+
+    if (updated !== 0) {
+      const updatedItem = parseSingleCvResponse(await models.cv.findByPk(id));
+      res.status(200).json({
+        status: 'success',
+        item: updatedItem,
+      });
+    } else {
+      res.status(404).json({
+        status: 'fail',
+        item: 'File is missing',
+      });
+    }
+  } catch (err) {
     res.status(500).json({
       status: 'fail',
       message: err.message, //DEV

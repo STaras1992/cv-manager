@@ -12,13 +12,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FileIcon from '@material-ui/icons/InsertDriveFile';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
+import EditIcon from '@material-ui/icons/Edit';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItem-container': {
       background: LIGHT,
-      maxWidth: '80%',
+      maxWidth: '100%',
+      height: '100px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -27,25 +29,33 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: '5px',
       borderRadius: '2px',
       '& .MuiListItemText-root': {
-        paddingRight: '20px',
+        paddingRight: '80px',
+        paddingLeft: '10px',
+        [theme.breakpoints.down('sm')]: {
+          paddingRight: '10px',
+        },
       },
+
+      '& .MuiAvatar-root': {
+        backgroundColor: DARK_BLUE,
+        width: '60px',
+        height: '60px',
+        '& svg': {
+          fontSize: '55px',
+        },
+      },
+
       [theme.breakpoints.down('sm')]: {
-        maxWidth: '100%',
-        height: '180px',
+        height: '200px',
         justifyContent: 'center',
         alignItems: 'center',
         '& .MuiListItemSecondaryAction-root': {
           display: 'flex',
           flexDirection: 'column',
-          margin: 0,
-          padding: 0,
         },
-        '& .MuiListItemText-root': {
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          textAlign: 'center',
-        },
+        // '& .MuiListItemText-root': {
+        //   textAlign: 'center',
+        // },
         '& .MuiAvatar-root': {
           width: '70px',
           height: '70px',
@@ -53,10 +63,10 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '50px',
           },
         },
-        '& .MuiButtonBase-root': {
-          padding: '8px 0',
-          marginRight: '-20px',
-        },
+        // '& .MuiButtonBase-root': {
+        //   padding: '8px 0',
+        //   marginRight: '-20px',
+        // },
       },
       [theme.breakpoints.down('xs')]: {
         '& .MuiListItemAvatar-root': {
@@ -65,66 +75,73 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& svg': {
-      color: DARK,
+      color: DARK_BLUE,
     },
   },
 
-  fileIconContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '14px',
-  },
+  // fileIconContainer: {
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   fontSize: '14px',
+  // },
 
   iconButton: {
-    width: '75px',
-  },
-
-  deleteIconButton: {
     '& svg': {
-      fontSize: '56px',
-      paddingBottom: '7px',
-      [theme.breakpoints.down('sm')]: {
-        fontSize: '70px',
-      },
+      fontSize: '32px',
     },
   },
 
-  fileIconButton: {
-    '& svg': {
-      fontSize: '38px',
-      [theme.breakpoints.down('sm')]: {
-        fontSize: '50px',
-      },
-    },
-  },
+  // deleteIconButton: {
+  //   '& svg': {
+  //     fontSize: '56px',
+  //     paddingBottom: '7px',
+  //     [theme.breakpoints.down('sm')]: {
+  //       fontSize: '70px',
+  //     },
+  //   },
+  // },
+
+  // fileIconButton: {
+  //   '& svg': {
+  //     fontSize: '38px',
+  //     [theme.breakpoints.down('sm')]: {
+  //       fontSize: '50px',
+  //     },
+  //   },
+  // },
 }));
 
-const Cv = ({ id, name, type, description, file, deleteCv, openFile }) => {
+const Cv = ({ id, name, type, description, file, editCv, deleteCv, openFile }) => {
   const classes = useStyles(useStyles());
-  console.log(file);
+
   const onDeleteClick = (e) => {
     deleteCv(id);
   };
 
-  const onOpenFileClick = (e) => {
-    openFile(id);
+  const onEditClick = (e) => {
+    editCv(id, name, description, file);
   };
+
+  // const onOpenFileClick = (e) => {
+  //   openFile(id);
+  // };
 
   return (
     <div className={classes.root}>
       <ListItem>
         <ListItemAvatar>
           <Avatar>
-            <FolderIcon />
+            {/* <FolderIcon /> */}
+            {type}
           </Avatar>
         </ListItemAvatar>
         <ListItemText
           style={{ wordBreak: 'break-all' }}
           primary={
             <React.Fragment>
-              <Typography component='span' variant='h6' className={classes.descriptionText}>
+              <Typography component='span' variant='h6' color='secondary' className={classes.descriptionText}>
                 {name}
               </Typography>
             </React.Fragment>
@@ -138,6 +155,9 @@ const Cv = ({ id, name, type, description, file, deleteCv, openFile }) => {
           }
         />
         <ListItemSecondaryAction>
+          <IconButton className={clsx(classes.iconButton)} edge='end' aria-label='edit' onClick={onEditClick}>
+            <EditIcon />
+          </IconButton>
           <IconButton
             className={clsx(classes.iconButton, classes.deleteIconButton)}
             edge='end'
@@ -155,13 +175,13 @@ const Cv = ({ id, name, type, description, file, deleteCv, openFile }) => {
             aria-label='file'
             component='a'
           >
-            <div
+            {/* <div
               className={classes.fileIconContainer}
               style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-            >
-              <FileIcon />
-              {type}
-            </div>
+            > */}
+            <FileIcon />
+            {/* {type} */}
+            {/* </div> */}
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>

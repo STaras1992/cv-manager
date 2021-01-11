@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import List from '@material-ui/core/List';
 import Cover from './Cover/Cover.js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { addNewCover, updateMyCovers, deleteMyCover } from '../../actions/coverActions.js';
+import { addNewCover, getAllCovers, deleteMyCover, editMyCover } from '../../actions/coverActions.js';
 import Container from '@material-ui/core/Container';
 import Form from './NewCoverForm.js';
 import MyButton from '../common/MyButton.js';
@@ -11,28 +11,18 @@ import clsx from 'clsx';
 import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 
-const useStyles = makeStyles((theme) => ({
-  // root: {
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   justifyContent: 'flex-start',
-  //   alignItems: 'flex-start',
-  //   marginTop: HEADER_MARGIN,
-  //   marginLeft: `calc(${SIDE_PANEL_WIDTH_WIDE}px + 10px)`,
-  //   [theme.breakpoints.down('xs')]: {
-  //     marginLeft: '70px',
-  //   },
-  // },
-}));
+const useStyles = makeStyles((theme) => ({}));
 
 const CoverPanel = ({ classes }) => {
-  // const classes = useStyles();
+  const myClasses = useStyles();
   const dispatch = useDispatch();
 
   const items = useSelector((state) => state.cover.items);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const [openForm, setOpenForm] = useState(false);
   const [coverExpanded, setCoverExpanded] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   const handleChange = (id) => (event, newExpanded) => {
     setCoverExpanded(newExpanded ? id : null);
@@ -42,18 +32,29 @@ const CoverPanel = ({ classes }) => {
     setOpenForm(!openForm);
   };
 
-  const saveNewCover = (name, content) => {
-    dispatch(addNewCover({ name, content }));
+  const saveCover = async (name, content) => {
+    if (isEditMode) {
+      await dispatch(editMyCover({ id: editItem.id, name: name, content: content }));
+      setIsEditMode(false);
+      setOpenForm(false);
+      setEditItem(null);
+    } else dispatch(addNewCover({ name, content }));
   };
 
-  const deleteCover = (name) => {
-    dispatch(deleteMyCover(name));
+  const deleteCover = (id) => {
+    dispatch(deleteMyCover(id));
   };
 
-  const editCover = (id, content) => {};
+  const editCover = (id, name, content) => {
+    setEditItem({ id: id, name: name, content: content });
+    setIsEditMode(true);
+    setOpenForm(true);
+    // dispatch(editMyCover({ id: id, content: content }));
+  };
 
-  useEffect(async () => {
-    await dispatch(updateMyCovers());
+  //display my files on init
+  useEffect(() => {
+    dispatch(getAllCovers());
   }, []);
 
   const covers = items.map((cover) => (
@@ -77,8 +78,17 @@ const CoverPanel = ({ classes }) => {
     >
       <Container maxWidth='lg'>
         <div>{covers}</div>
-        {!openForm && <MyButton name='Add cover' theme='light' onClick={openFormHandler} />}
-        {openForm && <Form saveCover={saveNewCover} deleteCover={deleteCover} />}
+        <div className={classes.addButtonContainer}>
+          {!openForm && <MyButton name='Add cover' theme='light' onClick={openFormHandler} />}
+        </div>
+        {openForm && (
+          <Form
+            initName={editItem ? editItem.name : ''}
+            initContent={editItem ? editItem.content : ''}
+            mode={isEditMode ? 'edit' : 'new'}
+            saveCover={saveCover}
+          />
+        )}
         {/* <Form saveCover={saveNewCover} /> */}
       </Container>
     </div>

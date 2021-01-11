@@ -1,12 +1,13 @@
 const { models } = require('../models/sequelize');
+const { parseCoverResponse, parseAllCoversResponse } = require('../utills/parseHelper');
 
 exports.getAllCovers = async (req, res, next) => {
   try {
-    const result = await models.cover.findAll({ raw: true });
+    const resultItems = await models.cover.findAll({ raw: true });
 
     res.status(200).json({
       status: 'success',
-      items: result,
+      items: parseAllCoversResponse(resultItems),
     });
   } catch (err) {
     console.log(err.message);
@@ -19,14 +20,14 @@ exports.getAllCovers = async (req, res, next) => {
 
 exports.createCover = async (req, res, next) => {
   try {
-    const result = await models.cover.create({
+    const resultItem = await models.cover.create({
       name: req.body.name,
       content: req.body.content,
     });
-    // console.log('result:\n' + result);
+
     res.status(200).json({
       status: 'success',
-      item: result,
+      item: parseCoverResponse(resultItem),
     });
   } catch (err) {
     console.log(err.message);
@@ -39,19 +40,48 @@ exports.createCover = async (req, res, next) => {
 
 exports.deleteCover = async (req, res, next) => {
   try {
+    const reqId = req.params.id;
     const result = await models.cover.destroy({
-      where: { name: req.params.id }, //TODO more keys
+      where: { id: reqId },
     });
-    //console.log('remove result:\n' + JSON.stringify(result));
-    if (result === 1) {
+    if (result !== 0) {
       res.status(200).json({
         status: 'success',
-        name: req.params.id,
+        id: reqId,
+      });
+      console.log(`Cover with id ${reqId} deleted succesfully`);
+      return;
+    } else {
+      res.status(404).json({
+        status: 'fail',
+        message: `Cover is missing`, //DEV
+      });
+      return;
+    }
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({
+      status: 'fail',
+      message: err.message, //DEV
+    });
+  }
+};
+
+exports.updateCover = async (req, res, next) => {
+  try {
+    const { id, name, content } = req.body;
+    const updated = await models.cover.update({ name: name, content: content }, { where: { id: id } });
+
+    if (updated !== 0) {
+      const updatedItem = parseCoverResponse(await models.cover.findByPk(id));
+      res.status(200).json({
+        status: 'success',
+        item: updatedItem,
       });
     } else {
       res.status(404).json({
         status: 'fail',
-        message: `Item with name "${req.params.id}" missing`, //DEV
+        item: 'File is missing',
       });
     }
   } catch (err) {

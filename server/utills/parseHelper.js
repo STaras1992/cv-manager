@@ -14,8 +14,42 @@ exports.parseAllCvItemsResponse = (items) => {
   return parsedItems;
 };
 
-exports.parseSelectedFileResponse = (item) => {
+exports.parseSingleCvResponse = (item) => {
   return { id: item.id, name: item.name, description: item.description, type: item.type, file: item.file };
+};
+
+exports.parseAllCoversResponse = (items) => {
+  let parsedItems = [];
+
+  parsedItems = items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    content: item.content,
+  }));
+
+  return parsedItems;
+};
+
+exports.parseCoverResponse = (item) => {
+  return { id: item.id, name: item.name, content: item.content };
+};
+
+exports.parseAllTemplatesResponse = (items) => {
+  let parsedItems = [];
+
+  parsedItems = items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    cv: item.cv,
+    cover: item.cover,
+  }));
+
+  return parsedItems;
+};
+
+exports.parseTemplateResponse = (item) => {
+  return { id: item.id, name: item.name, description: item.description, cv: item.cv, cover: item.cover };
 };
 
 exports.fileTypeFromName = (fileName) => {

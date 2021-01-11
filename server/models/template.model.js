@@ -11,10 +11,15 @@ module.exports = (sequelize) => {
     name: {
       allowNull: false,
       type: DataTypes.STRING,
-      validate: {
-        notEmpty: true,
-        len: [1, 30],
-      },
+    },
+    description: {
+      type: DataTypes.STRING,
+    },
+    cv: {
+      type: DataTypes.INTEGER,
+    },
+    cover: {
+      type: DataTypes.INTEGER,
     },
   });
 };

@@ -92,16 +92,7 @@ const CvPanel = ({ classes }) => {
         <div className={classes.addButtonContainer}>
           {!openForm && <MyButton name='Add cv' theme='light' onClick={openFormHandler} />}
         </div>
-        {openForm && (
-          <Form
-            mode={isEditMode ? 'edit' : 'new'}
-            initName={editItem ? editItem.name : ''}
-            initDescription={editItem ? editItem.description : ''}
-            initFile={editItem ? editItem.file : null}
-            saveCv={saveNewCv}
-            deleteCv={deleteCv}
-          />
-        )}
+        {openForm && <CvForm saveCv={saveNewCv} />}
         {/* {fileOpen && <DocViewer source={file} />} */}
       </Container>
     </div>
@@ -109,3 +100,14 @@ const CvPanel = ({ classes }) => {
 };
 
 export default withStyles(styles, { withTheme: true })(CvPanel);
+
+{
+  /* <Form
+mode={isEditMode ? 'edit' : 'new'}
+initName={editItem ? editItem.name : ''}
+initDescription={editItem ? editItem.description : ''}
+initFile={editItem ? editItem.file : null}
+saveCv={saveNewCv}
+deleteCv={deleteCv}
+/> */
+}

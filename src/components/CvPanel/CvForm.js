@@ -24,6 +24,8 @@ import FormInput from '../common/FormInput.js';
 import { getAllCvs } from '../../actions/cvActions.js';
 import { getAllCovers } from '../../actions/coverActions.js';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
+import { FILE_FORMATS } from '../../consts/structs.js';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR } from '../../consts/colors.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -37,7 +39,16 @@ const schema = yup.object().shape({
       `Must be less than ${MAX_DESCRIPTION_LENGTH} characters`,
       (val) => val.length <= MAX_DESCRIPTION_LENGTH
     ),
-  file: yup.object(),
+  cvFile: yup
+    .mixed()
+    .required('File is required')
+    //validate size, less than ~3mb
+    .test('fileSize', 'File is too large', (value) => {
+      return value.length > 0 && value[0].size < 3000000;
+    })
+    .test('type', 'Only doc, docx, pdf format supported', (value) => {
+      return value.length > 0 && FILE_FORMATS.includes(value[0].type);
+    }),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -61,9 +72,13 @@ const useStyles = makeStyles((theme) => ({
   formTitle: {
     margin: '50px 0',
   },
+  errorMessage: {
+    color: RED_ERROR,
+    margin: '5px 2px',
+  },
 }));
 
-const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = 'new', saveCv }) => {
+const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'new', saveCv }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -75,16 +90,19 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
   const { handleSubmit, reset, control, register, errors, clearErrors } = formObject;
 
   const onSubmit = (data) => {
+    console.log('submit:');
+    console.log(data.cvFile[0].type);
+  };
+
+  const onFileSelection = (data) => {
+    console.log('onChange:');
     console.log(data);
-    saveCv(data.name, data.description, data.file);
   };
 
   const handleReset = () => {
     reset({ name: '', description: '', file: null });
     clearErrors();
   };
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     reset({ name: initName, description: initDescription, file: initFile });
@@ -97,7 +115,7 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
           <Typography className={classes.formTitle} variant='h4'>
             {mode === 'edit' ? 'Edit CV:' : 'New CV:'}
           </Typography>
-          <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
+          <FormInput name='name' label='Name' required={true} defaultValue={initFile} errorobj={errors} />
           <FormInput
             name='description'
             label='Description'
@@ -105,7 +123,15 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
             required={false}
             errorobj={errors}
           />
-          <FileInput name='file' control={control} />
+          <FileInput
+            name='cvFile'
+            label='Upload file'
+            onChange={onFileSelection}
+            required={true}
+            defaultValue={initFile}
+            errorobj={errors}
+          />
+          <p className={classes.errorMessage}>{errors.cvFile && errors.cvFile.message}</p>
           <div className={classes.submitContainer}>
             <MyButton name='Save' theme='dark' type='submit' />
             <MyButton name='Reset' theme='dark' type='reset' />

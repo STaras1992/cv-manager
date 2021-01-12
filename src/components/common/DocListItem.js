@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,7 +12,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FileIcon from '@material-ui/icons/InsertDriveFile';
 import EditIcon from '@material-ui/icons/Edit';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../../../consts/colors.js';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
         width: '60px',
         height: '60px',
         '& svg': {
-          fontSize: '55px',
+          fontSize: '40px',
+          color: 'white',
         },
       },
 
@@ -79,16 +79,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Cv = ({ id, name, type, description, file, editCv, deleteCv, openFile }) => {
+const DocList = ({ id, name, description, type = '', file = '', actions = [], onEdit, onDelete }) => {
   const classes = useStyles(useStyles());
 
   const onDeleteClick = (e) => {
-    deleteCv(id);
+    onDelete(id);
   };
 
   const onEditClick = (e) => {
-    editCv(id, name, description, file);
+    onEdit({ id });
   };
+
+  const listActions = actions.map((action) => {
+    switch (action) {
+      case 'delete': {
+        return (
+          <IconButton
+            className={clsx(classes.iconButton, classes.deleteIconButton)}
+            edge='end'
+            aria-label='delete'
+            onClick={onDeleteClick}
+          >
+            <DeleteIcon />
+          </IconButton>
+        );
+      }
+      case 'edit': {
+        return (
+          <IconButton className={classes.iconButton} edge='end' aria-label='edit' onClick={onEditClick}>
+            <EditIcon />
+          </IconButton>
+        );
+      }
+      case 'open': {
+        return (
+          <IconButton
+            className={clsx(classes.iconButton, classes.fileIconButton)}
+            href={file}
+            //target='_blank'
+            rel='noopener noreferrer'
+            edge='end'
+            aria-label='file'
+            component='a'
+          >
+            <FileIcon />
+          </IconButton>
+        );
+      }
+      default:
+        return <></>;
+    }
+  });
 
   return (
     <div className={classes.root}>
@@ -96,7 +137,7 @@ const Cv = ({ id, name, type, description, file, editCv, deleteCv, openFile }) =
         <ListItemAvatar>
           <Avatar>
             {/* <FolderIcon /> */}
-            {type}
+            {type !== '' ? type : <FileIcon />}
           </Avatar>
         </ListItemAvatar>
         <ListItemText
@@ -116,33 +157,10 @@ const Cv = ({ id, name, type, description, file, editCv, deleteCv, openFile }) =
             </React.Fragment>
           }
         />
-        <ListItemSecondaryAction>
-          <IconButton className={clsx(classes.iconButton)} edge='end' aria-label='edit' onClick={onEditClick}>
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            className={clsx(classes.iconButton, classes.deleteIconButton)}
-            edge='end'
-            aria-label='delete'
-            onClick={onDeleteClick}
-          >
-            <DeleteIcon />
-          </IconButton>
-          <IconButton
-            className={clsx(classes.iconButton, classes.fileIconButton)}
-            href={file}
-            //target='_blank'
-            rel='noopener noreferrer'
-            edge='end'
-            aria-label='file'
-            component='a'
-          >
-            <FileIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
+        <ListItemSecondaryAction>{listActions}</ListItemSecondaryAction>
       </ListItem>
     </div>
   );
 };
 
-export default Cv;
+export default DocList;

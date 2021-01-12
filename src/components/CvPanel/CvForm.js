@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,6 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import CheckIcon from '@material-ui/icons/Check';
 import ErrorIcon from '@material-ui/icons/Error';
 import UploadIcon from '@material-ui/icons/Publish';
+import TopArrowIcon from '@material-ui/icons/VerticalAlignTop';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
@@ -25,7 +27,10 @@ import { getAllCvs } from '../../actions/cvActions.js';
 import { getAllCovers } from '../../actions/coverActions.js';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
 import { FILE_FORMATS } from '../../consts/structs.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR } from '../../consts/colors.js';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
+import FormTitle from '../common/FormTitle.js';
+import FormFileInput from '../common/FormFileInput.js';
+import formStyle from '../../styles/formStyle.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -42,7 +47,6 @@ const schema = yup.object().shape({
   cvFile: yup
     .mixed()
     .required('File is required')
-    //validate size, less than ~3mb
     .test('fileSize', 'File is too large', (value) => {
       return value.length > 0 && value[0].size < 3000000;
     })
@@ -51,52 +55,63 @@ const schema = yup.object().shape({
     }),
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-  },
-  formControll: {},
-  textField: {
-    width: '80%',
-    '& .MuiTextField-root': {
-      color: 'white',
-      borderColor: 'white',
-    },
-  },
-  selectField: {
-    width: '50%',
-  },
-  formTitle: {
-    margin: '50px 0',
-  },
-  errorMessage: {
-    color: RED_ERROR,
-    margin: '5px 2px',
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   // root: {
+//   //   width: '100%',
+//   //   display: 'flex',
+//   //   margin: 0,
+//   //   padding: 0,
+//   //   flexDirection: 'column',
+//   //   justifyContent: 'flex-start',
+//   // },
+//   // formTitle: {
+//   //   margin: '40px 0',
+//   //   color: 'white',
+//   // },
+//   // errorMessage: {
+//   //   color: RED_ERROR,
+//   //   margin: '5px 2px',
+//   // },
+//   // inputContainer: {
+//   //   display: 'flex',
+//   //   alignItems: 'center',
+//   // },
+//   // inputStatusIcon: {
+//   //   '& svg': {
+//   //     color: GREEN_SUCCESS,
+//   //     fontWeight: 'bold',
+//   //     fontSize: '45px',
+//   //     marginLeft: '5px',
+//   //   },
+//   // },
+//   // hide: {
+//   //   display: 'none',
+//   // },
+// }));
 
-const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'new', saveCv }) => {
-  const classes = useStyles();
+const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'new', saveCv, closeForm, classes }) => {
+  //const classes = useStyles();
   const dispatch = useDispatch();
 
   const formObject = useForm({
+    defaultValues: {
+      cvFile: '',
+    },
     mode: 'all',
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, reset, control, register, errors, clearErrors } = formObject;
+  const { handleSubmit, reset, control, register, watch, errors, clearErrors } = formObject;
+
+  const file = watch('cvFile');
 
   const onSubmit = (data) => {
-    console.log('submit:');
-    console.log(data.cvFile[0].type);
+    console.log(data);
+    saveCv(data.name, data.description, data.cvFile[0]);
   };
 
-  const onFileSelection = (data) => {
-    console.log('onChange:');
-    console.log(data);
+  const handleClose = () => {
+    closeForm();
   };
 
   const handleReset = () => {
@@ -112,10 +127,8 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
     <FormProvider {...formObject}>
       <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
         <Container className={classes.root}>
-          <Typography className={classes.formTitle} variant='h4'>
-            {mode === 'edit' ? 'Edit CV:' : 'New CV:'}
-          </Typography>
-          <FormInput name='name' label='Name' required={true} defaultValue={initFile} errorobj={errors} />
+          <FormTitle mode={mode} label='CV' handleClose={handleClose} />
+          <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
           <FormInput
             name='description'
             label='Description'
@@ -123,15 +136,7 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
             required={false}
             errorobj={errors}
           />
-          <FileInput
-            name='cvFile'
-            label='Upload file'
-            onChange={onFileSelection}
-            required={true}
-            defaultValue={initFile}
-            errorobj={errors}
-          />
-          <p className={classes.errorMessage}>{errors.cvFile && errors.cvFile.message}</p>
+          <FormFileInput name='cvFile' errors={errors} initFile={initFile} />
           <div className={classes.submitContainer}>
             <MyButton name='Save' theme='dark' type='submit' />
             <MyButton name='Reset' theme='dark' type='reset' />
@@ -142,4 +147,4 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
   );
 };
 
-export default CvForm;
+export default withStyles(formStyle)(CvForm);

@@ -9,12 +9,12 @@ import Container from '@material-ui/core/Container';
 import clsx from 'clsx';
 
 import Cv from './Cv/Cv.js';
-import Form from './NewCvForm.js';
 import CvForm from './CvForm.js';
 import DocViewer from '../common/DocViewer.js';
 import MyButton from '../common/MyButton.js';
 import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
+import DocListItem from '../common/DocListItem.js';
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -45,19 +45,19 @@ const CvPanel = ({ classes }) => {
     dispatch(deleteMyCv(id));
   };
 
-  // const openFile = async (id) => {
-  //   await dispatch(getSelectedCv(id));
-  //   if (file !== null) {
-  //     setFileOpen(true);
-  //   }
-  // };
-
   const openFormHandler = (e) => {
-    setOpenForm(!openForm);
+    setOpenForm(true); //!openForm
   };
 
-  const editCv = (id, name, description, file) => {
-    setEditItem({ id: id, name: name, description: description, file: file });
+  const closeFormHandler = (e) => {
+    setOpenForm(false);
+  };
+
+  // const editCv = (id, name, description, file) => {
+  const editCv = (id) => {
+    const item = items.find((item) => item.id === id);
+    setEditItem(item);
+    // setEditItem({ id: id, name: name, description: description, file: file });
     setIsEditMode(true);
     setOpenForm(true);
   };
@@ -68,17 +68,29 @@ const CvPanel = ({ classes }) => {
   }, []);
 
   const cvItems = items.map((cv) => (
-    <Cv
+    <DocListItem
       key={cv.id}
       id={cv.id}
       name={cv.name}
       description={cv.description}
       type={cv.type}
       file={cv.file}
-      editCv={editCv}
-      deleteCv={deleteCv}
-      // openFile={openFile}
+      actions={['delete', 'edit', 'open']}
+      onEdit={editCv}
+      onDelete={deleteCv}
     />
+
+    // <Cv
+    //   key={cv.id}
+    //   id={cv.id}
+    //   name={cv.name}
+    //   description={cv.description}
+    //   type={cv.type}
+    //   file={cv.file}
+    //   editCv={editCv}
+    //   deleteCv={deleteCv}
+    //   // openFile={openFile}
+    // />
   ));
 
   return (
@@ -92,7 +104,16 @@ const CvPanel = ({ classes }) => {
         <div className={classes.addButtonContainer}>
           {!openForm && <MyButton name='Add cv' theme='light' onClick={openFormHandler} />}
         </div>
-        {openForm && <CvForm saveCv={saveNewCv} />}
+        {openForm && (
+          <CvForm
+            initName={editItem ? editItem.name : ''}
+            initDescription={editItem ? editItem.description : ''}
+            initFile={editItem ? editItem.description : ''}
+            mode={isEditMode ? 'edit' : 'new'}
+            saveCv={saveNewCv}
+            closeForm={closeFormHandler}
+          />
+        )}
         {/* {fileOpen && <DocViewer source={file} />} */}
       </Container>
     </div>

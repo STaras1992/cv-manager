@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import InputTextField from '../common/InputTextField.js';
 import Container from '@material-ui/core/Container';
 import MyButton from '../common/MyButton.js';
 import List from '@material-ui/core/List';
@@ -10,6 +9,7 @@ import clsx from 'clsx';
 import panelStyle from '../../styles/panelStyle.js';
 import Template from './Template/Template.js';
 import TemplateForm from './TemplateForm.js';
+import DocListItem from '../common/DocListItem.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -25,7 +25,7 @@ const TemplatePanel = ({ classes }) => {
   const [openForm, setOpenForm] = useState(false);
 
   const openFormHandler = (e) => {
-    setOpenForm(!openForm);
+    setOpenForm(true);
   };
 
   const saveTemplate = async (name, description, cv, cover) => {
@@ -44,6 +44,10 @@ const TemplatePanel = ({ classes }) => {
     dispatch(deleteMyTemplate(id));
   };
 
+  const closeFormHandler = (e) => {
+    setOpenForm(false);
+  };
+
   const editTemplate = (id) => {
     const item = items.find((item) => item.id === id);
     setEditItem(item);
@@ -55,17 +59,26 @@ const TemplatePanel = ({ classes }) => {
     dispatch(getAllMyTemplates());
   }, []);
 
-  const templateItems = items.map((item) => (
-    <Template
-      key={item.id}
-      id={item.id}
-      name={item.name}
-      description={item.description}
-      cv={item.cv}
-      cover={item.cover}
-      editTemplate={editTemplate}
-      deleteTemplate={deleteTemplate}
+  const templateItems = items.map((template) => (
+    <DocListItem
+      key={template.id}
+      id={template.id}
+      name={template.name}
+      description={template.description}
+      actions={['delete', 'edit']}
+      onEdit={editTemplate}
+      onDelete={deleteTemplate}
     />
+    // <Template
+    //   key={item.id}
+    //   id={item.id}
+    //   name={item.name}
+    //   description={item.description}
+    //   cv={item.cv}
+    //   cover={item.cover}
+    //   editTemplate={editTemplate}
+    //   deleteTemplate={deleteTemplate}
+    // />
   ));
 
   return (
@@ -87,6 +100,7 @@ const TemplatePanel = ({ classes }) => {
             initCvId={editItem ? editItem.cv : ''}
             initCoverId={editItem ? editItem.cover : ''}
             saveTemplate={saveTemplate}
+            closeForm={closeFormHandler}
             //deleteTemplate={deleteTemplate}
           />
         )}

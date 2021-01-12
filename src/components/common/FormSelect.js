@@ -3,30 +3,50 @@ import { useForm, Controller, useFormContext } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-//import { StyledInputLabel } from '../../styles';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, LIME } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: '20px',
-    marginBottom: '20px',
-    // margin: theme.spacing(1),
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    width: '50%',
+    minWidth: '260px',
+    margin: '15px 0px',
+    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'white',
+    },
+    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      borderWidth: 4,
+      padding: '4px !important',
+    },
+    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderLeftWidth: 6,
+      borderWidth: 4,
+      padding: '4px !important',
+    },
+    '& label': {
+      color: LIME,
+    },
+    '& label.Mui-error': {
+      color: LIME,
+    },
+    '& label.Mui-focused': {
+      color: LIME,
+    },
+
+    '& .MuiInputBase-root': {
+      color: 'white',
+    },
+    '& .MuiSelect-icon': {
+      fontSize: '30px',
+      color: 'white',
+    },
   },
   reqLabel: {
     color: '#f44336',
-  },
-  select: {
-    width: '50%',
-  },
-  inputLabel: {
-    // marginLeft: '5px',
-    // fontSize: '20px',
   },
 }));
 

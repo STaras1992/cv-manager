@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import FormControl from '@material-ui/core/FormControl';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import InputTextField from '../common/InputTextField.js';
@@ -19,6 +12,8 @@ import FormInput from '../common/FormInput.js';
 import { getAllCvs } from '../../actions/cvActions.js';
 import { getAllCovers } from '../../actions/coverActions.js';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
+import FormTitle from '../common/FormTitle.js';
+import formStyle from '../../styles/formStyle.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -36,28 +31,28 @@ const schema = yup.object().shape({
   coverSelect: yup.string(),
 });
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-  },
-  formControll: {},
-  textField: {
-    width: '80%',
-    '& .MuiTextField-root': {
-      color: 'white',
-      borderColor: 'white',
-    },
-  },
-  selectField: {
-    width: '50%',
-  },
-  formTitle: {
-    margin: '50px 0',
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   // root: {
+//   //   width: '100%',
+//   //   display: 'flex',
+//   //   flexDirection: 'column',
+//   //   justifyContent: 'flex-start',
+//   // },
+//   // formControll: {},
+//   // textField: {
+//   //   width: '80%',
+//   //   '& .MuiTextField-root': {
+//   //     color: 'white',
+//   //     borderColor: 'white',
+//   //   },
+//   // },
+//   // selectField: {
+//   //   width: '50%',
+//   // },
+//   // formTitle: {
+//   //   margin: '50px 0',
+//   // },
+// }));
 
 const TemplateForm = ({
   initName = '',
@@ -66,8 +61,10 @@ const TemplateForm = ({
   initCoverId = '',
   mode = 'new',
   saveTemplate,
+  closeForm,
+  classes,
 }) => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const dispatch = useDispatch();
 
   const cvList = useSelector((state) => state.cv.items.map((item) => ({ id: item.id, name: item.name })));
@@ -90,6 +87,10 @@ const TemplateForm = ({
     clearErrors();
   };
 
+  const handleClose = () => {
+    closeForm();
+  };
+
   useEffect(() => {
     if (cvList.length === 0) dispatch(getAllCvs());
     if (coverList.length === 0) dispatch(getAllCovers());
@@ -103,9 +104,7 @@ const TemplateForm = ({
     <FormProvider {...formObject}>
       <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
         <Container className={classes.root}>
-          <Typography className={classes.formTitle} variant='h4'>
-            {mode === 'edit' ? 'Edit template:' : 'New template:'}
-          </Typography>
+          <FormTitle mode={mode} label='template' handleClose={handleClose} />
           <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
           <FormInput
             name='description'
@@ -140,4 +139,4 @@ const TemplateForm = ({
   );
 };
 
-export default TemplateForm;
+export default withStyles(formStyle)(TemplateForm);

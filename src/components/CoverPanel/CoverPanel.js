@@ -8,6 +8,7 @@ import Container from '@material-ui/core/Container';
 import Form from './NewCoverForm.js';
 import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
+import CoverForm from './CoverForm.js';
 import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 
@@ -29,7 +30,11 @@ const CoverPanel = ({ classes }) => {
   };
 
   const openFormHandler = (e) => {
-    setOpenForm(!openForm);
+    setOpenForm(true);
+  };
+
+  const closeFormHandler = (e) => {
+    setOpenForm(false);
   };
 
   const saveCover = async (name, content) => {
@@ -82,14 +87,14 @@ const CoverPanel = ({ classes }) => {
           {!openForm && <MyButton name='Add cover' theme='light' onClick={openFormHandler} />}
         </div>
         {openForm && (
-          <Form
+          <CoverForm
             initName={editItem ? editItem.name : ''}
             initContent={editItem ? editItem.content : ''}
             mode={isEditMode ? 'edit' : 'new'}
             saveCover={saveCover}
+            closeForm={closeFormHandler}
           />
         )}
-        {/* <Form saveCover={saveNewCover} /> */}
       </Container>
     </div>
   );

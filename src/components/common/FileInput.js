@@ -4,13 +4,42 @@ import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import UploadIcon from '@material-ui/icons/Publish';
 import Button from '@material-ui/core/Button';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
-  inputContainer: {
+  root: {
+    width: '200px',
+    height: '45px',
+    background: LIGHT,
+    border: '2px solid',
+    borderColor: DARK_BLUE,
+    borderRadius: '5px',
+    margin: '15px 0',
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    '&:hover': {
+      backgroundColor: 'white',
+      borderColor: 'white',
+      '& .MuiButton-label svg': {
+        color: LIGHT_BLUE,
+      },
+    },
+    '& .MuiButton-label': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      marginTop: '3px',
+      color: DARK_BLUE,
+      '& svg': {
+        fontSize: '36px',
+        marginBottom: '4px',
+        marginRight: '10px',
+        color: DARK_BLUE,
+      },
+    },
   },
+
   fileInput: {
     display: 'none',
   },
@@ -32,8 +61,8 @@ const FileInput = (props) => {
   return (
     <Controller
       render={({ onChange, onBlur, name }) => (
-        <Button className={classes.fileButton} variant='contained' startIcon={<UploadIcon />} component='label'>
-          {label}
+        <Button className={classes.root} variant='contained' startIcon={<UploadIcon />} component='label'>
+          Upload File
           <div className={classes.fileInput}>
             <input type='file' name={name} onBlur={onBlur} ref={register} />
           </div>

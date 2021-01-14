@@ -90,11 +90,12 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
     onEdit({ id });
   };
 
-  const listActions = actions.map((action) => {
+  const listActions = actions.map((action, index) => {
     switch (action) {
       case 'delete': {
         return (
           <IconButton
+            key={index}
             className={clsx(classes.iconButton, classes.deleteIconButton)}
             edge='end'
             aria-label='delete'
@@ -106,7 +107,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
       }
       case 'edit': {
         return (
-          <IconButton className={classes.iconButton} edge='end' aria-label='edit' onClick={onEditClick}>
+          <IconButton key={index} className={classes.iconButton} edge='end' aria-label='edit' onClick={onEditClick}>
             <EditIcon />
           </IconButton>
         );
@@ -114,6 +115,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
       case 'open': {
         return (
           <IconButton
+            key={index}
             className={clsx(classes.iconButton, classes.fileIconButton)}
             href={file}
             //target='_blank'

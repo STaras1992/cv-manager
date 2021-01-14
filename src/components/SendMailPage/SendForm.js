@@ -37,14 +37,14 @@ const schema = yup.object().shape({
   // template: yup.string(),
 });
 
-const defaultValue = {
-  to: '',
-  from: '',
-  subject: '',
-  cv: '',
-  cover: '',
-  template: '',
-};
+// const defaultValue = {
+//   to: '',
+//   from: '',
+//   subject: '',
+//   cv: '',
+//   cover: '',
+//   template: '',
+// };
 
 const SendForm = ({ makeMail }) => {
   const classes = useStyles();
@@ -71,7 +71,7 @@ const SendForm = ({ makeMail }) => {
 
   const onSubmit = (data) => {
     console.log(data);
-    //makeMail(data);
+    makeMail(data);
   };
 
   const onReset = () => {

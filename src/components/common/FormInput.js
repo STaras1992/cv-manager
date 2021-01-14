@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormContext, Controller, useForm } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, LIME } from '../../consts/colors.js';
 
@@ -37,7 +38,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormInput = (props) => {
+export const FormInputUnControlled = ({ label, name, value = '', onChange }) => {
+  const classes = useStyles();
+  // const [value, setValue] = useState('');
+
+  // useEffect(() => {
+  //   setValue(initValue);
+  // }, [initValue]);
+
+  return (
+    <FormControl name={name}>
+      <TextField
+        className={classes.root}
+        label={label}
+        value={value}
+        onChange={onChange}
+        autoComplete='off'
+        variant='outlined'
+      >
+        {value}
+      </TextField>
+      ;
+    </FormControl>
+  );
+};
+
+export const FormInput = (props) => {
   const classes = useStyles();
   const { control } = useFormContext();
   const { name, label, required, errorobj, defaultValue } = props;
@@ -57,10 +83,6 @@ const FormInput = (props) => {
       defaultValue={defaultValue}
       label={label}
       fullWidth={true}
-      // InputLabelProps={{
-      //   className: required ? classes.requiredLabel : '',
-      //   required: required || false,
-      // }}
       error={isError}
       helperText={errorMessage}
       {...props}

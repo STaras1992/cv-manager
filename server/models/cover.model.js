@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
       },
     },
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON,
     },
   });
 };

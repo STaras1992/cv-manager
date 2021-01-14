@@ -7,7 +7,7 @@ import {
 } from '../consts/actionTypes.js';
 
 const initState = {
-  items: [],
+  items: [], //{id,name,content},content:JSON(editorState)
   isLoading: false,
   selectedItem: {},
 };
@@ -17,12 +17,12 @@ const coverReducer = (state = initState, action) => {
     case UPDATE_MY_COVERS:
       return {
         ...state,
-        items: [...action.payload],
+        items: JSON.parse(JSON.stringify(action.payload)),
       };
     case ADD_MY_COVER:
       return {
         ...state,
-        items: [...state.items, action.payload],
+        items: [...state.items, JSON.parse(JSON.stringify(action.payload))],
       };
     case DELETE_MY_COVER:
       //payload type=string,items.id = number. so do toString for compare

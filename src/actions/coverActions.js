@@ -13,17 +13,17 @@ export const getAllCovers = () => async (dispatch) => {
   }
 };
 
-export const editMyCover = (data) => async (dispatch) => {
-  const response = await api.updateCover(data);
-  if (response.status === 200) {
-    await dispatch(updateCover(response.data.item));
-  }
-};
-
 export const addNewCover = (data) => async (dispatch) => {
   const response = await api.addCover(data);
   if (response.status === 200) {
     await dispatch(addCover(response.data.item));
+  }
+};
+
+export const editMyCover = (data) => async (dispatch) => {
+  const response = await api.updateCover(data);
+  if (response.status === 200) {
+    await dispatch(updateCover(response.data.item));
   }
 };
 

@@ -15,7 +15,6 @@ import styles from '../../styles/panelStyle.js';
 const useStyles = makeStyles((theme) => ({}));
 
 const CoverPanel = ({ classes }) => {
-  const myClasses = useStyles();
   const dispatch = useDispatch();
 
   const items = useSelector((state) => state.cover.items);
@@ -39,11 +38,11 @@ const CoverPanel = ({ classes }) => {
 
   const saveCover = async (name, content) => {
     if (isEditMode) {
-      await dispatch(editMyCover({ id: editItem.id, name: name, content: content }));
+      dispatch(editMyCover({ id: editItem.id, name: name, content: content }));
       setIsEditMode(false);
       setOpenForm(false);
       setEditItem(null);
-    } else dispatch(addNewCover({ name, content }));
+    } else dispatch(addNewCover({ name: name, content: content }));
   };
 
   const deleteCover = (id) => {
@@ -62,7 +61,7 @@ const CoverPanel = ({ classes }) => {
     dispatch(getAllCovers());
   }, []);
 
-  const covers = items.map((cover) => (
+  let covers = items.map((cover) => (
     <Cover
       key={cover.id}
       id={cover.id}

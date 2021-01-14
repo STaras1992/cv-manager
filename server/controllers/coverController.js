@@ -4,6 +4,7 @@ const { parseCoverResponse, parseAllCoversResponse } = require('../utills/parseH
 exports.getAllCovers = async (req, res, next) => {
   try {
     const resultItems = await models.cover.findAll({ raw: true });
+    console.log(JSON.stringify(resultItems));
 
     res.status(200).json({
       status: 'success',

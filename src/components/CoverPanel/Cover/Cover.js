@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 // import MuiAccordion from '@material-ui/core/Accordion';
 // import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -10,7 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
+import './Cover.css';
+// import 'draft-js/dist/Draft.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,10 +57,12 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiAccordiondDetails-root': {},
   },
+  editorContainer: {},
 }));
 
 const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChange }) => {
   const classes = useStyles();
+  const [contentState, setContentState] = useState(EditorState.createWithContent(convertFromRaw(JSON.parse(content))));
 
   const onDeleteClick = (e) => {
     e.stopPropagation();
@@ -68,6 +73,10 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
     e.stopPropagation();
     editCover(id, name, content);
   };
+
+  useEffect(() => {
+    setContentState(EditorState.createWithContent(convertFromRaw(JSON.parse(content))));
+  }, [content]);
 
   return (
     <div className={classes.root}>
@@ -84,7 +93,10 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ wordBreak: 'break-all' }}>{content}</Typography>
+          {/* <Typography style={{ wordBreak: 'break-all' }}>{content}</Typography> */}
+          <div className='editor-root'>
+            <Editor editorState={contentState} readOnly={true} />
+          </div>
         </AccordionDetails>
       </Accordion>
     </div>

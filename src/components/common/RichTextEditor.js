@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertFromRaw } from 'draft-js';
 import { useFormContext, Controller } from 'react-hook-form';
+import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import './RichTextEditor.css';
 import 'draft-js/dist/Draft.css';
 
 export const RichTextEditor = forwardRef((props, ref) => {
   // const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const { initContent, onContentChange } = props;
   const [editorState, setEditorState] = useState(() =>
-    props.initState === ''
+    initContent === ''
       ? EditorState.createEmpty()
-      : EditorState.createWithContent(convertFromRaw(JSON.parse(props.initState)))
+      : // : EditorState.createWithContent(convertJsonToEditorContent(props.initState))
+        EditorState.createWithContent(initContent)
   );
   const editor = useRef(null);
 
@@ -17,7 +20,7 @@ export const RichTextEditor = forwardRef((props, ref) => {
 
   const onChange = (editorState) => {
     setEditorState(editorState);
-    props.onContentChange(editorState);
+    onContentChange(editorState.getCurrentContent());
   };
 
   const _handleKeyCommand = (command, editorState) => {
@@ -67,9 +70,10 @@ export const RichTextEditor = forwardRef((props, ref) => {
   // }, [editorState]);
 
   useEffect(() => {
-    if (props.initState !== '')
-      setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(props.initState))));
-  }, [props.initState]);
+    if (initContent !== '') {
+      setEditorState(EditorState.createWithContent(initContent));
+    }
+  }, [initContent]);
 
   return (
     <div className='RichEditor-root'>

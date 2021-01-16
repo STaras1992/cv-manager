@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import { convertJsonToEditorContent, convertEditorContentToJson } from '../../../utills/editorUtils.js';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
 import './Cover.css';
@@ -62,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChange }) => {
   const classes = useStyles();
-  const [contentState, setContentState] = useState(EditorState.createWithContent(convertFromRaw(JSON.parse(content))));
+  const [editorState, setEditorState] = useState(EditorState.createWithContent(convertJsonToEditorContent(content))); //EditorState.createWithContent(convertJsonToEditorContent(content))
 
   const onDeleteClick = (e) => {
     e.stopPropagation();
@@ -75,7 +76,7 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
   };
 
   useEffect(() => {
-    setContentState(EditorState.createWithContent(convertFromRaw(JSON.parse(content))));
+    setEditorState(EditorState.createWithContent(convertJsonToEditorContent(content)));
   }, [content]);
 
   return (
@@ -95,7 +96,7 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
         <AccordionDetails>
           {/* <Typography style={{ wordBreak: 'break-all' }}>{content}</Typography> */}
           <div className='editor-root'>
-            <Editor editorState={contentState} readOnly={true} />
+            <Editor editorState={editorState} readOnly={true} />
           </div>
         </AccordionDetails>
       </Accordion>

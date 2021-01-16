@@ -14,6 +14,7 @@ import { Typography } from '@material-ui/core';
 import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
+import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -54,23 +55,34 @@ const SendMailPage = ({ classes }) => {
 
   const [data, setData] = useState(null);
   const [showBody, setShowBody] = useState(false);
-  const [body, setBody] = useState('');
-  const [coverState] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [initContentState, setInitContentState] = useState('');
+  const [contentState, setContentState] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [selectedCv, setSelectedCv] = useState(null);
   const [selectedCover, setSelectedCover] = useState(null);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
 
   const makeMail = (data) => {
+    // console.log('makeMail');
     setData(data);
   };
 
   const sendMail = () => {
-    console.log();
-    setIsSending(true);
+    console.log(convertEditorContentToJson(contentState));
+    //setIsSending(true);
+  };
+
+  const editMail = () => {
+    setEditMode(!editMode);
+  };
+
+  const onContentChanged = (newContentState) => {
+    setContentState(newContentState);
   };
 
   useEffect(() => {
+    // console.log('data effect');
     if (data) {
       const getDocs = async () => {
         const cvResponse = await api.getCvById(data.cv);
@@ -86,12 +98,10 @@ const SendMailPage = ({ classes }) => {
         console.log(err.message);
       }
     }
-    // } catch (err) {
-    //   console.log('Fetch error');
-    // }
   }, [data]);
 
   useEffect(() => {
+    // console.log('sending effect');
     if (isSending) {
       const fetchSending = async (data) => {
         const response = await api.sendMailRequest(data);
@@ -104,18 +114,28 @@ const SendMailPage = ({ classes }) => {
           from: data.from,
           subject: data.subject,
           file: selectedCv.file,
-          cover: stateToHTML(convertFromRaw(JSON.parse(selectedCover.content))),
+          // cover: stateToHTML(editMode ? contentState : convertFromRaw(JSON.parse(selectedCover.content))),
+          cover: stateToHTML(contentState),
         });
       } catch (err) {
-        console.log(err);
         setIsSending(false);
       }
     }
   }, [isSending]);
 
-  const onOpenMailClient = () => {};
+  useEffect(() => {
+    // console.log('selected cover effect');
+    if (selectedCover !== null) {
+      setContentState(convertJsonToEditorContent(selectedCover.content));
+      setInitContentState(convertJsonToEditorContent(selectedCover.content));
+    }
+  }, [selectedCover]);
 
-  const onContentChanged = () => {};
+  useEffect(() => {
+    if (editMode) {
+      setInitContentState(contentState);
+    }
+  }, [editMode]);
 
   return (
     <section
@@ -141,31 +161,36 @@ const SendMailPage = ({ classes }) => {
                   Subject: <span>{data.subject}</span>
                 </div>
                 <Divider />
-                {/* <div className={myClasses.mailField}>
-                Attachment: <span>{selectedCv.name}</span>
-              </div>
-              <Divider /> */}
+                <div className={myClasses.mailField}>
+                  Attachment: <span>{selectedCv.name + '.' + selectedCv.type}</span>
+                </div>
+                <Divider />
 
                 {showBody && (
                   <div className={myClasses.body}>
                     <div className={myClasses.editorBlock}>
-                      {/* <RichTextEditor initState={selectedCover.content} onContentChange={onContentChanged} /> */}
-                      <Editor
-                        editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(selectedCover.content)))}
-                        readOnly={true}
-                      />
+                      {editMode ? (
+                        <RichTextEditor initContent={initContentState} onContentChange={onContentChanged} />
+                      ) : (
+                        <Editor
+                          // editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(selectedCover.content)))}
+                          editorState={EditorState.createWithContent(contentState)}
+                          readOnly={true}
+                        />
+                      )}
                     </div>
-                    <div>
+                    {/* <div>
                       <p className={myClasses.linksBlock}>
                         <a href={selectedCv.file}>CV link</a>
                         <br />
                         <a href='http://18.193.76.149/'>Portfolio link</a>
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                 )}
               </Paper>
               <MyButton name='Send' theme='light' type='button' onClick={sendMail} />
+              <MyButton name='Edit' theme='light' type='button' onClick={editMail} />
             </div>
           )}
         </div>

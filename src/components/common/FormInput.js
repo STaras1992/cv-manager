@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FormInputUnControlled = ({ label, name, value = '', onChange }) => {
+export const FormInputUnControlled = ({ label, name, value = '', required, onChange }) => {
   const classes = useStyles();
   // const [value, setValue] = useState('');
 

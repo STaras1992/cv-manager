@@ -24,12 +24,16 @@ transporter.verify((error, success) => {
 
 exports.sendMail = (res, data) => {
   const mailOptions = {
-    // from: data.from,
+    from: `Stas Tarasenko <${data.from}>`,
+    // sender: `Stas Tarasenko <${data.from}>`,
     replyTo: data.from,
     to: data.to,
     subject: data.subject,
     html: data.cover,
     attachments: [{ href: data.file }],
+    // headers: {
+    //   replyTo: data.from,
+    // },
   };
 
   transporter.sendMail(mailOptions, function (err, data) {

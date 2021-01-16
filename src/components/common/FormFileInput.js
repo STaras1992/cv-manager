@@ -1,33 +1,9 @@
-import React, { useState, useEffect, forwardRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import * as yup from 'yup';
-import clsx from 'clsx';
-import { yupResolver } from '@hookform/resolvers/yup';
-import FormControl from '@material-ui/core/FormControl';
 import CheckIcon from '@material-ui/icons/Check';
-import ErrorIcon from '@material-ui/icons/Error';
-import UploadIcon from '@material-ui/icons/Publish';
-import TopArrowIcon from '@material-ui/icons/VerticalAlignTop';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import { useForm, Controller, FormProvider, useFormContext } from 'react-hook-form';
-import InputTextField from '../common/InputTextField.js';
-import MyButton from '../common/MyButton.js';
-import FormSelect from '../common/FormSelect.js';
+import { useFormContext } from 'react-hook-form';
 import FileInput from '../common/FileInput.js';
-import FormInput from '../common/FormInput.js';
-import { getAllCvs } from '../../actions/cvActions.js';
-import { getAllCovers } from '../../actions/coverActions.js';
-import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
-import { FILE_FORMATS } from '../../consts/structs.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
+import { RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
 
 const useStyles = makeStyles({
   root: {},
@@ -57,11 +33,6 @@ const FormFileInput = ({ name, errors, initFile }) => {
   const { watch } = useFormContext();
 
   const file = watch('cvFile');
-
-  useEffect(() => {
-    console.log('file changed');
-    console.log(file);
-  }, [file]);
 
   return (
     <div className={classes.root}>

@@ -11,6 +11,7 @@ import clsx from 'clsx';
 import CoverForm from './CoverForm.js';
 import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
+import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 
 const useStyles = makeStyles((theme) => ({}));
 

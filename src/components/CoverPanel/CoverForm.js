@@ -14,22 +14,16 @@ import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '..
 import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
 import parser from 'html-react-parser';
-import { convertToRaw, convertFromRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
+import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 
-// const schema = yup.object().shape({
-//   name: yup
-//     .string()
-//     .required('Name is required field')
-//     .test('len', `Must be less than ${MAX_NAME_LENGTH} characters`, (val) => val.length <= MAX_NAME_LENGTH),
-//   content: yup
-//     .string()
-//     .test(
-//       'len',
-//       `Must be less than ${MAX_DESCRIPTION_LENGTH} characters`,
-//       (val) => val.length <= MAX_DESCRIPTION_LENGTH
-//     ),
-// });
+const schema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Name is required field')
+    .test('len', `Must be less than ${MAX_NAME_LENGTH} characters`, (val) => val.length <= MAX_NAME_LENGTH),
+});
 
 const useStyles = makeStyles((theme) => ({
   editor: {
@@ -80,19 +74,23 @@ const useStyles = makeStyles((theme) => ({
 
 const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, closeForm, classes }) => {
   const myClasses = useStyles();
-  // const formObject = useForm({
-  //   mode: 'all',
-  //   // resolver: yupResolver(schema),
-  // });
-  // const { handleSubmit, reset, control, register, watch, errors, clearErrors } = formObject;
-
-  const [name, setName] = useState('');
+  // const [name, setName] = useState('');
+  const [initEditorContent, setInitEditorContent] = useState('');
   const [content, setContent] = useState('');
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    let json = JSON.stringify(convertToRaw(content.getCurrentContent()));
-    saveCover(name, json);
+  const formObject = useForm({
+    mode: 'all',
+    resolver: yupResolver(schema),
+  });
+
+  const { handleSubmit, reset, errors, clearErrors } = formObject;
+
+  const onSubmit = (data) => {
+    let json;
+    // if (content !== '')
+    json = convertEditorContentToJson(content);
+    // else json = EditorState.createEmpty().getCurrentContent();
+    saveCover(data.name, json);
   };
 
   const handleClose = () => {
@@ -100,44 +98,48 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
   };
 
   const handleReset = () => {
-    // reset({ name: '', content: '' });
-    // clearErrors();
+    reset({ name: '' });
+    clearErrors();
+    setInitEditorContent(EditorState.createEmpty().getCurrentContent());
   };
 
-  const onContentChanged = (contentState) => {
-    setContent(contentState);
+  const onContentChanged = (newContent) => {
+    setContent(newContent);
   };
 
-  const onNameChange = (e) => {
-    setName(e.target.value);
-  };
+  // const onNameChange = (e) => {
+  //   setName(e.target.value);
+  // };
 
   useEffect(() => {
-    setName(initName);
+    reset({ name: initName });
   }, [initName]);
 
   useEffect(() => {
-    setContent(initContent);
+    if (initContent !== '') {
+      setInitEditorContent(convertJsonToEditorContent(initContent));
+    }
   }, [initContent]);
 
+  useEffect(() => {
+    setContent(initEditorContent);
+  }, [initEditorContent]);
+
   return (
-    // <FormProvider {...formObject}>
-    <form className={classes.root} onSubmit={onSubmit} onReset={handleReset}>
-      {/* <Container className={classes.root}> */}
-      <FormTitle mode={mode} label='cover' handleClose={handleClose} />
-      {/* <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} /> */}
-      {/* <FormInput name='content' label='Content' defaultValue={initContent} required={false} errorobj={errors} /> */}
-      <FormInputUnControlled name='name' label='Name' onChange={onNameChange} value={name} />
-      <div className={myClasses.editor}>
-        <RichTextEditor initState={initContent} onContentChange={onContentChanged} />
-      </div>
-      <div className={classes.submitContainer}>
-        <MyButton name='Save' theme='dark' type='submit' />
-        <MyButton name='Reset' theme='dark' type='reset' />
-      </div>
-      {/* </Container> */}
-    </form>
-    // </FormProvider>
+    <FormProvider {...formObject}>
+      <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
+        <FormTitle mode={mode} label='cover' handleClose={handleClose} />
+        {/* <FormInputUnControlled name='name' required={true} label='Name' onChange={onNameChange} value={name} /> */}
+        <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
+        <div className={myClasses.editor}>
+          <RichTextEditor initContent={initEditorContent} onContentChange={onContentChanged} />
+        </div>
+        <div className={classes.submitContainer}>
+          <MyButton name='Save' theme='dark' type='submit' />
+          <MyButton name='Reset' theme='dark' type='reset' />
+        </div>
+      </form>
+    </FormProvider>
   );
 };
 

@@ -18,14 +18,14 @@ import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
 
 const useStyles = makeStyles({
-  root: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    color: 'white',
-  },
+  // root: {
+  //   width: '100%',
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   justifyContent: 'flex-start',
+  //   alignItems: 'center',
+  //   color: 'white',
+  // },
 });
 
 const schema = yup.object().shape({
@@ -94,22 +94,25 @@ const SendForm = ({ makeMail }) => {
 
   return (
     <FormProvider {...formObject}>
-      <form onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
-        <Container className='root'>
-          <FormInput name='to' label='To' required={true} errorobj={errors} defaultValue='' />
-          <FormInput name='from' label='From' required={false} errorobj={errors} defaultValue='' />
-          <div className={classes.useTemplateContainer}>
-            <FormSelect name='template' label='Template' options={templateOptions} defaultValue='' />
-          </div>
-          <div className={classes.useCvCoverContainer}>
-            <FormSelect name='cv' label='Cv' options={cvOptions} defaultValue='' />
-            <FormSelect name='cover' label='Cover' options={coverOptions} defaultValue='' />
-          </div>
-          <MyButton name='Submit' theme='dark' type='submit' />
-        </Container>
+      <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
+        {/* <Container className={classes.root}> */}
+        <FormInput name='to' label='To' required={true} errorobj={errors} defaultValue='' />
+        <FormInput name='from' label='From' required={true} errorobj={errors} defaultValue='' />
+        <FormInput name='subject' label='Subject' required={false} errorobj={errors} defaultValue='' />
+        <div className={classes.useTemplateContainer}>
+          <FormSelect name='template' label='Template' options={templateOptions} defaultValue='' />
+        </div>
+        <div className={classes.useCvCoverContainer}>
+          <FormSelect name='cv' label='Cv' options={cvOptions} defaultValue='' />
+          <FormSelect name='cover' label='Cover' options={coverOptions} defaultValue='' />
+        </div>
+        <div className={classes.submitContainer}>
+          <MyButton name='Preview' theme='dark' type='submit' />
+        </div>
+        {/* </Container> */}
       </form>
     </FormProvider>
   );
 };
 
-export default SendForm;
+export default withStyles(formStyle)(SendForm);

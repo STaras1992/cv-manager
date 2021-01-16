@@ -27,7 +27,6 @@ exports.getAllCv = async (req, res, next) => {
 exports.getCv = async (req, res, next) => {
   try {
     const result = await models.cv.findByPk(req.params.id);
-    // console.log('result:', JSON.stringify(result));
     res.status(200).json({
       status: 'success',
       item: parseSingleCvResponse(result),

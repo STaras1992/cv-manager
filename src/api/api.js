@@ -14,8 +14,13 @@ export const addCv = async (data) => {
 export const deleteCv = async (id) => {
   return await axiosInstance.delete(`/cv/${id}`);
 };
-export const getCv = async (id) => {
-  return await axiosInstance.get(`/cv/${id}`);
+export const getCvById = async (id) => {
+  const response = await axiosInstance.get(`/cv/${id}`);
+  if (response.status === 200) {
+    return response.data.item;
+  } else {
+    throw new Error("Can't find cv");
+  }
 };
 export const updateCv = async (data) => {
   return await axiosInstance.patch(`/cv`, data);
@@ -34,6 +39,14 @@ export const deleteCover = async (name) => {
 export const updateCover = async (data) => {
   return await axiosInstance.patch(`/cover`, data);
 };
+export const getCoverById = async (id) => {
+  const response = await axiosInstance.get(`/cover/${id}`);
+  if (response.status === 200) {
+    return response.data.item;
+  } else {
+    throw new Error("Can't find cv");
+  }
+};
 
 //template methods
 export const getAllTemplates = async () => {
@@ -47,4 +60,14 @@ export const deleteTemplate = async (name) => {
 };
 export const updateTemplate = async (data) => {
   return await axiosInstance.patch('/template', data);
+};
+
+//mail
+export const sendMailRequest = async (data) => {
+  const response = await axiosInstance.post(`/email`, data);
+  if (response.status === 200) {
+    return true;
+  } else {
+    throw new Error('Failed to send email');
+  }
 };

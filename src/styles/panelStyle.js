@@ -14,6 +14,7 @@ const styles = (theme) => ({
   },
   addButtonContainer: {
     marginTop: '50px',
+    marginBottom: '50px',
   },
   expanded: {
     marginLeft: `calc(${SIDE_PANEL_WIDTH_WIDE}px + 10px)`,

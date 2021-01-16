@@ -1,7 +1,26 @@
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 const sequelize = require('./models/sequelize');
+const express = require('express');
+const router = express.Router();
+const nodemailer = require('nodemailer');
+const cors = require('cors');
 const app = require('./App.js');
+
+dotenv.config({ path: './config.env' });
+
+/* Mailtrap */
+
+const transport = {
+  host: 'smtp.mailtrap.io',
+  port: 2525,
+  auth: {
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASSWORD,
+  },
+};
+
+const transporter = nodemailer.createTransport(transport);
 
 const PORT = process.env.PORT || 4000;
 

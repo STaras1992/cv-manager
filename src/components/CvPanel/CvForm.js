@@ -125,23 +125,23 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
 
   return (
     <FormProvider {...formObject}>
-      <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
-        <Container className={classes.root}>
-          <FormTitle mode={mode} label='CV' handleClose={handleClose} />
-          <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
-          <FormInput
-            name='description'
-            label='Description'
-            defaultValue={initDescription}
-            required={false}
-            errorobj={errors}
-          />
-          <FormFileInput name='cvFile' errors={errors} initFile={initFile} />
-          <div className={classes.submitContainer}>
-            <MyButton name='Save' theme='dark' type='submit' />
-            <MyButton name='Reset' theme='dark' type='reset' />
-          </div>
-        </Container>
+      <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
+        {/* <Container className={classes.root}> */}
+        <FormTitle mode={mode} label='CV' handleClose={handleClose} />
+        <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
+        <FormInput
+          name='description'
+          label='Description'
+          defaultValue={initDescription}
+          required={false}
+          errorobj={errors}
+        />
+        <FormFileInput name='cvFile' errors={errors} initFile={initFile} />
+        <div className={classes.submitContainer}>
+          <MyButton name='Save' theme='dark' type='submit' />
+          <MyButton name='Reset' theme='dark' type='reset' />
+        </div>
+        {/* </Container> */}
       </form>
     </FormProvider>
   );

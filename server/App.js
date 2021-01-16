@@ -10,6 +10,7 @@ const xss = require('xss-clean');
 const cvRouter = require('./routes/cvRouter.js');
 const coverRouter = require('./routes/coverRouter.js');
 const templateRouter = require('./routes/templateRouter.js');
+const mailRouter = require('./routes/mailRouter.js');
 
 const app = express();
 app.use(bodyParser.json({ limit: '5mb' }));
@@ -35,5 +36,6 @@ app.use('/api', limiter);
 app.use('/api/cv', cvRouter);
 app.use('/api/cover', coverRouter);
 app.use('/api/template', templateRouter);
+app.use('/api/email', mailRouter);
 
 module.exports = app;

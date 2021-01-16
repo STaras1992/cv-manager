@@ -4,8 +4,6 @@ const { parseCoverResponse, parseAllCoversResponse } = require('../utills/parseH
 exports.getAllCovers = async (req, res, next) => {
   try {
     const resultItems = await models.cover.findAll({ raw: true });
-    console.log(JSON.stringify(resultItems));
-
     res.status(200).json({
       status: 'success',
       items: parseAllCoversResponse(resultItems),
@@ -25,10 +23,26 @@ exports.createCover = async (req, res, next) => {
       name: req.body.name,
       content: req.body.content,
     });
-
+    console.log(`Cover ${resultItem.id} created`);
     res.status(200).json({
       status: 'success',
       item: parseCoverResponse(resultItem),
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({
+      status: 'fail',
+      message: err.message, //DEV
+    });
+  }
+};
+
+exports.getCover = async (req, res, next) => {
+  try {
+    const result = await models.cover.findByPk(req.params.id);
+    res.status(200).json({
+      status: 'success',
+      item: parseCoverResponse(result),
     });
   } catch (err) {
     console.log(err.message);

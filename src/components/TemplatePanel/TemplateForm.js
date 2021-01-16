@@ -102,38 +102,38 @@ const TemplateForm = ({
 
   return (
     <FormProvider {...formObject}>
-      <form onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
-        <Container className={classes.root}>
-          <FormTitle mode={mode} label='template' handleClose={handleClose} />
-          <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
-          <FormInput
-            name='description'
-            label='Description'
-            defaultValue={initDescription}
-            required={false}
-            errorobj={errors}
-          />
-          <FormSelect
-            name='cvSelect'
-            label='Cv'
-            options={cvList}
-            defaultValue={initCvId}
-            required={true}
-            errorobj={errors}
-          />
-          <FormSelect
-            name='coverSelect'
-            label='Cover'
-            options={coverList}
-            defaultValue={initCoverId}
-            required={false}
-            errorobj={errors}
-          />
-          <div className={classes.submitContainer}>
-            <MyButton name='Save' theme='dark' type='submit' />
-            <MyButton name='Reset' theme='dark' type='reset' />
-          </div>
-        </Container>
+      <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
+        {/* <Container className={classes.root}> */}
+        <FormTitle mode={mode} label='template' handleClose={handleClose} />
+        <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
+        <FormInput
+          name='description'
+          label='Description'
+          defaultValue={initDescription}
+          required={false}
+          errorobj={errors}
+        />
+        <FormSelect
+          name='cvSelect'
+          label='Cv'
+          options={cvList}
+          defaultValue={initCvId}
+          required={true}
+          errorobj={errors}
+        />
+        <FormSelect
+          name='coverSelect'
+          label='Cover'
+          options={coverList}
+          defaultValue={initCoverId}
+          required={false}
+          errorobj={errors}
+        />
+        <div className={classes.submitContainer}>
+          <MyButton name='Save' theme='dark' type='submit' />
+          <MyButton name='Reset' theme='dark' type='reset' />
+        </div>
+        {/* </Container> */}
       </form>
     </FormProvider>
   );

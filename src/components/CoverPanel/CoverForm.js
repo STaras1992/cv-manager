@@ -122,20 +122,20 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
 
   return (
     // <FormProvider {...formObject}>
-    <form onSubmit={onSubmit} onReset={handleReset}>
-      <Container className={classes.root}>
-        <FormTitle mode={mode} label='cover' handleClose={handleClose} />
-        {/* <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} /> */}
-        {/* <FormInput name='content' label='Content' defaultValue={initContent} required={false} errorobj={errors} /> */}
-        <FormInputUnControlled name='name' label='Name' onChange={onNameChange} value={name} />
-        <div className={myClasses.editor}>
-          <RichTextEditor initState={initContent} onContentChange={onContentChanged} />
-        </div>
-        <div className={classes.submitContainer}>
-          <MyButton name='Save' theme='dark' type='submit' />
-          <MyButton name='Reset' theme='dark' type='reset' />
-        </div>
-      </Container>
+    <form className={classes.root} onSubmit={onSubmit} onReset={handleReset}>
+      {/* <Container className={classes.root}> */}
+      <FormTitle mode={mode} label='cover' handleClose={handleClose} />
+      {/* <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} /> */}
+      {/* <FormInput name='content' label='Content' defaultValue={initContent} required={false} errorobj={errors} /> */}
+      <FormInputUnControlled name='name' label='Name' onChange={onNameChange} value={name} />
+      <div className={myClasses.editor}>
+        <RichTextEditor initState={initContent} onContentChange={onContentChanged} />
+      </div>
+      <div className={classes.submitContainer}>
+        <MyButton name='Save' theme='dark' type='submit' />
+        <MyButton name='Reset' theme='dark' type='reset' />
+      </div>
+      {/* </Container> */}
     </form>
     // </FormProvider>
   );

@@ -8,13 +8,20 @@ import Container from '@material-ui/core/Container';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import MyButton from '../common/MyButton.js';
+import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Typography } from '@material-ui/core';
 import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
+import { useHtmlWrapWith } from '../../utills/html.js';
+import MyCheckBox from '../common/MyCheckBox.js';
+import MySwitch from '../common/MySwitch.js';
+import { setLoadingOn, setLoadingOff } from '../../actions/optionsActions.js';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -46,13 +53,21 @@ const useStyles = makeStyles({
     paddingTop: '40px',
   },
   contentPaper: {
-    margin: '50px 0',
+    marginTop: '50px',
+  },
+  sendContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginBottom: '50px',
   },
 });
 
 const SendMailPage = ({ classes }) => {
   const myClasses = useStyles();
 
+  const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [showBody, setShowBody] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -61,19 +76,23 @@ const SendMailPage = ({ classes }) => {
   const [isSending, setIsSending] = useState(false);
   const [selectedCv, setSelectedCv] = useState(null);
   const [selectedCover, setSelectedCover] = useState(null);
+  //const [html, setHtml, wrapWithReplyTo, wrapWithWebsite, wrapWithFirstName, wrapWithLastName] = useHtmlWrapWith();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
+  const isLoading = useSelector((state) => state.options.isLoading);
+  console.log(isLoading);
 
   const makeMail = (data) => {
-    // console.log('makeMail');
+    dispatch(setLoadingOn);
     setData(data);
   };
 
   const sendMail = () => {
     console.log(convertEditorContentToJson(contentState));
-    //setIsSending(true);
+    // setHtml(stateToHTML(contentState));
+    setIsSending(true);
   };
 
-  const editMail = () => {
+  const editMail = (e) => {
     setEditMode(!editMode);
   };
 
@@ -82,7 +101,6 @@ const SendMailPage = ({ classes }) => {
   };
 
   useEffect(() => {
-    // console.log('data effect');
     if (data) {
       const getDocs = async () => {
         const cvResponse = await api.getCvById(data.cv);
@@ -90,11 +108,13 @@ const SendMailPage = ({ classes }) => {
         setSelectedCv(cvResponse);
         setSelectedCover(coverResponse);
         setShowBody(true);
+        dispatch(setLoadingOff);
       };
 
       try {
         getDocs();
       } catch (err) {
+        dispatch(setLoadingOff);
         console.log(err.message);
       }
     }
@@ -104,7 +124,10 @@ const SendMailPage = ({ classes }) => {
     // console.log('sending effect');
     if (isSending) {
       const fetchSending = async (data) => {
-        const response = await api.sendMailRequest(data);
+        dispatch(setLoadingOn);
+        const response = await api.sendMailRequest(data); //TO DO response check
+        console.log('Mail sent');
+        dispatch(setLoadingOff);
         setIsSending(false);
       };
 
@@ -118,6 +141,8 @@ const SendMailPage = ({ classes }) => {
           cover: stateToHTML(contentState),
         });
       } catch (err) {
+        console.log(err.message);
+        dispatch(setLoadingOff);
         setIsSending(false);
       }
     }
@@ -146,6 +171,9 @@ const SendMailPage = ({ classes }) => {
       <Container>
         <Form makeMail={makeMail} />
         <div className={myClasses.contentContainer}>
+          <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
+            {!isSending && <CircularProgress />}
+          </div>
           {showBody && (
             <div>
               <Paper className={myClasses.contentPaper}>
@@ -179,18 +207,20 @@ const SendMailPage = ({ classes }) => {
                         />
                       )}
                     </div>
-                    {/* <div>
-                      <p className={myClasses.linksBlock}>
-                        <a href={selectedCv.file}>CV link</a>
-                        <br />
-                        <a href='http://18.193.76.149/'>Portfolio link</a>
-                      </p>
-                    </div> */}
                   </div>
                 )}
               </Paper>
-              <MyButton name='Send' theme='light' type='button' onClick={sendMail} />
-              <MyButton name='Edit' theme='light' type='button' onClick={editMail} />
+
+              {/* <MyCheckBox label='edit' name='edit' value={editMode} handleChange={editMail} /> */}
+              <MySwitch label='edit' name='edit' value={editMode} handleChange={editMail} />
+              <div className={myClasses.sendContainer}>
+                <MyButton disabled={isLoading} name='Send' theme='light' type='button' onClick={sendMail} />
+                {/* <div className={clsx(classes.loading, { [classes.hide]: isLoading })}> */}
+                <CircularProgress className={clsx(classes.loading, { [classes.hide]: !isLoading })} />
+                {/* </div> */}
+              </div>
+
+              {/* <MyButton name='Edit' theme='light' type='button' onClick={editMail} /> */}
             </div>
           )}
         </div>

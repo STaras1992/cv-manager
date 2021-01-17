@@ -22,16 +22,6 @@ exports.uploadFile = async (file, fileName, id) => {
       } else {
         resolve(data);
       }
-      // try {
-      //   if (err) {
-      //     throw err;
-      //   }
-      //   console.log(`File uploaded successfully`);
-      //   temp = data;
-      // } catch (err) {
-      //   console.log(`File failed to upload\n` + err);
-      //   throw new Error(err.message);
-      // }
     });
   });
   return promise;

@@ -27,7 +27,7 @@ import { getAllCvs } from '../../actions/cvActions.js';
 import { getAllCovers } from '../../actions/coverActions.js';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
 import { FILE_FORMATS } from '../../consts/structs.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
 
 const useStyles = makeStyles({
   root: {
@@ -46,6 +46,9 @@ const useStyles = makeStyles({
     '& svg': {
       color: LIGHT,
       fontSize: '36px',
+      '&:hover': {
+        color: LIME,
+      },
     },
   },
 });

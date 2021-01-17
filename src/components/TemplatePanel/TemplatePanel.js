@@ -3,6 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import MyButton from '../common/MyButton.js';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import { getAllMyTemplates, editMyTemplate, addNewTemplate, deleteMyTemplate } from '../../actions/templateActions.js';
 import clsx from 'clsx';
@@ -19,6 +20,7 @@ const TemplatePanel = ({ classes }) => {
   //const classes = useStyles();
   const dispatch = useDispatch();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
+  const isLoading = useSelector((state) => state.options.isLoading);
   const items = useSelector((state) => state.template.items);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
@@ -89,6 +91,9 @@ const TemplatePanel = ({ classes }) => {
     >
       <Container>
         <List>{templateItems}</List>
+        <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
+          <CircularProgress />
+        </div>
         <div className={classes.addButtonContainer}>
           {!openForm && <MyButton name='Add template' theme='light' onClick={openFormHandler} />}
         </div>

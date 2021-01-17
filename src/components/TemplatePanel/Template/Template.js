@@ -13,6 +13,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FileIcon from '@material-ui/icons/InsertDriveFile';
 import EditIcon from '@material-ui/icons/Edit';
+import MyToolTip from '../../common/MyToolTip.js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -119,17 +120,21 @@ const Template = ({ id, name, description, cvId, coverId, editTemplate, deleteTe
           }
         />
         <ListItemSecondaryAction>
-          <IconButton className={clsx(classes.iconButton)} edge='end' aria-label='edit' onClick={onEditClick}>
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            className={clsx(classes.iconButton, classes.deleteIconButton)}
-            edge='end'
-            aria-label='delete'
-            onClick={onDeleteClick}
-          >
-            <DeleteIcon />
-          </IconButton>
+          <MyToolTip title='edit' position='top'>
+            <IconButton className={clsx(classes.iconButton)} edge='end' aria-label='edit' onClick={onEditClick}>
+              <EditIcon />
+            </IconButton>
+          </MyToolTip>
+          <MyToolTip title='delete' position='top'>
+            <IconButton
+              className={clsx(classes.iconButton, classes.deleteIconButton)}
+              edge='end'
+              aria-label='delete'
+              onClick={onDeleteClick}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </MyToolTip>
         </ListItemSecondaryAction>
       </ListItem>
     </div>

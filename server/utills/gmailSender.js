@@ -1,3 +1,4 @@
+const validator = require('email-validator');
 const nodemailer = require('nodemailer');
 
 const transport = {
@@ -22,46 +23,55 @@ transporter.verify((error, success) => {
   }
 });
 
-exports.sendMail = (res, data) => {
+exports.verifyAdress = async (adress) => {
+  // return validator.validate(adress);
+  const promise = await new Promise(async (resolve, reject) => {
+    if (validator.validate(adress)) {
+      resolve(true);
+    } else {
+      reject(false);
+    }
+  });
+
+  return promise;
+};
+
+exports.sendMail = async (data) => {
   const mailOptions = {
-    from: `Stas Tarasenko <${data.from}>`,
-    // sender: `Stas Tarasenko <${data.from}>`,
+    from: `CV Manager <${data.from}>`,
     replyTo: data.from,
     to: data.to,
     subject: data.subject,
     html: data.cover,
     attachments: [{ href: data.file }],
-    // headers: {
-    //   replyTo: data.from,
-    // },
+    headers: {
+      replyTo: data.from,
+    },
   };
 
-  transporter.sendMail(mailOptions, function (err, data) {
-    if (err) {
-      console.log(err.message);
-      res.status(500).json({
-        status: 'fail',
-      });
-    } else {
-      console.log('Mail sent...');
-      res.status(200).json({
-        status: 'success',
-      });
-    }
+  // transporter.sendMail(mailOptions, function (err, data) {
+  //   if (err) {
+  //     console.log(err.message);
+  //     res.status(500).json({
+  //       status: 'fail',
+  //     });
+  //   } else {
+  //     console.log('Mail sent...');
+  //     res.status(200).json({
+  //       status: 'success',
+  //     });
+  //   }
+  // });
+
+  const promise = await new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
   });
+
+  return promise;
 };
-
-// const mailOptions = {
-//   from: 'starasp1992@gmail.com',
-//   to: 'starasp1992@gmail.com',
-//   subject: 'test',
-//   html: '<p>hello</p>',
-// };
-
-// transporter.sendMail(mailOptions, function (err, data) {
-//   if (err) {
-//     console.log(err.message);
-//   } else {
-//     console.status(200).log('Mail sent...');
-//   }
-// });

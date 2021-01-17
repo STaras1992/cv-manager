@@ -9,6 +9,7 @@ import Form from './NewCoverForm.js';
 import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
 import CoverForm from './CoverForm.js';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
@@ -20,6 +21,7 @@ const CoverPanel = ({ classes }) => {
 
   const items = useSelector((state) => state.cover.items);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
+  const isLoading = useSelector((state) => state.options.isLoading);
   const [openForm, setOpenForm] = useState(false);
   const [coverExpanded, setCoverExpanded] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
@@ -83,6 +85,9 @@ const CoverPanel = ({ classes }) => {
     >
       <Container maxWidth='lg'>
         <div>{covers}</div>
+        <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
+          <CircularProgress />
+        </div>
         <div className={classes.addButtonContainer}>
           {!openForm && <MyButton name='Add cover' theme='light' onClick={openFormHandler} />}
         </div>

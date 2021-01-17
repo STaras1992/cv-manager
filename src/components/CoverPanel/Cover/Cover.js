@@ -13,8 +13,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../../utills/editorUtils.js';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
+import MyToolTip from '../../common/MyToolTip.js';
 import './Cover.css';
-// import 'draft-js/dist/Draft.css';
+import 'draft-js/dist/Draft.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,12 +86,16 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
         <AccordionSummary>
           <Typography variant='h6'>{name}</Typography>
           <div className={classes.actionsContainer}>
-            <IconButton edge='end' aria-label='edit' onClick={onEditClick}>
-              <EditIcon />
-            </IconButton>
-            <IconButton edge='end' aria-label='delete' onClick={onDeleteClick}>
-              <DeleteIcon />
-            </IconButton>
+            <MyToolTip title='edit' position='top'>
+              <IconButton edge='end' aria-label='edit' onClick={onEditClick}>
+                <EditIcon />
+              </IconButton>
+            </MyToolTip>
+            <MyToolTip title='delete' position='top'>
+              <IconButton edge='end' aria-label='delete' onClick={onDeleteClick}>
+                <DeleteIcon />
+              </IconButton>
+            </MyToolTip>
           </div>
         </AccordionSummary>
         <AccordionDetails>

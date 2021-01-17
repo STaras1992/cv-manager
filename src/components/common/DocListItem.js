@@ -12,6 +12,8 @@ import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FileIcon from '@material-ui/icons/InsertDriveFile';
 import EditIcon from '@material-ui/icons/Edit';
+import Tooltip from '@material-ui/core/Tooltip';
+import MyToolTip from './MyToolTip.js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -77,10 +79,21 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '32px',
     },
   },
+
+  toolTip: {
+    backgroundColor: LIME,
+    color: DARK,
+    border: `1px solid black`,
+    boxShadow: theme.shadows[1],
+    fontSize: '20px',
+  },
+  arrowToolTip: {
+    color: 'black',
+  },
 }));
 
 const DocList = ({ id, name, description, type = '', file = '', actions = [], onEdit, onDelete }) => {
-  const classes = useStyles(useStyles());
+  const classes = useStyles();
 
   const onDeleteClick = (e) => {
     onDelete(id);
@@ -94,38 +107,44 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
     switch (action) {
       case 'delete': {
         return (
-          <IconButton
-            key={index}
-            className={clsx(classes.iconButton, classes.deleteIconButton)}
-            edge='end'
-            aria-label='delete'
-            onClick={onDeleteClick}
-          >
-            <DeleteIcon />
-          </IconButton>
+          <MyToolTip key={index} title='delete' position='top'>
+            <IconButton
+              key={index}
+              className={clsx(classes.iconButton, classes.deleteIconButton)}
+              edge='end'
+              aria-label='delete'
+              onClick={onDeleteClick}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </MyToolTip>
         );
       }
       case 'edit': {
         return (
-          <IconButton key={index} className={classes.iconButton} edge='end' aria-label='edit' onClick={onEditClick}>
-            <EditIcon />
-          </IconButton>
+          <MyToolTip key={index} title='edit' position='top'>
+            <IconButton key={index} className={classes.iconButton} edge='end' aria-label='edit' onClick={onEditClick}>
+              <EditIcon />
+            </IconButton>
+          </MyToolTip>
         );
       }
       case 'open': {
         return (
-          <IconButton
-            key={index}
-            className={clsx(classes.iconButton, classes.fileIconButton)}
-            href={file}
-            //target='_blank'
-            rel='noopener noreferrer'
-            edge='end'
-            aria-label='file'
-            component='a'
-          >
-            <FileIcon />
-          </IconButton>
+          <MyToolTip key={index} title='file' position='top'>
+            <IconButton
+              key={index}
+              className={clsx(classes.iconButton, classes.fileIconButton)}
+              href={file}
+              //target='_blank'
+              rel='noopener noreferrer'
+              edge='end'
+              aria-label='file'
+              component='a'
+            >
+              <FileIcon />
+            </IconButton>
+          </MyToolTip>
         );
       }
       default:

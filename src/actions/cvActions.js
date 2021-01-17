@@ -1,5 +1,6 @@
 import { ADD_MY_CV, UPDATE_MY_CVS, DELETE_MY_CV, UPDATE_SELECTED_CV, UPDATE_MY_CV } from '../consts/actionTypes.js';
 import * as api from '../api/api.js';
+import { setLoadingOn, setLoadingOff } from './optionsActions';
 
 const updateCvs = (items) => ({ type: UPDATE_MY_CVS, payload: items });
 const updateEditedCv = (item) => ({ type: UPDATE_MY_CV, payload: item });
@@ -7,13 +8,16 @@ const addCv = (item) => ({ type: ADD_MY_CV, payload: item });
 const deleteCv = (id) => ({ type: DELETE_MY_CV, payload: id });
 
 export const getAllCvs = () => async (dispatch) => {
+  dispatch(setLoadingOn);
   const response = await api.getAllCv();
   if (response.status === 200) {
     await dispatch(updateCvs(response.data.items));
   }
+  dispatch(setLoadingOff);
 };
 
 export const addNewCv = (data) => async (dispatch) => {
+  dispatch(setLoadingOn);
   let formData = new FormData();
   formData.append('file', data.file);
   formData.append('name', data.name);
@@ -30,23 +34,20 @@ export const addNewCv = (data) => async (dispatch) => {
       })
     );
   }
+  dispatch(setLoadingOff);
 };
 
 export const deleteMyCv = (id) => async (dispatch) => {
+  dispatch(setLoadingOn);
   const response = await api.deleteCv(id);
   if (response.status === 200) {
     await dispatch(deleteCv(response.data.id));
   }
+  dispatch(setLoadingOff);
 };
 
-// export const getSelectedCv = (id) => async (dispatch) => {
-//   const response = await api.getCv(id);
-//   if (response.status === 200) {
-//     await dispatch(getAllCvs(response.data.item));
-//   }
-// };
-
 export const editMyCv = (data) => async (dispatch) => {
+  dispatch(setLoadingOn);
   let dataToSend = {};
   //file was not changed.File already in db and data.file is link to file.
   if (typeof data.file === 'string') {
@@ -70,4 +71,5 @@ export const editMyCv = (data) => async (dispatch) => {
   if (response.status === 200) {
     await dispatch(updateEditedCv(response.data.item));
   }
+  dispatch(setLoadingOff);
 };

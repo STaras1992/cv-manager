@@ -7,7 +7,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
 import clsx from 'clsx';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Cv from './Cv/Cv.js';
 import CvForm from './CvForm.js';
 import DocViewer from '../common/DocViewer.js';
@@ -23,11 +23,10 @@ const CvPanel = ({ classes }) => {
   const dispatch = useDispatch();
   const items = useSelector((state) => [...state.cv.items], shallowEqual);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
+  const isLoading = useSelector((state) => state.options.isLoading);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [openForm, setOpenForm] = useState(false);
-  // const file = useSelector((state) => state.cv.selectedItem.file);
-  // const [fileOpen, setFileOpen] = useState(false);
 
   const saveNewCv = async (name, description, file) => {
     //save edited instance
@@ -101,6 +100,9 @@ const CvPanel = ({ classes }) => {
     >
       <Container>
         <List>{cvItems}</List>
+        <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
+          <CircularProgress />
+        </div>
         <div className={classes.addButtonContainer}>
           {!openForm && <MyButton name='Add cv' theme='light' onClick={openFormHandler} />}
         </div>
@@ -121,14 +123,3 @@ const CvPanel = ({ classes }) => {
 };
 
 export default withStyles(styles, { withTheme: true })(CvPanel);
-
-{
-  /* <Form
-mode={isEditMode ? 'edit' : 'new'}
-initName={editItem ? editItem.name : ''}
-initDescription={editItem ? editItem.description : ''}
-initFile={editItem ? editItem.file : null}
-saveCv={saveNewCv}
-deleteCv={deleteCv}
-/> */
-}

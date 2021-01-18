@@ -87,8 +87,7 @@ const SendMailPage = ({ classes }) => {
   };
 
   const sendMail = () => {
-    console.log(convertEditorContentToJson(contentState));
-    // setHtml(stateToHTML(contentState));
+    // console.log(convertEditorContentToJson(contentState));
     setIsSending(true);
   };
 
@@ -104,9 +103,13 @@ const SendMailPage = ({ classes }) => {
     if (data) {
       const getDocs = async () => {
         const cvResponse = await api.getCvById(data.cv);
-        const coverResponse = await api.getCoverById(data.cover);
+        if (data.cover !== '') {
+          const coverResponse = await api.getCoverById(data.cover);
+          setSelectedCover(coverResponse);
+        } else {
+          setSelectedCover({ id: -1, name: 'empty', content: '' });
+        }
         setSelectedCv(cvResponse);
-        setSelectedCover(coverResponse);
         setShowBody(true);
         dispatch(setLoadingOff);
       };
@@ -149,7 +152,6 @@ const SendMailPage = ({ classes }) => {
   }, [isSending]);
 
   useEffect(() => {
-    // console.log('selected cover effect');
     if (selectedCover !== null) {
       setContentState(convertJsonToEditorContent(selectedCover.content));
       setInitContentState(convertJsonToEditorContent(selectedCover.content));

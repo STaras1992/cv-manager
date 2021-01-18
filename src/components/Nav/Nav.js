@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   header: {
+    background: '#00c6ff',
+    background: ' -webkit-linear-gradient(to right, #0072ff, #00c6ff)',
+    background: 'linear-gradient(to right, #005c97, #363795)',
+
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -97,16 +101,13 @@ const Nav = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const open = useSelector((state) => state.options.isSidePanelOpen);
-  //const [open, setOpen] = useState(false);
   const [menuItems] = useState(getMenuItems());
 
   const handleDrawerOpen = () => {
-    //setOpen(true);
     dispatch(openSidePanel);
   };
 
   const handleDrawerClose = () => {
-    //setOpen(false);
     dispatch(closeSidePanel);
   };
 

@@ -14,7 +14,18 @@ import FileIcon from '@material-ui/icons/InsertDriveFile';
 import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
 import MyToolTip from './MyToolTip.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../../consts/colors.js';
+import {
+  LIGHT_BLUE,
+  BLUE,
+  DARK_BLUE,
+  LIGHT,
+  DARK,
+  GREEN_SUCCESS,
+  PURPLE,
+  DARK_GREY,
+  RED_ERROR,
+  LIME,
+} from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +49,9 @@ const useStyles = makeStyles((theme) => ({
       },
 
       '& .MuiAvatar-root': {
-        backgroundColor: DARK_BLUE,
+        backgroundColor: LIGHT_BLUE,
+        // border: `1px solid white`,
+        boxShadow: '0px 10px 13px -7px #000000',
         width: '60px',
         height: '60px',
         '& svg': {
@@ -73,22 +86,15 @@ const useStyles = makeStyles((theme) => ({
       color: DARK_BLUE,
     },
   },
-
+  titleText: {
+    color: PURPLE,
+  },
+  descriptionText: {},
   iconButton: {
     '& svg': {
       fontSize: '32px',
+      color: DARK_GREY,
     },
-  },
-
-  toolTip: {
-    backgroundColor: LIME,
-    color: DARK,
-    border: `1px solid black`,
-    boxShadow: theme.shadows[1],
-    fontSize: '20px',
-  },
-  arrowToolTip: {
-    color: 'black',
   },
 }));
 
@@ -165,7 +171,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
           style={{ wordBreak: 'break-all' }}
           primary={
             <React.Fragment>
-              <Typography component='span' variant='h6' color='secondary' className={classes.descriptionText}>
+              <Typography component='span' variant='h5' className={classes.titleText}>
                 {name}
               </Typography>
             </React.Fragment>

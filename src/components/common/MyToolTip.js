@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
     border: `1px solid ${DARK}`,
     fontSize: '18px',
     marginTop: 0,
-    minWidth: '60px',
+    minWidth: '55px',
     textAlign: 'center',
   },
   arrowToolTip: {

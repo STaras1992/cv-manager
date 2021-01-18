@@ -29,22 +29,22 @@ const useStyles = makeStyles({
 });
 
 const schema = yup.object().shape({
-  // to: yup.string().required('Email adress is required'),
-  // from: yup.string(),
-  // subject: yup.string().test('len', `Must be less than 80 characters`, (val) => val.length <= 80),
-  // cv: yup.string().required('Cv file is required'),
-  // cover: yup.string(),
-  // template: yup.string(),
+  to: yup.string().required('Recipient email adress is required').email('Bad email adress'),
+  from: yup.string().required('Sender email adress is required').email('Bad email adress'),
+  subject: yup.string().test('len', `Must be less than 80 characters`, (val) => val.length <= 80),
+  cv: yup.string().required('Cv is required'),
+  cover: yup.string(),
+  template: yup.string(),
 });
 
-// const defaultValue = {
-//   to: '',
-//   from: '',
-//   subject: '',
-//   cv: '',
-//   cover: '',
-//   template: '',
-// };
+const defaultValues = {
+  to: '',
+  from: '',
+  subject: '',
+  cv: '',
+  cover: '',
+  template: '',
+};
 
 const SendForm = ({ makeMail }) => {
   const classes = useStyles();
@@ -64,8 +64,6 @@ const SendForm = ({ makeMail }) => {
   const { handleSubmit, reset, control, register, setValue, errors, watch, clearErrors } = formObject;
 
   const template = watch('template');
-  const cv = watch('cv');
-  const cover = watch('cover');
 
   const selectedTemplate = useSelector((state) => state.template.items.find((item) => item.id === template));
 
@@ -75,8 +73,8 @@ const SendForm = ({ makeMail }) => {
   };
 
   const onReset = () => {
-    // reset(defaultValue);
-    // clearErrors();
+    reset(defaultValues);
+    clearErrors();
   };
 
   useEffect(() => {
@@ -103,8 +101,15 @@ const SendForm = ({ makeMail }) => {
           <FormSelect name='template' label='Template' options={templateOptions} defaultValue='' />
         </div>
         <div className={classes.useCvCoverContainer}>
-          <FormSelect name='cv' label='Cv' options={cvOptions} defaultValue='' />
-          <FormSelect name='cover' label='Cover' options={coverOptions} defaultValue='' />
+          <FormSelect name='cv' label='Cv' options={cvOptions} required={true} errorobj={errors} defaultValue='' />
+          <FormSelect
+            name='cover'
+            label='Cover'
+            options={coverOptions}
+            required={false}
+            errorobj={errors}
+            defaultValue=''
+          />
         </div>
         <div className={classes.submitContainer}>
           <MyButton name='Preview' theme='dark' type='submit' />

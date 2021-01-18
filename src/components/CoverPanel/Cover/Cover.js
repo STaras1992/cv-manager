@@ -10,9 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import CoverIcon from '@material-ui/icons/Sort';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../../utills/editorUtils.js';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../../consts/colors.js';
+import { LIGHT_BLUE, DARK_BLUE, RED_ERROR, DARK_GREY, BLUE, LIGHT, PURPLE, DARK } from '../../../consts/colors.js';
 import MyToolTip from '../../common/MyToolTip.js';
 import './Cover.css';
 import 'draft-js/dist/Draft.css';
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiAccordion-root': {
       maxWidth: '80%',
       border: '1px solid rgba(0, 0, 0, .125)',
+      borderRadius: '2px',
       boxShadow: 'none',
       '&:not(:last-child)': {
         borderBottom: 0,
@@ -49,8 +51,14 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        '& .MuiTypography-root': {
+          color: PURPLE,
+          fontSize: '24px',
+          fontWeight: '700',
+        },
         '& svg': {
           fontSize: '36px',
+          color: DARK_GREY,
         },
         '&$expanded': {
           margin: '12px 0',
@@ -60,6 +68,15 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiAccordiondDetails-root': {},
   },
   editorContainer: {},
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& svg': {
+      color: `${LIGHT_BLUE} !important`,
+      marginRight: '10px',
+    },
+  },
 }));
 
 const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChange }) => {
@@ -84,7 +101,10 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
     <div className={classes.root}>
       <Accordion square expanded={expanded === id} onChange={handleChange(id)}>
         <AccordionSummary>
-          <Typography variant='h6'>{name}</Typography>
+          <div className={classes.titleContainer}>
+            <CoverIcon />
+            <Typography>{name}</Typography>
+          </div>
           <div className={classes.actionsContainer}>
             <MyToolTip title='edit' position='top'>
               <IconButton edge='end' aria-label='edit' onClick={onEditClick}>

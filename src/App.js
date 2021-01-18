@@ -6,6 +6,7 @@ import CvPanel from './components/CvPanel/CvPanel.js';
 import CoverPanel from './components/CoverPanel/CoverPanel.js';
 import TemplatePanel from './components/TemplatePanel/TemplatePanel.js';
 import SendMailPage from './components/SendMailPage/SendMailPage.js';
+import HomePage from './components/HomePage/HomePage.js';
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route exact path='/cv' render={(routeParams) => <CvPanel {...routeParams} />} />
         <Route exact path='/cover' render={(routeParams) => <CoverPanel {...routeParams} />} />
         <Route exact path='/template' render={(routeParams) => <TemplatePanel {...routeParams} />} />
-        <Route exact path='/' render={() => <SendMailPage />} />
+        <Route exact path='/email' render={() => <SendMailPage />} />
+        <Route exact path='/' render={() => <HomePage />} />
       </Switch>
       {/* </Container> */}
     </div>

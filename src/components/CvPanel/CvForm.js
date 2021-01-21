@@ -106,7 +106,6 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
   const file = watch('cvFile');
 
   const onSubmit = (data) => {
-    console.log(data);
     saveCv(data.name, data.description, data.cvFile[0]);
   };
 

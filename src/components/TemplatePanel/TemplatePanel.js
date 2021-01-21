@@ -7,6 +7,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import { getAllMyTemplates, editMyTemplate, addNewTemplate, deleteMyTemplate } from '../../actions/templateActions.js';
 import clsx from 'clsx';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import panelStyle from '../../styles/panelStyle.js';
 import Template from './Template/Template.js';
 import TemplateForm from './TemplateForm.js';
@@ -16,11 +18,17 @@ const useStyles = makeStyles((theme) => ({
   root: {},
 }));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
+}
+
 const TemplatePanel = ({ classes }) => {
   //const classes = useStyles();
   const dispatch = useDispatch();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
+  const requestError = useSelector((state) => state.template.error);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const items = useSelector((state) => state.template.items);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
@@ -47,6 +55,7 @@ const TemplatePanel = ({ classes }) => {
   };
 
   const closeFormHandler = (e) => {
+    resetFormInput();
     setOpenForm(false);
   };
 
@@ -57,9 +66,25 @@ const TemplatePanel = ({ classes }) => {
     setOpenForm(true);
   };
 
+  const resetFormInput = () => {
+    setIsEditMode(false);
+    setEditItem(null);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
   useEffect(() => {
     dispatch(getAllMyTemplates());
   }, []);
+
+  useEffect(() => {
+    if (requestError.message !== '') setOpenSnackbar(true);
+  }, [requestError]);
 
   const templateItems = items.map((template) => (
     <DocListItem
@@ -71,16 +96,6 @@ const TemplatePanel = ({ classes }) => {
       onEdit={editTemplate}
       onDelete={deleteTemplate}
     />
-    // <Template
-    //   key={item.id}
-    //   id={item.id}
-    //   name={item.name}
-    //   description={item.description}
-    //   cv={item.cv}
-    //   cover={item.cover}
-    //   editTemplate={editTemplate}
-    //   deleteTemplate={deleteTemplate}
-    // />
   ));
 
   return (
@@ -110,6 +125,17 @@ const TemplatePanel = ({ classes }) => {
           />
         )}
       </Container>
+      <Snackbar
+        className={classes.snackbar}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity='error'>
+          {requestError.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

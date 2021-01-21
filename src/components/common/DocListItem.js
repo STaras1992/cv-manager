@@ -106,7 +106,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
   };
 
   const onEditClick = (e) => {
-    onEdit({ id });
+    onEdit(id);
   };
 
   const listActions = actions.map((action, index) => {

@@ -9,6 +9,8 @@ import Form from './NewCoverForm.js';
 import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
 import CoverForm from './CoverForm.js';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
@@ -16,12 +18,18 @@ import { convertJsonToEditorContent, convertEditorContentToJson } from '../../ut
 
 const useStyles = makeStyles((theme) => ({}));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
+}
+
 const CoverPanel = ({ classes }) => {
   const dispatch = useDispatch();
 
   const items = useSelector((state) => state.cover.items);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
+  const requestError = useSelector((state) => state.cover.error);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [openForm, setOpenForm] = useState(false);
   const [coverExpanded, setCoverExpanded] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
@@ -56,13 +64,27 @@ const CoverPanel = ({ classes }) => {
     setEditItem({ id: id, name: name, content: content });
     setIsEditMode(true);
     setOpenForm(true);
-    // dispatch(editMyCover({ id: id, content: content }));
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   //display my files on init
   useEffect(() => {
     dispatch(getAllCovers());
   }, []);
+
+  useEffect(() => {
+    if (requestError.message !== '') setOpenSnackbar(true);
+  }, [requestError]);
+
+  useEffect(() => {
+    console.log('Open form changed', openForm);
+  }, [openForm]);
 
   let covers = items.map((cover) => (
     <Cover
@@ -101,6 +123,17 @@ const CoverPanel = ({ classes }) => {
           />
         )}
       </Container>
+      <Snackbar
+        className={classes.snackbar}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity='error'>
+          {requestError.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

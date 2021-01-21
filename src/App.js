@@ -17,7 +17,7 @@ function App() {
         <Route exact path='/cv' render={(routeParams) => <CvPanel {...routeParams} />} />
         <Route exact path='/cover' render={(routeParams) => <CoverPanel {...routeParams} />} />
         <Route exact path='/template' render={(routeParams) => <TemplatePanel {...routeParams} />} />
-        <Route exact path='/email' render={() => <SendMailPage />} />
+        <Route exact path='/email' render={(routeParams) => <SendMailPage {...routeParams} />} />
         <Route exact path='/' render={() => <HomePage />} />
       </Switch>
       {/* </Container> */}

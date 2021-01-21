@@ -1,4 +1,10 @@
-import { ADD_MY_COVER, UPDATE_MY_COVERS, DELETE_MY_COVER, UPDATE_MY_COVER } from '../consts/actionTypes.js';
+import {
+  ADD_MY_COVER,
+  UPDATE_MY_COVERS,
+  DELETE_MY_COVER,
+  UPDATE_MY_COVER,
+  SET_ERROR_COVER,
+} from '../consts/actionTypes.js';
 import * as api from '../api/api.js';
 import { setLoadingOn, setLoadingOff } from './optionsActions';
 
@@ -6,6 +12,7 @@ const updateCovers = (items) => ({ type: UPDATE_MY_COVERS, payload: items });
 const addCover = (item) => ({ type: ADD_MY_COVER, payload: item });
 const deleteCover = (id) => ({ type: DELETE_MY_COVER, payload: id });
 const updateCover = (data) => ({ type: UPDATE_MY_COVER, payload: data });
+const setError = (error) => ({ type: SET_ERROR_COVER, payload: error });
 
 export const getAllCovers = () => async (dispatch) => {
   dispatch(setLoadingOn);
@@ -17,10 +24,19 @@ export const getAllCovers = () => async (dispatch) => {
 };
 
 export const addNewCover = (data) => async (dispatch) => {
-  dispatch(setLoadingOn);
-  const response = await api.addCover(data);
-  if (response.status === 200) {
-    await dispatch(addCover(response.data.item));
+  try {
+    dispatch(setLoadingOn);
+    const response = await api.addCover(data);
+
+    if (response.status === 201) {
+      await dispatch(addCover(response.data.item));
+    }
+  } catch (err) {
+    if (err.response.status === 409) {
+      dispatch(setError(err.response.data.message));
+    } else {
+      console.log(`unexpected error (${err.response.status})`);
+    }
   }
   dispatch(setLoadingOff);
 };

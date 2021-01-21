@@ -1,5 +1,6 @@
 const { models } = require('../models/sequelize');
 const { parseAllTemplatesResponse, parseTemplateResponse } = require('../utills/parseHelper');
+const { isTemplateExist } = require('../utills/dbHelper');
 
 exports.getAllTemplates = async (req, res, next) => {
   try {
@@ -20,6 +21,14 @@ exports.getAllTemplates = async (req, res, next) => {
 
 exports.createTemplate = async (req, res, next) => {
   try {
+    if (await isTemplateExist(req.body.name)) {
+      res.status(409).json({
+        status: 'fail',
+        message: 'Current template name already exist',
+      });
+      return;
+    }
+
     const resultItem = await models.template.create({
       name: req.body.name,
       description: req.body.description,
@@ -27,7 +36,7 @@ exports.createTemplate = async (req, res, next) => {
       cover: req.body.cover,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       item: parseTemplateResponse(resultItem),
     });

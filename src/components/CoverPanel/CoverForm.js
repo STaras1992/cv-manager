@@ -27,49 +27,8 @@ const schema = yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
   editor: {
-    width: '80%',
+    width: '100%',
   },
-  // root: {
-  //   width: '100%',
-  //   display: 'flex',
-  //   margin: 0,
-  //   padding: 0,
-  //   flexDirection: 'column',
-  //   justifyContent: 'flex-start',
-  // },
-  // titleContainer: {
-  //   width: '80%',
-  //   display: 'flex',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   '& svg': {
-  //     color: LIGHT,
-  //     fontSize: '45px',
-  //   },
-  // },
-  // formTitle: {
-  //   margin: '40px 0',
-  //   color: 'white',
-  // },
-  // errorMessage: {
-  //   color: RED_ERROR,
-  //   margin: '5px 2px',
-  // },
-  // inputContainer: {
-  //   display: 'flex',
-  //   alignItems: 'center',
-  // },
-  // inputStatusIcon: {
-  //   '& svg': {
-  //     color: GREEN_SUCCESS,
-  //     fontWeight: 'bold',
-  //     fontSize: '45px',
-  //     marginLeft: '5px',
-  //   },
-  // },
-  // hide: {
-  //   display: 'none',
-  // },
 }));
 
 const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, closeForm, classes }) => {

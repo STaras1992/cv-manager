@@ -22,6 +22,7 @@ import { useHtmlWrapWith } from '../../utills/html.js';
 import MyCheckBox from '../common/MyCheckBox.js';
 import MySwitch from '../common/MySwitch.js';
 import { setLoadingOn, setLoadingOff } from '../../actions/optionsActions.js';
+import { sendEmailRequest, getData, setSended } from '../../actions/emailActions.js';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -74,12 +75,16 @@ const SendMailPage = ({ classes }) => {
   const [initContentState, setInitContentState] = useState('');
   const [contentState, setContentState] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [selectedCv, setSelectedCv] = useState(null);
-  const [selectedCover, setSelectedCover] = useState(null);
+  const isSended = useSelector((state) => state.email.isSended);
+  const selectedCv = useSelector((state) => state.email.selectedCv, shallowEqual);
+  const selectedCover = useSelector((state) => state.email.selectedCover, shallowEqual);
   //const [html, setHtml, wrapWithReplyTo, wrapWithWebsite, wrapWithFirstName, wrapWithLastName] = useHtmlWrapWith();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
-  console.log(isLoading);
+  // console.log('Selected CV:', selectedCv);
+  // console.log('Selected cover:', selectedCover);
+  // console.log('show body:', showBody);
+  // console.log('edit mode:', editMode);
 
   const makeMail = (data) => {
     dispatch(setLoadingOn);
@@ -101,68 +106,46 @@ const SendMailPage = ({ classes }) => {
 
   useEffect(() => {
     if (data) {
-      const getDocs = async () => {
-        const cvResponse = await api.getCvById(data.cv);
-        if (data.cover !== '') {
-          const coverResponse = await api.getCoverById(data.cover);
-          setSelectedCover(coverResponse);
-        } else {
-          setSelectedCover({ id: -1, name: 'empty', content: '' });
-        }
-        setSelectedCv(cvResponse);
-        setShowBody(true);
-        dispatch(setLoadingOff);
-      };
-
-      try {
-        getDocs();
-      } catch (err) {
-        dispatch(setLoadingOff);
-        console.log(err.message);
-      }
+      dispatch(getData(data.cv, data.cover));
     }
   }, [data]);
 
   useEffect(() => {
-    // console.log('sending effect');
     if (isSending) {
-      const fetchSending = async (data) => {
-        dispatch(setLoadingOn);
-        const response = await api.sendMailRequest(data); //TO DO response check
-        console.log('Mail sent');
-        dispatch(setLoadingOff);
-        setIsSending(false);
-      };
-
-      try {
-        fetchSending({
+      dispatch(
+        sendEmailRequest({
           to: data.to,
           from: data.from,
           subject: data.subject,
           file: selectedCv.file,
-          // cover: stateToHTML(editMode ? contentState : convertFromRaw(JSON.parse(selectedCover.content))),
           cover: stateToHTML(contentState),
-        });
-      } catch (err) {
-        console.log(err.message);
-        dispatch(setLoadingOff);
-        setIsSending(false);
-      }
+        })
+      );
+      // console.log('done');
+      // setIsSending(false);
     }
   }, [isSending]);
 
   useEffect(() => {
-    if (selectedCover !== null) {
+    if (selectedCover !== null && selectedCv !== null && data !== null) {
       setContentState(convertJsonToEditorContent(selectedCover.content));
       setInitContentState(convertJsonToEditorContent(selectedCover.content));
+      setShowBody(true);
     }
-  }, [selectedCover]);
+  }, [selectedCover, selectedCv]);
 
   useEffect(() => {
     if (editMode) {
       setInitContentState(contentState);
     }
   }, [editMode]);
+
+  useEffect(() => {
+    if (isSended && isSending) {
+      setIsSending(false);
+      dispatch(setSended(false));
+    }
+  }, [isSended]);
 
   return (
     <section

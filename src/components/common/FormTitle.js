@@ -29,7 +29,7 @@ import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.j
 import { FILE_FORMATS } from '../../consts/structs.js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '80%',
     display: 'flex',
@@ -37,6 +37,9 @@ const useStyles = makeStyles({
     alignItems: 'center',
     margin: '40px 0',
     color: 'white',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
   formTitle: {},
   closeButton: {
@@ -51,7 +54,7 @@ const useStyles = makeStyles({
       },
     },
   },
-});
+}));
 
 const FormTitle = ({ mode, label, handleClose }) => {
   const classes = useStyles();

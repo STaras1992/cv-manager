@@ -5,7 +5,8 @@ const styles = (theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center', //'flex-start
+    alignItems: 'center',
     marginTop: HEADER_MARGIN,
     marginLeft: SIDE_PANEL_WIDTH_SHORT,
     '& .MuiListItem-root': {},

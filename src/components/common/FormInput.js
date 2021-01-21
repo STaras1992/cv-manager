@@ -35,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiInputBase-root': {
       color: 'white',
     },
+    //add
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
 }));
 

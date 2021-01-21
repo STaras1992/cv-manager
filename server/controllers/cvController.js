@@ -6,6 +6,7 @@ const {
   bucketKeyCreator,
 } = require('../utills/parseHelper.js');
 const { uploadFile, clearBucket, deleteFile } = require('../utills/awsBucketHelper');
+const { isCvExist } = require('../utills/dbHelper');
 
 exports.getAllCv = async (req, res, next) => {
   try {
@@ -27,10 +28,17 @@ exports.getAllCv = async (req, res, next) => {
 exports.getCv = async (req, res, next) => {
   try {
     const result = await models.cv.findByPk(req.params.id);
-    res.status(200).json({
-      status: 'success',
-      item: parseSingleCvResponse(result),
-    });
+    if (result) {
+      res.status(200).json({
+        status: 'success',
+        item: parseSingleCvResponse(result),
+      });
+    } else {
+      res.status(404).json({
+        status: 'fail',
+        message: 'Selected CV is missing',
+      });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
@@ -43,10 +51,10 @@ exports.getCv = async (req, res, next) => {
 exports.createCv = async (req, res, next) => {
   try {
     if (!req.files) {
-      res.status(500).json({ status: 'fail', message: 'File missing' });
+      res.status(400).json({ status: 'fail', message: 'File is missing in request' });
       return;
     } else if (!req.body.name) {
-      res.status(500).json({ status: 'fail', message: 'Name missing' });
+      res.status(400).json({ status: 'fail', message: 'Name is missing in request' });
       return;
     }
     const file = req.files.file;
@@ -54,6 +62,10 @@ exports.createCv = async (req, res, next) => {
     const description = req.body.description;
     const type = fileTypeFromName(file.name);
 
+    if (await isCvExist(name)) {
+      res.status(409).json({ status: 'fail', message: `Current CV name already exist` });
+      return;
+    }
     const rdsResult = await models.cv.create({
       name: name,
       description: description,
@@ -68,7 +80,10 @@ exports.createCv = async (req, res, next) => {
       await models.cv.destroy({
         where: { id: rdsResult.id },
       });
-      throw new Error('S3 update failed');
+      res.status(409).json({
+        status: 'fail',
+        message: 'Failed to create document',
+      });
     }
 
     const updated = await models.cv.update({ file: s3Result.Location }, { where: { id: rdsResult.id } });
@@ -79,10 +94,13 @@ exports.createCv = async (req, res, next) => {
       models.cv.destroy({
         where: { id: rdsResult.id },
       });
-      throw new Error('RDS update failed'); //DEV
+      res.status(409).json({
+        status: 'fail',
+        message: 'Failed to create document',
+      });
     }
 
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       data: {
         id: rdsResult.id,
@@ -93,7 +111,6 @@ exports.createCv = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err.message);
     res.status(500).json({
       status: 'fail',
       message: err.message, //DEV
@@ -138,7 +155,6 @@ exports.updateCv = async (req, res, next) => {
     const description = req.body.description;
     let type = null;
     let file = null;
-    console.log(JSON.stringify(req.body));
 
     //File alredy exist in db.file is link to doc.
     if (!req.files) {
@@ -153,7 +169,10 @@ exports.updateCv = async (req, res, next) => {
         type = fileTypeFromName(file.name);
         file = s3Result.Location;
       } else {
-        throw new Error('Faile to upload new file to S3 bucket');
+        res.status(500).json({
+          status: 'fail',
+          message: 'error',
+        });
       }
     }
 

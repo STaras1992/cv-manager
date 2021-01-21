@@ -78,7 +78,6 @@ const TemplateForm = ({
   const { handleSubmit, reset, control, register, errors, clearErrors } = formObject;
 
   const onSubmit = (data) => {
-    console.log(data);
     saveTemplate(data.name, data.description, data.cvSelect, data.coverSelect);
   };
 
@@ -88,6 +87,7 @@ const TemplateForm = ({
   };
 
   const handleClose = () => {
+    handleReset();
     closeForm();
   };
 

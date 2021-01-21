@@ -4,11 +4,13 @@ import {
   DELETE_MY_TEMPLATE,
   UPDATE_MY_TEMPLATE,
   SET_LOADING_TEMPLATE,
+  SET_ERROR_TEMPLATE,
 } from '../consts/actionTypes.js';
 
 const initState = {
   items: [],
   isLoading: false,
+  error: { message: '' },
   selectedItem: {},
 };
 
@@ -38,12 +40,16 @@ const templateReducer = (state = initState, action) => {
           else return action.payload;
         }),
       };
-    case SET_LOADING_TEMPLATE: {
+    case SET_LOADING_TEMPLATE:
       return {
         ...state,
         isLoading: !state.isLoading,
       };
-    }
+    case SET_ERROR_TEMPLATE:
+      return {
+        ...state,
+        error: { ...state.error, message: action.payload },
+      };
     default:
       return state;
   }

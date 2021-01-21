@@ -4,11 +4,13 @@ import {
   DELETE_MY_COVER,
   UPDATE_MY_COVER,
   SET_LOADING_COVER,
+  SET_ERROR_COVER,
 } from '../consts/actionTypes.js';
 
 const initState = {
   items: [], //{id,name,content},content:JSON(editorState)
   isLoading: false,
+  error: { message: '' },
   selectedItem: {},
 };
 
@@ -42,6 +44,12 @@ const coverReducer = (state = initState, action) => {
       return {
         ...state,
         isLoading: !state.isLoading,
+      };
+    }
+    case SET_ERROR_COVER: {
+      return {
+        ...state,
+        error: { ...state.error, message: action.payload },
       };
     }
     default:

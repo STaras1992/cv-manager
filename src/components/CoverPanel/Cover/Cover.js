@@ -21,7 +21,7 @@ import 'draft-js/dist/Draft.css';
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiAccordion-root': {
-      maxWidth: '80%',
+      // maxWidth: '80%',
       border: '1px solid rgba(0, 0, 0, .125)',
       borderRadius: '2px',
       boxShadow: 'none',
@@ -67,14 +67,18 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiAccordiondDetails-root': {},
   },
-  editorContainer: {},
   titleContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    wordBreak: 'break-all',
     '& svg': {
       color: `${LIGHT_BLUE} !important`,
       marginRight: '10px',
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
     },
   },
 }));
@@ -119,7 +123,6 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          {/* <Typography style={{ wordBreak: 'break-all' }}>{content}</Typography> */}
           <div className='editor-root'>
             <Editor editorState={editorState} readOnly={true} />
           </div>

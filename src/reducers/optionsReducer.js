@@ -18,13 +18,11 @@ const optionsReducer = (state = initState, action) => {
         isSidePanelOpen: false,
       };
     case START_LOADING:
-      console.log('Start Loading');
       return {
         ...state,
         isLoading: true,
       };
     case STOP_LOADING:
-      console.log('Stop Loading');
       return {
         ...state,
         isLoading: false,

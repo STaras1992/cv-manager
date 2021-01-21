@@ -12,7 +12,12 @@ const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, 
   language: 'en',
 });
 
-const modelDefiners = [require('./cv.model'), require('./cover.model'), require('./template.model')];
+const modelDefiners = [
+  require('./cv.model'),
+  require('./cover.model'),
+  require('./template.model'),
+  require('./user.model'),
+];
 
 for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);

@@ -17,16 +17,14 @@ import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.j
 import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
 
-const useStyles = makeStyles({
-  // root: {
-  //   width: '100%',
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   justifyContent: 'flex-start',
-  //   alignItems: 'center',
-  //   color: 'white',
-  // },
-});
+const useStyles = makeStyles((theme) => ({
+  useCvCoverContainer: {
+    width: '80%',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
+  },
+}));
 
 const schema = yup.object().shape({
   to: yup.string().required('Recipient email adress is required').email('Bad email adress'),
@@ -46,8 +44,8 @@ const defaultValues = {
   template: '',
 };
 
-const SendForm = ({ makeMail }) => {
-  const classes = useStyles();
+const SendForm = ({ makeMail, classes }) => {
+  const myClasses = useStyles();
   const dispatch = useDispatch();
 
   const cvOptions = useSelector((state) => state.cv.items.map((item) => ({ id: item.id, name: item.name })));
@@ -97,10 +95,10 @@ const SendForm = ({ makeMail }) => {
         <FormInput name='to' label='To' required={true} errorobj={errors} defaultValue='' />
         <FormInput name='from' label='From' required={true} errorobj={errors} defaultValue='' />
         <FormInput name='subject' label='Subject' required={false} errorobj={errors} defaultValue='' />
-        <div className={classes.useTemplateContainer}>
+        <div className={myClasses.useTemplateContainer}>
           <FormSelect name='template' label='Template' options={templateOptions} defaultValue='' />
         </div>
-        <div className={classes.useCvCoverContainer}>
+        <div className={myClasses.useCvCoverContainer}>
           <FormSelect name='cv' label='Cv' options={cvOptions} required={true} errorobj={errors} defaultValue='' />
           <FormSelect
             name='cover'

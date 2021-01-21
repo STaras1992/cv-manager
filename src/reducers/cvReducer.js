@@ -1,9 +1,16 @@
-import { UPDATE_MY_CVS, ADD_MY_CV, DELETE_MY_CV, UPDATE_MY_CV, SET_LOADING_CV } from '../consts/actionTypes.js';
+import {
+  UPDATE_MY_CVS,
+  ADD_MY_CV,
+  DELETE_MY_CV,
+  UPDATE_MY_CV,
+  SET_LOADING_CV,
+  SET_ERROR_CV,
+} from '../consts/actionTypes.js';
 
 const initState = {
   items: [],
-  selectedItem: {},
   isLoading: false,
+  error: { message: '' },
 };
 
 const cvReducer = (state = initState, action) => {
@@ -37,6 +44,13 @@ const cvReducer = (state = initState, action) => {
       return {
         ...state,
         isLoading: !state.isLoading,
+      };
+    }
+    case SET_ERROR_CV: {
+      console.log('SET_ERROR_CV');
+      return {
+        ...state,
+        error: { ...state.error, message: action.payload },
       };
     }
     default:

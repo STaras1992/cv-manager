@@ -1,5 +1,6 @@
 const { models } = require('../models/sequelize');
 const { parseCoverResponse, parseAllCoversResponse } = require('../utills/parseHelper');
+const { isCoverExist } = require('../utills/dbHelper');
 
 exports.getAllCovers = async (req, res, next) => {
   try {
@@ -19,12 +20,22 @@ exports.getAllCovers = async (req, res, next) => {
 
 exports.createCover = async (req, res, next) => {
   try {
+    console.log(req.body);
+    if (await isCoverExist(req.body.name)) {
+      res.status(409).json({
+        status: 'fail',
+        message: `Current cover name already exist`,
+      });
+      return;
+    }
     const resultItem = await models.cover.create({
       name: req.body.name,
       content: req.body.content,
     });
+
     console.log(`Cover ${resultItem.id} created`);
-    res.status(200).json({
+
+    res.status(201).json({
       status: 'success',
       item: parseCoverResponse(resultItem),
     });
@@ -40,10 +51,17 @@ exports.createCover = async (req, res, next) => {
 exports.getCover = async (req, res, next) => {
   try {
     const result = await models.cover.findByPk(req.params.id);
-    res.status(200).json({
-      status: 'success',
-      item: parseCoverResponse(result),
-    });
+    if (result) {
+      res.status(200).json({
+        status: 'success',
+        item: parseCoverResponse(result),
+      });
+    } else {
+      res.status(404).json({
+        status: 'fail',
+        message: 'Selected cover letter is missing',
+      });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(500).json({

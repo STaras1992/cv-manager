@@ -51,7 +51,7 @@ const styles = (theme) => ({
   },
 });
 
-const MyButton = ({ name, theme, type = 'button', onClick, classes }) => (
+const MyButton = ({ name, theme, type = 'button', onClick, classes, styles }) => (
   <Button
     className={clsx(classes.root, {
       [classes.buttonDarkToLight]: theme === 'dark',
@@ -61,6 +61,7 @@ const MyButton = ({ name, theme, type = 'button', onClick, classes }) => (
     type={type}
     variant='contained'
     onClick={onClick}
+    style={styles}
   >
     {name}
   </Button>

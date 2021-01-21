@@ -10,6 +10,8 @@ import clsx from 'clsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Cv from './Cv/Cv.js';
 import CvForm from './CvForm.js';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import DocViewer from '../common/DocViewer.js';
 import MyButton from '../common/MyButton.js';
 import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT, HEADER_MARGIN } from '../../consts/measures.js';
@@ -18,12 +20,18 @@ import DocListItem from '../common/DocListItem.js';
 
 const useStyles = makeStyles((theme) => ({}));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
+}
+
 const CvPanel = ({ classes }) => {
   const myClasses = useStyles();
   const dispatch = useDispatch();
   const items = useSelector((state) => [...state.cv.items], shallowEqual);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
+  const requestError = useSelector((state) => state.cv.error);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [openForm, setOpenForm] = useState(false);
@@ -61,10 +69,23 @@ const CvPanel = ({ classes }) => {
     setOpenForm(true);
   };
 
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
   //display files on init
   useEffect(async () => {
     await dispatch(getAllCvs());
   }, []);
+
+  /*If error response received from api*/
+  useEffect(() => {
+    console.log('requestError');
+    if (requestError.message !== '') setOpenSnackbar(true);
+  }, [requestError]);
 
   const cvItems = items.map((cv) => (
     <DocListItem
@@ -118,6 +139,17 @@ const CvPanel = ({ classes }) => {
         )}
         {/* {fileOpen && <DocViewer source={file} />} */}
       </Container>
+      <Snackbar
+        className={classes.snackbar}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity='error'>
+          {requestError.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

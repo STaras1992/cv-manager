@@ -152,6 +152,10 @@ const HomePage = ({ classes }) => {
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
 
+  // useEffect(() => {
+  //   dispatch(checkAuth());
+  // }, []);
+
   return (
     <div
       className={clsx(classes.root, {

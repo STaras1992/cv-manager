@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -16,11 +16,14 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ProfileIcon from '@material-ui/icons/AccountCircle';
 import ListItemText from '@material-ui/core/ListItemText';
 import { getMenuItems } from '../../utills/menu.js';
 import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT } from '../../consts/measures.js';
 import { Link } from 'react-router-dom';
 import { openSidePanel, closeSidePanel } from '../../actions/optionsActions.js';
+import { login, logout } from '../../actions/userActions.js';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, DARK_GREY, RED_ERROR, LIME, GREEN_SUCCESS } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   header: {
-    background: '#00c6ff',
-    background: ' -webkit-linear-gradient(to right, #0072ff, #00c6ff)',
+    background: '#363795',
+    background: ' -webkit-linear-gradient(to right, #005c97, #363795)',
     background: 'linear-gradient(to right, #005c97, #363795)',
 
     display: 'flex',
@@ -69,9 +72,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    // [theme.breakpoints.down('xs')]: {
-    //   width: SIDE_PANEL_WIDTH_SHORT,
-    // },
   },
 
   drawerClose: {
@@ -88,20 +88,36 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
-
+  profile: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  profileIcon: {
+    '& svg': {
+      fontSize: '36px',
+      color: LIME,
+      transition: 'all 0.8s ease-in-out',
+    },
+  },
+  profileDisabled: {
+    '& svg': {
+      color: LIGHT,
+    },
+  },
   hide: {
-    display: 'none',
+    // display: 'none',
+    visibility: 'hidden',
   },
 }));
 
-const Nav = (props) => {
+const Nav = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const open = useSelector((state) => state.options.isSidePanelOpen);
   const [menuItems] = useState(getMenuItems());
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   const handleDrawerOpen = () => {
     dispatch(openSidePanel);
@@ -109,6 +125,10 @@ const Nav = (props) => {
 
   const handleDrawerClose = () => {
     dispatch(closeSidePanel);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   const menuListItems = menuItems.map((item) => (
@@ -139,10 +159,23 @@ const Nav = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Typography variant='h6' noWrap>
-            Cv Manager
-          </Typography> */}
-          <Button color='inherit'>Login</Button>
+          <div className={classes.profile}>
+            {isLoggedIn ? (
+              <Button color='inherit' onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              <Button component={Link} to='/login' color='inherit'>
+                Login
+              </Button>
+            )}
+            <IconButton
+              classes={{ root: classes.profileIcon, disabled: classes.profileDisabled }}
+              disabled={!isLoggedIn}
+            >
+              <ProfileIcon />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
 

@@ -30,3 +30,7 @@ export const OPEN_SIDE_PANEL = 'OPEN_SIDE_PANEL';
 export const CLOSE_SIDE_PANEL = 'CLOSE_SIDE_PANEL';
 export const START_LOADING = 'START_LOADING';
 export const STOP_LOADING = 'STOP_LOADING';
+
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const SET_ERROR_USER = 'SET_ERROR_USER';

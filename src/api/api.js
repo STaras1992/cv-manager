@@ -1,6 +1,7 @@
 import * as axios from 'axios';
 
 const axiosInstance = axios.create({
+  withCredentials: true,
   baseURL: 'http://localhost:4000/api',
 });
 
@@ -64,10 +65,23 @@ export const updateTemplate = async (data) => {
 
 //mail
 export const sendEmail = async (data) => {
-  return await axiosInstance.post(`/email`, data);
-  // if (response.status === 200) {
-  //   return true;
-  // } else {
-  //   //throw new Error('Failed to send email');
-  // }
+  return await axiosInstance.post('/email', data);
+};
+
+//user
+export const signup = async (data) => {
+  return await axiosInstance.post('/user/signup', data);
+};
+
+export const login = async (data) => {
+  return await axiosInstance.post('/user/login', data);
+};
+
+export const auth = async () => {
+  return await axiosInstance.post('/user/auth');
+};
+
+export const logout = async (data) => {
+  //return await axiosInstance.post('/user/logout', data);
+  //TODO
 };

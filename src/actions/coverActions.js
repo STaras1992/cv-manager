@@ -31,11 +31,13 @@ export const addNewCover = (data) => async (dispatch) => {
     if (response.status === 201) {
       await dispatch(addCover(response.data.item));
     }
+    dispatch(setError(''));
   } catch (err) {
     if (err.response.status === 409) {
       dispatch(setError(err.response.data.message));
     } else {
       console.log(`unexpected error (${err.response.status})`);
+      dispatch(setError('Failed to create cover. Try again'));
     }
   }
   dispatch(setLoadingOff);

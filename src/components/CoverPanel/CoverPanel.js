@@ -79,7 +79,9 @@ const CoverPanel = ({ classes }) => {
   }, []);
 
   useEffect(() => {
-    if (requestError.message !== '') setOpenSnackbar(true);
+    if (requestError.message === null) return;
+    if (requestError.message === '') closeFormHandler();
+    setOpenSnackbar(true);
   }, [requestError]);
 
   useEffect(() => {
@@ -125,13 +127,13 @@ const CoverPanel = ({ classes }) => {
       </Container>
       <Snackbar
         className={classes.snackbar}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         open={openSnackbar}
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity='error'>
-          {requestError.message}
+        <Alert onClose={handleCloseSnackbar} severity={requestError.message === '' ? 'success' : 'error'}>
+          {requestError.message === '' ? 'Cover successfully created' : requestError.message}
         </Alert>
       </Snackbar>
     </div>

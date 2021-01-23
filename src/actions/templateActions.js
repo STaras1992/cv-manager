@@ -39,11 +39,12 @@ export const addNewTemplate = (data) => async (dispatch) => {
     if (response.status === 201) {
       await dispatch(addTemplate(response.data.item));
     }
+    dispatch(setError(''));
   } catch (err) {
     if (err.response.status === 409) {
       dispatch(setError(err.response.data.message));
     } else {
-      console.log(`unexpected error (${err.response.status})`);
+      dispatch(setError('Failed to create template. Try again'));
     }
   }
   dispatch(setLoadingOff);

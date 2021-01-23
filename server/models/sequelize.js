@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
-const reset = require('../database/reset');
 const { applyExtraSetup } = require('./extra-setup');
+const { clearBucket } = require('../utills/awsBucketHelper');
 
 const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, process.env.SQL_PASSWORD, {
   dialect: 'mysql',
@@ -11,6 +11,16 @@ const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, 
   pool: { maxConnections: 5, maxIdleTime: 30 },
   language: 'en',
 });
+
+const resetDb = async () => {
+  try {
+    await sequelize.sync({ force: true });
+    console.log('sync success');
+    await clearBucket();
+  } catch (err) {
+    console.log('sync error:', err.message);
+  }
+};
 
 const modelDefiners = [
   require('./cv.model'),
@@ -23,7 +33,7 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-//reset(sequelize);
+//resetDb();
 
 applyExtraSetup(sequelize);
 

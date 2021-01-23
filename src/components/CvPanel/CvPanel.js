@@ -77,14 +77,15 @@ const CvPanel = ({ classes }) => {
   };
 
   //display files on init
-  useEffect(async () => {
-    await dispatch(getAllCvs());
+  useEffect(() => {
+    dispatch(getAllCvs());
   }, []);
 
-  /*If error response received from api*/
+  /* Check api response for errors */
   useEffect(() => {
-    console.log('requestError');
-    if (requestError.message !== '') setOpenSnackbar(true);
+    if (requestError.message === null) return;
+    if (requestError.message === '') closeFormHandler();
+    setOpenSnackbar(true);
   }, [requestError]);
 
   const cvItems = items.map((cv) => (
@@ -99,18 +100,6 @@ const CvPanel = ({ classes }) => {
       onEdit={editCv}
       onDelete={deleteCv}
     />
-
-    // <Cv
-    //   key={cv.id}
-    //   id={cv.id}
-    //   name={cv.name}
-    //   description={cv.description}
-    //   type={cv.type}
-    //   file={cv.file}
-    //   editCv={editCv}
-    //   deleteCv={deleteCv}
-    //   // openFile={openFile}
-    // />
   ));
 
   return (
@@ -131,7 +120,7 @@ const CvPanel = ({ classes }) => {
           <CvForm
             initName={editItem ? editItem.name : ''}
             initDescription={editItem ? editItem.description : ''}
-            initFile={editItem ? editItem.description : ''}
+            initFile={editItem ? editItem.file : ''}
             mode={isEditMode ? 'edit' : 'new'}
             saveCv={saveNewCv}
             closeForm={closeFormHandler}
@@ -141,13 +130,13 @@ const CvPanel = ({ classes }) => {
       </Container>
       <Snackbar
         className={classes.snackbar}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity='error'>
-          {requestError.message}
+        <Alert onClose={handleCloseSnackbar} severity={requestError.message === '' ? 'success' : 'error'}>
+          {requestError.message === '' ? 'Cv successfully created' : requestError.message}
         </Alert>
       </Snackbar>
     </div>

@@ -46,9 +46,7 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
 
   const onSubmit = (data) => {
     let json;
-    // if (content !== '')
     json = convertEditorContentToJson(content);
-    // else json = EditorState.createEmpty().getCurrentContent();
     saveCover(data.name, json);
   };
 
@@ -65,10 +63,6 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
   const onContentChanged = (newContent) => {
     setContent(newContent);
   };
-
-  // const onNameChange = (e) => {
-  //   setName(e.target.value);
-  // };
 
   useEffect(() => {
     reset({ name: initName });

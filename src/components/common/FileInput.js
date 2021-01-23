@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const FileInput = (props) => {
   const classes = useStyles();
   const { control, register } = useFormContext();
-  const { name, label, required, onChange, errorobj, defaultValue } = props;
+  const { name, label, required, onChange, errorobj } = props;
   let isError = false;
   let errorMessage = '';
   // const [file, setFile] = useState(null);
@@ -70,7 +70,6 @@ const FileInput = (props) => {
       )}
       control={control}
       name={name}
-      defaultValue={defaultValue}
       error={isError}
       helperText={errorMessage}
       {...props}

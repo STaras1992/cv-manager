@@ -1,7 +1,10 @@
 const express = require('express');
 const templateController = require('../controllers/templateController.js');
+const authController = require('../controllers/authController');
+const { protect } = require('../middlewares/auth.js');
 
 const router = express.Router();
+router.use(protect);
 
 router.get('/', templateController.getAllTemplates);
 router.post('/', templateController.createTemplate);

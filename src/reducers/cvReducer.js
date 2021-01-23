@@ -10,7 +10,7 @@ import {
 const initState = {
   items: [],
   isLoading: false,
-  error: { message: '' },
+  error: { message: null },
 };
 
 const cvReducer = (state = initState, action) => {
@@ -47,7 +47,6 @@ const cvReducer = (state = initState, action) => {
       };
     }
     case SET_ERROR_CV: {
-      console.log('SET_ERROR_CV');
       return {
         ...state,
         error: { ...state.error, message: action.payload },

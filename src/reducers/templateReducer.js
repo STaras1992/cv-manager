@@ -10,7 +10,7 @@ import {
 const initState = {
   items: [],
   isLoading: false,
-  error: { message: '' },
+  error: { message: null },
   selectedItem: {},
 };
 

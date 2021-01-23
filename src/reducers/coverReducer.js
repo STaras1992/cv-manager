@@ -10,7 +10,7 @@ import {
 const initState = {
   items: [], //{id,name,content},content:JSON(editorState)
   isLoading: false,
-  error: { message: '' },
+  error: { message: null },
   selectedItem: {},
 };
 

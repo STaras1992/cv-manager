@@ -47,55 +47,25 @@ const schema = yup.object().shape({
   cvFile: yup
     .mixed()
     .required('File is required')
+    .test('fileSelected', 'File is required', (value) => {
+      return value && value.length > 0;
+    })
     .test('fileSize', 'File is too large', (value) => {
-      return value.length > 0 && value[0].size < 3000000;
+      return value.length === 0 || (value.length > 0 && value[0].size < 3000000);
     })
     .test('type', 'Only doc, docx, pdf format supported', (value) => {
-      return value.length > 0 && FILE_FORMATS.includes(value[0].type);
+      return value.length === 0 || (value.length > 0 && FILE_FORMATS.includes(value[0].type));
     }),
 });
 
-// const useStyles = makeStyles((theme) => ({
-//   // root: {
-//   //   width: '100%',
-//   //   display: 'flex',
-//   //   margin: 0,
-//   //   padding: 0,
-//   //   flexDirection: 'column',
-//   //   justifyContent: 'flex-start',
-//   // },
-//   // formTitle: {
-//   //   margin: '40px 0',
-//   //   color: 'white',
-//   // },
-//   // errorMessage: {
-//   //   color: RED_ERROR,
-//   //   margin: '5px 2px',
-//   // },
-//   // inputContainer: {
-//   //   display: 'flex',
-//   //   alignItems: 'center',
-//   // },
-//   // inputStatusIcon: {
-//   //   '& svg': {
-//   //     color: GREEN_SUCCESS,
-//   //     fontWeight: 'bold',
-//   //     fontSize: '45px',
-//   //     marginLeft: '5px',
-//   //   },
-//   // },
-//   // hide: {
-//   //   display: 'none',
-//   // },
-// }));
-
-const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'new', saveCv, closeForm, classes }) => {
+const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = 'new', saveCv, closeForm, classes }) => {
   //const classes = useStyles();
   const dispatch = useDispatch();
+  const [isAfterReset, setIsAfterReset] = useState(false);
 
   const formObject = useForm({
     defaultValues: {
-      cvFile: '',
+      cvFile: null,
     },
     mode: 'all',
     resolver: yupResolver(schema),
@@ -106,7 +76,8 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
   const file = watch('cvFile');
 
   const onSubmit = (data) => {
-    saveCv(data.name, data.description, data.cvFile[0]);
+    if (data.cvFile.length > 0) saveCv(data.name, data.description, data.cvFile[0]);
+    else saveCv(data.name, data.description, initFile);
   };
 
   const handleClose = () => {
@@ -114,13 +85,15 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
   };
 
   const handleReset = () => {
-    reset({ name: '', description: '', file: null });
+    reset({ name: '', description: '', cvFile: null });
     clearErrors();
+    setIsAfterReset(true);
   };
 
   useEffect(() => {
-    reset({ name: initName, description: initDescription, file: initFile });
-  }, [initName]);
+    reset({ name: initName, description: initDescription, cvFile: null });
+    setIsAfterReset(false);
+  }, [initFile]);
 
   return (
     <FormProvider {...formObject}>
@@ -135,7 +108,12 @@ const CvForm = ({ initName = '', initDescription = '', initFile = '', mode = 'ne
           required={false}
           errorobj={errors}
         />
-        <FormFileInput name='cvFile' errors={errors} initFile={initFile} />
+        {/* <FormFileInput name='cvFile' errors={errors} initFile={initFile} /> */}
+        <FormFileInput
+          name='cvFile'
+          errors={errors}
+          isSelected={(file && file.length > 0) || (initFile && !isAfterReset)}
+        />
         <div className={classes.submitContainer}>
           <MyButton name='Save' theme='dark' type='submit' />
           <MyButton name='Reset' theme='dark' type='reset' />

@@ -43,6 +43,7 @@ export const addNewCv = (data) => async (dispatch) => {
         })
       );
     }
+    dispatch(setError(''));
   } catch (err) {
     //switch for different handling in future
     switch (err.response.status) {
@@ -57,6 +58,7 @@ export const addNewCv = (data) => async (dispatch) => {
         break;
       default:
         console.log(`unexpected error (${err.response.status})`);
+        dispatch(setError('Failed to save cv. Try again'));
         break;
     }
   }

@@ -83,7 +83,9 @@ const TemplatePanel = ({ classes }) => {
   }, []);
 
   useEffect(() => {
-    if (requestError.message !== '') setOpenSnackbar(true);
+    if (requestError.message === null) return;
+    if (requestError.message === '') closeFormHandler();
+    setOpenSnackbar(true);
   }, [requestError]);
 
   const templateItems = items.map((template) => (
@@ -132,8 +134,8 @@ const TemplatePanel = ({ classes }) => {
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity='error'>
-          {requestError.message}
+        <Alert onClose={handleCloseSnackbar} severity={requestError.message === '' ? 'success' : 'error'}>
+          {requestError.message === '' ? 'Template successfully created' : requestError.message}
         </Alert>
       </Snackbar>
     </div>

@@ -87,7 +87,6 @@ const TemplateForm = ({
   };
 
   const handleClose = () => {
-    handleReset();
     closeForm();
   };
 

@@ -4,7 +4,15 @@ const { isTemplateExist } = require('../utills/dbHelper');
 
 exports.getAllTemplates = async (req, res, next) => {
   try {
-    const resultItems = await models.template.findAll({ raw: true });
+    const resultItems = await models.template.findAll({ where: { userId: req.body.userId } }, { raw: true });
+
+    if (resultItems.length === 0) {
+      res.status(200).json({
+        status: 'success',
+        items: [],
+      });
+      return;
+    }
 
     res.status(200).json({
       status: 'success',
@@ -21,7 +29,7 @@ exports.getAllTemplates = async (req, res, next) => {
 
 exports.createTemplate = async (req, res, next) => {
   try {
-    if (await isTemplateExist(req.body.name)) {
+    if (await isTemplateExist(req.body.name, req.body.userId)) {
       res.status(409).json({
         status: 'fail',
         message: 'Current template name already exist',
@@ -29,17 +37,32 @@ exports.createTemplate = async (req, res, next) => {
       return;
     }
 
-    const resultItem = await models.template.create({
+    const user = await models.user.findByPk(req.body.userId);
+
+    if (!user) {
+      res.status(401).json({ status: 'fail', message: `User not found, try login again` });
+      return;
+    }
+
+    const resultItem = await user.createTemplate({
       name: req.body.name,
       description: req.body.description,
       cv: req.body.cv,
       cover: req.body.cover,
     });
 
-    res.status(201).json({
-      status: 'success',
-      item: parseTemplateResponse(resultItem),
-    });
+    // const resultItem = await models.template.create({
+    //   name: req.body.name,
+    //   description: req.body.description,
+    //   cv: req.body.cv,
+    //   cover: req.body.cover,
+    // });
+    if (resultItem) {
+      res.status(201).json({
+        status: 'success',
+        item: parseTemplateResponse(resultItem),
+      });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
@@ -52,8 +75,9 @@ exports.createTemplate = async (req, res, next) => {
 exports.deleteTemplate = async (req, res, next) => {
   try {
     const reqId = req.params.id;
+
     const result = await models.template.destroy({
-      where: { id: reqId },
+      where: { id: reqId, userId: req.body.userId },
     });
     if (result !== 0) {
       res.status(200).json({
@@ -61,7 +85,6 @@ exports.deleteTemplate = async (req, res, next) => {
         id: reqId,
       });
       console.log(`Template with id ${reqId} deleted succesfully`);
-      return;
     } else {
       res.status(404).json({
         status: 'fail',
@@ -80,9 +103,10 @@ exports.deleteTemplate = async (req, res, next) => {
 exports.updateTemplate = async (req, res, next) => {
   try {
     const { id, name, description, cv, cover } = req.body;
+
     const updated = await models.template.update(
       { name: name, description: description, cv: cv, cover: cover },
-      { where: { id: id } }
+      { where: { id: id, userId: req.body.userId } }
     );
 
     if (updated !== 0) {

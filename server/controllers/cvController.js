@@ -10,14 +10,22 @@ const { isCvExist } = require('../utills/dbHelper');
 
 exports.getAllCv = async (req, res, next) => {
   try {
-    const result = await models.cv.findAll({ raw: true });
+    const result = await models.cv.findAll({ where: { userId: req.body.userId } }, { raw: true });
+
+    if (result.length === 0) {
+      res.status(200).json({
+        status: 'success',
+        items: [],
+      });
+      return;
+    }
 
     res.status(200).json({
       status: 'success',
       items: parseAllCvItemsResponse(result),
     });
   } catch (err) {
-    //console.log(err.message);
+    console.log(err.message);
     res.status(500).json({
       status: 'fail',
       message: err.message, //DEV
@@ -27,7 +35,9 @@ exports.getAllCv = async (req, res, next) => {
 
 exports.getCv = async (req, res, next) => {
   try {
-    const result = await models.cv.findByPk(req.params.id);
+    // const result = await models.cv.findByPk(req.params.id);
+    const result = await models.cv.findOne({ where: { id: req.params.id, userId: req.body.userId } });
+
     if (result) {
       res.status(200).json({
         status: 'success',
@@ -57,21 +67,38 @@ exports.createCv = async (req, res, next) => {
       res.status(400).json({ status: 'fail', message: 'Name is missing in request' });
       return;
     }
+    const userId = req.body.userId;
     const file = req.files.file;
     const name = req.body.name;
     const description = req.body.description;
     const type = fileTypeFromName(file.name);
 
-    if (await isCvExist(name)) {
+    /* Check if name used already */
+    if (await isCvExist(name, req.body.userId)) {
       res.status(409).json({ status: 'fail', message: `Current CV name already exist` });
       return;
     }
-    const rdsResult = await models.cv.create({
+
+    const user = await models.user.findByPk(userId);
+
+    if (!user) {
+      res.status(401).json({ status: 'fail', message: `User not found, try login again` });
+      return;
+    }
+
+    const rdsResult = await user.createCv({
       name: name,
       description: description,
       file: '',
       type: type,
     });
+
+    // const rdsResult = await models.cv.create({
+    //   name: name,
+    //   description: description,
+    //   file: '',
+    //   type: type,
+    // });
 
     const s3Result = await uploadFile(file, name, '' + rdsResult.id);
 
@@ -111,6 +138,7 @@ exports.createCv = async (req, res, next) => {
       },
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       status: 'fail',
       message: err.message, //DEV
@@ -120,7 +148,15 @@ exports.createCv = async (req, res, next) => {
 
 exports.deleteCv = async (req, res, next) => {
   try {
-    const item = await models.cv.findByPk(req.params.id);
+    // const item = await models.cv.findByPk(req.params.id);
+    const item = await models.cv.findOne({ where: { id: req.params.id, userId: req.body.userId } });
+    if (!item) {
+      res.status(404).json({
+        status: 'fail',
+        message: `Cant find current cv`, //DEV
+      });
+    }
+
     const key = bucketKeyCreator(item.name, item.id, item.type);
     const awsResult = await deleteFile(key);
 
@@ -156,7 +192,7 @@ exports.updateCv = async (req, res, next) => {
     let type = null;
     let file = null;
 
-    //File alredy exist in db.file is link to doc.
+    //File alredy exist in, db.file is link to doc.
     if (!req.files) {
       file = req.body.file;
       type = fileTypeFromName(file);
@@ -165,6 +201,7 @@ exports.updateCv = async (req, res, next) => {
     else {
       file = req.files.file;
       const s3Result = await uploadFile(file, name, '' + id); // TODO check  without '' +
+
       if (s3Result) {
         type = fileTypeFromName(file.name);
         file = s3Result.Location;
@@ -178,7 +215,7 @@ exports.updateCv = async (req, res, next) => {
 
     const updated = await models.cv.update(
       { description: description, name: name, type: type, file: file },
-      { where: { id: id } }
+      { where: { id: id, userId: req.body.userId } }
     );
 
     if (updated !== 0) {

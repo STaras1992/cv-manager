@@ -17,6 +17,7 @@ import MyButton from '../common/MyButton.js';
 import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 import DocListItem from '../common/DocListItem.js';
+import ConfirmDialog from '../common/ConfirmDialog.js';
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -37,6 +38,8 @@ const CvPanel = ({ classes }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [openForm, setOpenForm] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState(0);
 
   const saveNewCv = async (name, description, file) => {
     //save edited instance
@@ -51,7 +54,19 @@ const CvPanel = ({ classes }) => {
   };
 
   const deleteCv = (id) => {
-    dispatch(deleteMyCv(id));
+    //setDeleteObject({ accept: true, id: id });
+    setDeleteId(id);
+    setOpenDialog(true);
+
+    // dispatch(deleteMyCv(id));
+  };
+
+  const handleDialogOk = () => {
+    dispatch(deleteMyCv(deleteId));
+  };
+
+  const handleDialogCancel = () => {
+    setOpenDialog(false);
   };
 
   const openFormHandler = (e) => {
@@ -117,6 +132,12 @@ const CvPanel = ({ classes }) => {
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
   }, [showError]);
 
+  // useEffect(() => {
+  //   if (deleteObject.accept) {
+  //     dispatch(deleteMyCv(deleteObject.id));
+  //   }
+  // }, [deleteObject]);
+
   const cvItems = items.map((cv) => (
     <DocListItem
       key={cv.id}
@@ -169,6 +190,13 @@ const CvPanel = ({ classes }) => {
           {requestError.message}
         </Alert>
       </Snackbar>
+      <ConfirmDialog
+        open={openDialog}
+        dialogTitle='Delete CV?'
+        dialogText='Removing CV also will remove templates that use current CV item.'
+        handleOk={handleDialogOk}
+        handleClose={handleDialogCancel}
+      />
     </div>
   );
 };

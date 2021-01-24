@@ -16,6 +16,7 @@ import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, GREEN_SUCCESS, LIME } from '../../c
 import cvImage from '../../images/cv2.jpeg';
 import coverImage from '../../images/cover1.jpeg';
 import templateImage from '../../images/template1.jpg';
+import ConfirmDialog from '../common/ConfirmDialog.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {

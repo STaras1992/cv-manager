@@ -15,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
-
+import ConfirmDialog from '../common/ConfirmDialog.js';
 const useStyles = makeStyles((theme) => ({}));
 
 function Alert(props) {
@@ -36,6 +36,8 @@ const CoverPanel = ({ classes }) => {
   const [coverExpanded, setCoverExpanded] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState(0);
 
   const handleChange = (id) => (event, newExpanded) => {
     setCoverExpanded(newExpanded ? id : null);
@@ -59,7 +61,17 @@ const CoverPanel = ({ classes }) => {
   };
 
   const deleteCover = (id) => {
-    dispatch(deleteMyCover(id));
+    setDeleteId(id);
+    setOpenDialog(true);
+    // dispatch(deleteMyCover(id));
+  };
+
+  const handleDialogOk = () => {
+    dispatch(deleteMyCover(deleteId));
+  };
+
+  const handleDialogCancel = () => {
+    setOpenDialog(false);
   };
 
   const editCover = (id, name, content) => {
@@ -150,6 +162,13 @@ const CoverPanel = ({ classes }) => {
           {requestError.message}
         </Alert>
       </Snackbar>
+      <ConfirmDialog
+        open={openDialog}
+        dialogTitle='Delete Cover?'
+        dialogText='Removing Cover also will remove templates that use current cover item.'
+        handleOk={handleDialogOk}
+        handleClose={handleDialogCancel}
+      />
     </div>
   );
 };

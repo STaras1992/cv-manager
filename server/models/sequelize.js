@@ -33,7 +33,7 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-//resetDb();
+resetDb();
 
 applyExtraSetup(sequelize);
 

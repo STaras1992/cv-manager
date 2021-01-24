@@ -13,6 +13,7 @@ import panelStyle from '../../styles/panelStyle.js';
 import Template from './Template/Template.js';
 import TemplateForm from './TemplateForm.js';
 import DocListItem from '../common/DocListItem.js';
+import ConfirmDialog from '../common/ConfirmDialog.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -35,6 +36,8 @@ const TemplatePanel = ({ classes }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [openForm, setOpenForm] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState(0);
 
   const openFormHandler = (e) => {
     setOpenForm(true);
@@ -53,7 +56,17 @@ const TemplatePanel = ({ classes }) => {
   };
 
   const deleteTemplate = (id) => {
-    dispatch(deleteMyTemplate(id));
+    setDeleteId(id);
+    setOpenDialog(true);
+    // dispatch(deleteMyTemplate(id));
+  };
+
+  const handleDialogOk = () => {
+    dispatch(deleteMyTemplate(deleteId));
+  };
+
+  const handleDialogCancel = () => {
+    setOpenDialog(false);
   };
 
   const closeFormHandler = (e) => {
@@ -155,6 +168,13 @@ const TemplatePanel = ({ classes }) => {
           {requestError.message}
         </Alert>
       </Snackbar>
+      <ConfirmDialog
+        open={openDialog}
+        dialogTitle='Delete Template?'
+        dialogText='Template will not be available more'
+        handleOk={handleDialogOk}
+        handleClose={handleDialogCancel}
+      />
     </div>
   );
 };

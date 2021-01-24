@@ -96,8 +96,12 @@ const TemplateForm = ({
   }, []);
 
   useEffect(() => {
+    // console.log('initCvId:', initCvId);
+    // console.log('initCoverId:', initCoverId);
+    // console.log('cvList:', cvList);
+    // console.log('coverList:', coverList);
     reset({ name: initName, description: initDescription, cvSelect: initCvId, coverSelect: initCoverId });
-  }, [initName]);
+  }, [initName, initCvId, initDescription, initCoverId]);
 
   return (
     <FormProvider {...formObject}>

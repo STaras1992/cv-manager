@@ -1,6 +1,4 @@
 function applyExtraSetup(sequelize) {
-  //const { user, cv, cover, template } = sequelize.models;
-  // sequelize.models.user.hasMany(sequelize.models.cv);
   sequelize.models.user.hasMany(sequelize.models.cv, {
     foreignKey: 'userId',
     onDelete: 'cascade',
@@ -18,8 +16,8 @@ function applyExtraSetup(sequelize) {
     onDelete: 'cascade',
   });
   sequelize.models.template.belongsTo(sequelize.models.user);
-  // cv.hasMany(template);
-  // cover.hasMany(template);
+
+  // sequelize.models.cover.hasMany(sequelize.models.)
 }
 
 module.exports = { applyExtraSetup };

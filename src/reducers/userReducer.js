@@ -1,9 +1,10 @@
-import { LOGIN, LOGOUT, SET_ERROR_USER } from '../consts/actionTypes.js';
+import { LOGIN, LOGOUT, SET_ERROR_USER, SET_ERROR_SIGNUP, SET_ERROR_LOGIN } from '../consts/actionTypes.js';
 
 const initState = {
   user: {},
   isLoggedIn: false,
-  error: { message: '' },
+  loginError: { message: null },
+  signUpError: { message: null },
 };
 
 const userReducer = (state = initState, action) => {
@@ -22,10 +23,16 @@ const userReducer = (state = initState, action) => {
         isLoggedIn: false,
         user: {},
       };
-    case SET_ERROR_USER: {
+    case SET_ERROR_LOGIN: {
       return {
         ...state,
-        error: { ...state.error, message: action.payload },
+        loginError: { ...state.loginError, message: action.payload },
+      };
+    }
+    case SET_ERROR_SIGNUP: {
+      return {
+        ...state,
+        signUpError: { ...state.signUpError, message: action.payload },
       };
     }
     default:

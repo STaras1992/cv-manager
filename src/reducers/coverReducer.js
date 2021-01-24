@@ -5,13 +5,15 @@ import {
   UPDATE_MY_COVER,
   SET_LOADING_COVER,
   SET_ERROR_COVER,
+  COVER_RESPONSE_SUCCESS,
+  COVER_RESPONSE_FAIL,
 } from '../consts/actionTypes.js';
 
 const initState = {
-  items: [], //{id,name,content},content:JSON(editorState)
+  items: [],
   isLoading: false,
   error: { message: null },
-  selectedItem: {},
+  responseStatusSuccess: true,
 };
 
 const coverReducer = (state = initState, action) => {
@@ -52,6 +54,16 @@ const coverReducer = (state = initState, action) => {
         error: { ...state.error, message: action.payload },
       };
     }
+    case COVER_RESPONSE_SUCCESS:
+      return {
+        ...state,
+        responseStatusSuccess: true,
+      };
+    case COVER_RESPONSE_FAIL:
+      return {
+        ...state,
+        responseStatusSuccess: false,
+      };
     default:
       return state;
   }

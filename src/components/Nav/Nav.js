@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 import { openSidePanel, closeSidePanel } from '../../actions/optionsActions.js';
 import { login, logout } from '../../actions/userActions.js';
 import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, DARK_GREY, RED_ERROR, LIME, GREEN_SUCCESS } from '../../consts/colors.js';
+import { showErrorOff } from '../../actions/optionsActions.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,6 +107,22 @@ const useStyles = makeStyles((theme) => ({
       color: LIGHT,
     },
   },
+  actionButton: {
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      color: LIME,
+    },
+  },
+  loginButton: {
+    '&:hover': {
+      textDecoration: 'overline',
+    },
+  },
+  signupButton: {
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
   hide: {
     // display: 'none',
     visibility: 'hidden',
@@ -131,8 +148,12 @@ const Nav = () => {
     dispatch(logout());
   };
 
+  const handlePageChange = () => {
+    dispatch(showErrorOff);
+  };
+
   const menuListItems = menuItems.map((item) => (
-    <ListItem button key={item.name} component={Link} to={item.to}>
+    <ListItem button key={item.name} component={Link} to={item.to} onClick={handlePageChange}>
       <ListItemIcon>{item.icon}</ListItemIcon>
       <ListItemText primary={item.name} />
     </ListItem>
@@ -165,9 +186,24 @@ const Nav = () => {
                 Logout
               </Button>
             ) : (
-              <Button component={Link} to='/login' color='inherit'>
-                Login
-              </Button>
+              <div>
+                <Button
+                  className={clsx(classes.actionButton, classes.signupButton)}
+                  component={Link}
+                  to='/signup'
+                  color='inherit'
+                >
+                  Sign up
+                </Button>
+                <Button
+                  className={clsx(classes.actionButton, classes.loginButton)}
+                  component={Link}
+                  to='/login'
+                  color='inherit'
+                >
+                  Login
+                </Button>
+              </div>
             )}
             <IconButton
               classes={{ root: classes.profileIcon, disabled: classes.profileDisabled }}

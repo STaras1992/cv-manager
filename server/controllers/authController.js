@@ -49,13 +49,13 @@ exports.signup = async (req, res, next) => {
     const newUser = await models.user.create({ id: userId, email, password, firstName, lastName, website });
 
     if (!newUser) {
-      res.status(500).json({ status: 'fail', message: 'Failed to create user' });
+      res.status(400).json({ status: 'fail', message: 'Failed to create user' });
       return;
     }
 
     createAndSendToken(newUser, 201, res);
   } catch (err) {
-    res.status(409).json({
+    res.status(500).json({
       status: 'fail',
       message: err.message,
     });
@@ -89,9 +89,6 @@ exports.protect = async (req, res, next) => {
   try {
     let token;
 
-    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    //   token = req.headers.authorization.split(' ')[1];
-    // }
     if (req.cookies.jwt) {
       token = req.cookies.jwt;
     }
@@ -124,9 +121,6 @@ exports.checkAuth = async (req, res, next) => {
     if (req.cookies.jwt) {
       token = req.cookies.jwt;
     }
-    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    //   token = req.headers.authorization.split(' ')[1];
-    // }
 
     if (!token) {
       res.status(400).json({ status: 'fail', message: 'Not authorized' });
@@ -147,7 +141,7 @@ exports.checkAuth = async (req, res, next) => {
       user: freshUser,
     });
   } catch (err) {
-    res.status(400).json({ status: 'fail', message: err.message });
+    res.status(500).json({ status: 'fail', message: err.message });
     return;
   }
 };

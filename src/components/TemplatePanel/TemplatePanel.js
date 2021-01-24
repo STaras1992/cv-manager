@@ -28,7 +28,9 @@ const TemplatePanel = ({ classes }) => {
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
   const requestError = useSelector((state) => state.template.error);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const showError = useSelector((state) => state.options.showError);
+  const successResponse = useSelector((state) => state.template.responseStatusSuccess);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const items = useSelector((state) => state.template.items);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
@@ -41,10 +43,10 @@ const TemplatePanel = ({ classes }) => {
   const saveTemplate = async (name, description, cv, cover) => {
     //save edited instance
     if (isEditMode) {
-      await dispatch(editMyTemplate({ id: editItem.id, name: name, description: description, cv: cv, cover: cover }));
-      setIsEditMode(false);
-      setOpenForm(false);
-      setEditItem(null);
+      dispatch(editMyTemplate({ id: editItem.id, name: name, description: description, cv: cv, cover: cover }));
+      // setIsEditMode(false);
+      // setOpenForm(false);
+      // setEditItem(null);
     }
     //save new instance
     else dispatch(addNewTemplate({ name: name, description: description, cv: cv, cover: cover }));
@@ -75,7 +77,7 @@ const TemplatePanel = ({ classes }) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpenSnackbar(false);
+    setShowSnackbar(false);
   };
 
   useEffect(() => {
@@ -83,10 +85,25 @@ const TemplatePanel = ({ classes }) => {
   }, []);
 
   useEffect(() => {
-    if (requestError.message === null) return;
-    if (requestError.message === '') closeFormHandler();
-    setOpenSnackbar(true);
+    // console.log('requestError:', requestError);
+    if (isEditMode) {
+      if (requestError.message === '') {
+        setIsEditMode(false);
+        setOpenForm(false);
+        setEditItem(null);
+      }
+    }
   }, [requestError]);
+
+  // useEffect(() => {
+  //   console.log('successResponse:', successResponse);
+  //   if (successResponse && openForm) setOpenForm(false);
+  // }, [successResponse]);
+
+  useEffect(() => {
+    console.log('showError:', showError);
+    if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+  }, [showError]);
 
   const templateItems = items.map((template) => (
     <DocListItem
@@ -130,12 +147,12 @@ const TemplatePanel = ({ classes }) => {
       <Snackbar
         className={classes.snackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        open={openSnackbar}
+        open={showSnackbar}
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity={requestError.message === '' ? 'success' : 'error'}>
-          {requestError.message === '' ? 'Template successfully created' : requestError.message}
+        <Alert onClose={handleCloseSnackbar} severity={'error'}>
+          {requestError.message}
         </Alert>
       </Snackbar>
     </div>

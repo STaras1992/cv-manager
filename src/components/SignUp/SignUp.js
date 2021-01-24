@@ -77,6 +77,12 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  errorMessage: {
+    margin: 0,
+    padding: 0,
+    fontSize: '18px',
+    color: RED_ERROR,
+  },
 }));
 
 const schema = yup.object().shape({
@@ -99,21 +105,29 @@ const SignUp = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const error = useSelector((state) => state.user.signUpError);
+  const [showError, setShowError] = useState(false);
 
   const formObject = useForm({
-    mode: 'onBlur',
+    mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, reset, controll, register, errors, clearErrors } = formObject;
+  const { handleSubmit, errors } = formObject;
 
   const onSubmit = async (data) => {
+    setShowError(false);
     dispatch(signup(data));
   };
 
   useEffect(() => {
     isLoggedIn && props.history.push('/');
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (error.message && error.message !== '') setShowError(true);
+    else setShowError(false);
+  }, [error]);
 
   return (
     <FormProvider {...formObject}>
@@ -140,11 +154,13 @@ const SignUp = (props) => {
               <Grid item xs={12}>
                 <FormInput name='password' label='Password' required={true} defaultValue={''} errorobj={errors} />
               </Grid>
+
               <Grid item xs={12}>
-                <FormControlLabel
+                {showError && <p className={classes.errorMessage}>{error.message}</p>}
+                {/* <FormControlLabel
                   control={<Checkbox value='allowExtraEmails' color='primary' />}
                   label='I want to receive inspiration, marketing promotions and updates via email.'
-                />
+                /> */}
               </Grid>
             </Grid>
             <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>

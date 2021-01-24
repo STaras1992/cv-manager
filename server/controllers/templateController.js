@@ -32,7 +32,7 @@ exports.createTemplate = async (req, res, next) => {
     if (await isTemplateExist(req.body.name, req.body.userId)) {
       res.status(409).json({
         status: 'fail',
-        message: 'Current template name already exist',
+        message: `'${req.body.name}' already used.Please try different name`,
       });
       return;
     }
@@ -51,12 +51,6 @@ exports.createTemplate = async (req, res, next) => {
       cover: req.body.cover,
     });
 
-    // const resultItem = await models.template.create({
-    //   name: req.body.name,
-    //   description: req.body.description,
-    //   cv: req.body.cv,
-    //   cover: req.body.cover,
-    // });
     if (resultItem) {
       res.status(201).json({
         status: 'success',
@@ -103,6 +97,14 @@ exports.deleteTemplate = async (req, res, next) => {
 exports.updateTemplate = async (req, res, next) => {
   try {
     const { id, name, description, cv, cover } = req.body;
+
+    if (await isTemplateExist(name, req.body.userId, id)) {
+      res.status(409).json({
+        status: 'fail',
+        message: `'${name}' already used.Please try different name`,
+      });
+      return;
+    }
 
     const updated = await models.template.update(
       { name: name, description: description, cv: cv, cover: cover },

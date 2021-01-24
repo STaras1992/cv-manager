@@ -29,7 +29,9 @@ const CoverPanel = ({ classes }) => {
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
   const requestError = useSelector((state) => state.cover.error);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const showError = useSelector((state) => state.options.showError);
+  const successResponse = useSelector((state) => state.cover.responseStatusSuccess);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [openForm, setOpenForm] = useState(false);
   const [coverExpanded, setCoverExpanded] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
@@ -70,7 +72,7 @@ const CoverPanel = ({ classes }) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpenSnackbar(false);
+    setShowSnackbar(false);
   };
 
   //display my files on init
@@ -79,14 +81,26 @@ const CoverPanel = ({ classes }) => {
   }, []);
 
   useEffect(() => {
-    if (requestError.message === null) return;
-    if (requestError.message === '') closeFormHandler();
-    setOpenSnackbar(true);
+    if (isEditMode) {
+      if (requestError.message === '') {
+        setIsEditMode(false);
+        setOpenForm(false);
+        setEditItem(null);
+      }
+    }
   }, [requestError]);
 
+  // useEffect(() => {
+  //   // console.log('showErrorCv', showError);
+  //   console.log('succesResponse', successResponse);
+  //   if (successResponse && openForm) setOpenForm(false);
+  // }, [successResponse]);
+
   useEffect(() => {
-    console.log('Open form changed', openForm);
-  }, [openForm]);
+    console.log('showError', showError);
+    // console.log('succesResponse', successResponse);
+    if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+  }, [showError]);
 
   let covers = items.map((cover) => (
     <Cover
@@ -128,12 +142,12 @@ const CoverPanel = ({ classes }) => {
       <Snackbar
         className={classes.snackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        open={openSnackbar}
+        open={showSnackbar}
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity={requestError.message === '' ? 'success' : 'error'}>
-          {requestError.message === '' ? 'Cover successfully created' : requestError.message}
+        <Alert onClose={handleCloseSnackbar} severity={'error'}>
+          {requestError.message}
         </Alert>
       </Snackbar>
     </div>

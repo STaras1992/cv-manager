@@ -75,14 +75,17 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  errorMessage: {
+    margin: 0,
+    padding: 0,
+    fontSize: '18px',
+    color: RED_ERROR,
+  },
 }));
 
 const schema = yup.object().shape({
-  email: yup.string().required('Email adress is required').email('Bad email adress'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .test('len', `Must be at least 8 characters`, (val) => val.length >= 8),
+  email: yup.string().required('Email adress is required'),
+  password: yup.string().required('Password is required'),
 });
 
 const Login = (props) => {
@@ -90,9 +93,11 @@ const Login = (props) => {
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const error = useSelector((state) => state.user.loginError);
+  const [showError, setShowError] = useState(false);
 
   const formObject = useForm({
-    mode: 'onBlur',
+    mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
 
@@ -120,7 +125,10 @@ const Login = (props) => {
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <FormInput name='email' label='Email' required={true} defaultValue={''} errorobj={errors} />
             <FormInput name='password' label='Password' required={true} defaultValue={''} errorobj={errors} />
-            <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
+            <div>
+              <p className={classes.errorMessage}>{error.message}</p>
+            </div>
+            {/* <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' /> */}
             <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
               Login
             </Button>

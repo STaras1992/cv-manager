@@ -32,7 +32,7 @@ exports.createCover = async (req, res, next) => {
     if (await isCoverExist(req.body.name, req.body.userId)) {
       res.status(409).json({
         status: 'fail',
-        message: `Current cover name already exist`,
+        message: `'${req.body.name}' already used.Please try different name`,
       });
       return;
     }
@@ -127,6 +127,14 @@ exports.updateCover = async (req, res, next) => {
   try {
     const { id, name, content } = req.body;
 
+    if (await isCoverExist(name, req.body.userId)) {
+      res.status(409).json({
+        status: 'fail',
+        message: `'${name}' already used.Please try different name`,
+      });
+      return;
+    }
+
     const updated = await models.cover.update(
       { name: name, content: content },
       { where: { id: id, userId: req.body.userId } }
@@ -142,7 +150,7 @@ exports.updateCover = async (req, res, next) => {
     } else {
       res.status(404).json({
         status: 'fail',
-        item: 'File is missing',
+        message: 'File is missing',
       });
     }
   } catch (err) {

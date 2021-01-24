@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { addNewCv, getAllCvs, deleteMyCv, editMyCv } from '../../actions/cvActions.js';
+import { addNewCv, getAllCvs, deleteMyCv, editMyCv, setError } from '../../actions/cvActions.js';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -31,7 +31,9 @@ const CvPanel = ({ classes }) => {
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
   const requestError = useSelector((state) => state.cv.error);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const showError = useSelector((state) => state.options.showError);
+  const successResponse = useSelector((state) => state.cv.responseStatusSuccess);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [openForm, setOpenForm] = useState(false);
@@ -39,10 +41,10 @@ const CvPanel = ({ classes }) => {
   const saveNewCv = async (name, description, file) => {
     //save edited instance
     if (isEditMode) {
-      await dispatch(editMyCv({ id: editItem.id, name: name, description: description, file: file }));
-      setIsEditMode(false);
-      setOpenForm(false);
-      setEditItem(null);
+      dispatch(editMyCv({ id: editItem.id, name: name, description: description, file: file }));
+      // setIsEditMode(false);
+      // setOpenForm(false);
+      // setEditItem(null);
     }
     //save new instance
     else dispatch(addNewCv({ name: name, description: description, file: file }));
@@ -53,7 +55,7 @@ const CvPanel = ({ classes }) => {
   };
 
   const openFormHandler = (e) => {
-    setOpenForm(true); //!openForm
+    setOpenForm(true);
   };
 
   const closeFormHandler = (e) => {
@@ -73,7 +75,7 @@ const CvPanel = ({ classes }) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpenSnackbar(false);
+    setShowSnackbar(false);
   };
 
   //display files on init
@@ -83,10 +85,37 @@ const CvPanel = ({ classes }) => {
 
   /* Check api response for errors */
   useEffect(() => {
-    if (requestError.message === null) return;
-    if (requestError.message === '') closeFormHandler();
-    setOpenSnackbar(true);
+    // console.log('cv error:', requestError.message);
+    if (isEditMode) {
+      if (requestError.message === '') {
+        setIsEditMode(false);
+        setOpenForm(false);
+        setEditItem(null);
+      }
+    }
+    // if (requestError.message === null) {
+    //   if (showSnackbar) setShowSnackbar(false);
+    //   return;
+    // }
+    // if (requestError.message === '') closeFormHandler();
+    // setShowSnackbar(true);
+    // if (successResponse && openForm) closeFormHandler();
   }, [requestError]);
+
+  // useEffect(() => {
+  //   // console.log('succesResponse', successResponse);
+  //   if (successResponse && openForm) setOpenForm(false);
+  //   // if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+  // }, [successResponse]);
+
+  useEffect(() => {
+    // console.log('showErrorCv', showError);
+    // if (!showError && showSnackbar) setShowSnackbar(false);
+    // if (showError && requestError) {
+    //   !showSnackbar && setShowSnackbar(true);
+    // }
+    if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+  }, [showError]);
 
   const cvItems = items.map((cv) => (
     <DocListItem
@@ -131,12 +160,13 @@ const CvPanel = ({ classes }) => {
       <Snackbar
         className={classes.snackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        open={openSnackbar}
-        autoHideDuration={6000}
+        open={showSnackbar}
+        autoHideDuration={3000}
+        disableWindowBlurListener={true}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity={requestError.message === '' ? 'success' : 'error'}>
-          {requestError.message === '' ? 'Cv successfully created' : requestError.message}
+        <Alert onClose={handleCloseSnackbar} severity='error'>
+          {requestError.message}
         </Alert>
       </Snackbar>
     </div>

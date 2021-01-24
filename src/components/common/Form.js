@@ -95,7 +95,7 @@ const Form = ({ handleMessageSent }) => {
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState({ email: '', message: '', name: '', subject: '' });
   const [visited, setVisited] = useState({ email: false, message: false, name: false, subject: false });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [messageSendSucces, setMessageSentSucces] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
@@ -163,16 +163,16 @@ const Form = ({ handleMessageSent }) => {
         }).then((response) => {
           if (response.data.status === 'success') {
             setMessageSentSucces(true);
-            setOpenSnackbar(true);
+            setShowSnackbar(true);
           } else if (response.data.status === 'fail') {
             setMessageSentSucces(false);
-            setOpenSnackbar(true);
+            setShowSnackbar(true);
           }
         });
       } catch (e) {
         console.log(e);
         setMessageSentSucces(false);
-        setOpenSnackbar(true);
+        setShowSnackbar(true);
       }
     }
     setIsSending(false);
@@ -186,7 +186,7 @@ const Form = ({ handleMessageSent }) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpenSnackbar(false);
+    setShowSnackbar(false);
   };
 
   return (
@@ -240,7 +240,7 @@ const Form = ({ handleMessageSent }) => {
         <Snackbar
           className={classes.snackbar}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          open={openSnackbar}
+          open={showSnackbar}
           autoHideDuration={3000}
           onClose={handleCloseSnackbar}
         >

@@ -75,7 +75,7 @@ exports.createCv = async (req, res, next) => {
 
     /* Check if name used already */
     if (await isCvExist(name, req.body.userId)) {
-      res.status(409).json({ status: 'fail', message: `Current CV name already exist` });
+      res.status(409).json({ status: 'fail', message: `'${name}' already used.Please try different name` });
       return;
     }
 
@@ -153,7 +153,7 @@ exports.deleteCv = async (req, res, next) => {
     if (!item) {
       res.status(404).json({
         status: 'fail',
-        message: `Cant find current cv`, //DEV
+        message: `Cv is missing`, //DEV
       });
     }
 
@@ -172,7 +172,7 @@ exports.deleteCv = async (req, res, next) => {
     } else {
       res.status(404).json({
         status: 'fail',
-        message: `Item with id "${item.id}" missing`, //DEV
+        message: `Cv is missing`, //DEV
       });
     }
   } catch (err) {
@@ -191,6 +191,11 @@ exports.updateCv = async (req, res, next) => {
     const description = req.body.description;
     let type = null;
     let file = null;
+
+    if (await isCvExist(name, req.body.userId)) {
+      res.status(409).json({ status: 'fail', message: `'${name}' already used.Please try different name` });
+      return;
+    }
 
     //File alredy exist in, db.file is link to doc.
     if (!req.files) {

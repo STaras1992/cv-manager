@@ -3,6 +3,7 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { v4: uuid } = require('uuid');
+const { blacklistToken, checkInBlacklist } = require('../utills/authHelper.js');
 
 const createAndSendToken = (user, statusCode, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -127,6 +128,11 @@ exports.checkAuth = async (req, res, next) => {
       return;
     }
 
+    if (await checkInBlacklist(token)) {
+      res.status(401).json({ status: 'fail', message: 'Authorization failed.Token corrupted!' });
+      return;
+    }
+
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     //check if user still exist
@@ -147,9 +153,21 @@ exports.checkAuth = async (req, res, next) => {
 };
 
 exports.logout = async (req, res, next) => {
-  //TODO logout with redis blacklist
-  // res.status(200).json({
-  //   status: 'success',
-  //   user: freshUser,
-  // });
+  try {
+    let token;
+
+    if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+
+    if (!token) {
+      res.status(400).json({ status: 'fail', message: 'Logout is failed, no token received' });
+      return;
+    }
+
+    if (await blacklistToken(token)) res.status(200).json({ status: 'succes', message: 'User logged out' });
+    else res.status(400).json({ status: 'fail', message: 'Failed to logout' });
+  } catch (err) {
+    res.status(500).json({ status: 'fail', message: err.message });
+  }
 };

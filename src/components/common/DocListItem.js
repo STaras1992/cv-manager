@@ -25,6 +25,7 @@ import {
   DARK_GREY,
   RED_ERROR,
   LIME,
+  EXOTIC_BLUE,
 } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +41,15 @@ const useStyles = makeStyles((theme) => ({
       padding: 0,
       marginBottom: '5px',
       borderRadius: '2px',
+      transition: 'all 0.3s ease-in-out',
+
+      '&:hover': {
+        transform: 'scale(1.03,1.03)',
+        backgroundColor: 'white',
+        '& .MuiAvatar-root': {
+          backgroundColor: LIGHT_BLUE,
+        },
+      },
       '& .MuiListItemText-root': {
         paddingRight: '80px',
         paddingLeft: '10px',
@@ -49,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
       },
 
       '& .MuiAvatar-root': {
-        backgroundColor: LIGHT_BLUE,
+        backgroundColor: BLUE,
         // border: `1px solid white`,
         boxShadow: '0px 10px 13px -7px #000000',
         width: '60px',

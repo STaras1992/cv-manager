@@ -23,6 +23,7 @@ import MyCheckBox from '../common/MyCheckBox.js';
 import MySwitch from '../common/MySwitch.js';
 import { setLoadingOn, setLoadingOff } from '../../actions/optionsActions.js';
 import { sendEmailRequest, getData, setSended } from '../../actions/emailActions.js';
+import { makeHtml } from '../../utills/html.js';
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -81,10 +82,6 @@ const SendMailPage = ({ classes }) => {
   //const [html, setHtml, wrapWithReplyTo, wrapWithWebsite, wrapWithFirstName, wrapWithLastName] = useHtmlWrapWith();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
-  // console.log('Selected CV:', selectedCv);
-  // console.log('Selected cover:', selectedCover);
-  // console.log('show body:', showBody);
-  // console.log('edit mode:', editMode);
 
   const makeMail = (data) => {
     dispatch(setLoadingOn);
@@ -118,7 +115,8 @@ const SendMailPage = ({ classes }) => {
           from: data.from,
           subject: data.subject,
           file: selectedCv.file,
-          cover: stateToHTML(contentState),
+          // cover: stateToHTML(contentState),
+          cover: makeHtml(contentState),
         })
       );
       // console.log('done');

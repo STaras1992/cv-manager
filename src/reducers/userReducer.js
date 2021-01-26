@@ -2,7 +2,7 @@ import { LOGIN, LOGOUT, SET_ERROR_USER, SET_ERROR_SIGNUP, SET_ERROR_LOGIN } from
 
 const initState = {
   user: {},
-  isLoggedIn: false,
+  isLoggedIn: true,
   loginError: { message: null },
   signUpError: { message: null },
 };

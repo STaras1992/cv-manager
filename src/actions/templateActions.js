@@ -19,10 +19,11 @@ const setResponseSuccess = () => ({ type: TEMPLATE_RESPONSE_SUCCESS });
 const setResponseFail = () => ({ type: TEMPLATE_RESPONSE_FAIL });
 
 export const getAllMyTemplates = () => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.getAllTemplates();
+    console.log('response:', response);
     if (response.status === 200) {
       await dispatch(getAllTemplates(response.data.items));
       await dispatch(setResponseSuccess());
@@ -33,20 +34,22 @@ export const getAllMyTemplates = () => async (dispatch) => {
     } else {
       dispatch(setError('Failed to load templates data'));
     }
+
     dispatch(setResponseFail());
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const editMyTemplate = (data) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.updateTemplate(data);
     if (response.status === 200) {
       await dispatch(updateTemplate(response.data.item));
       await dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
     dispatch(setError(''));
   } catch (err) {
@@ -55,20 +58,23 @@ export const editMyTemplate = (data) => async (dispatch) => {
     } else {
       dispatch(setError('Failed to edit template.Try again'));
     }
+    dispatch(getAllMyTemplates());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const addNewTemplate = (data) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.addTemplate(data);
     if (response.status === 201) {
       await dispatch(addTemplate(response.data.item));
       await dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
   } catch (err) {
     if (err.response.status === 400 || err.response.status === 404 || err.response.status === 409) {
@@ -76,20 +82,23 @@ export const addNewTemplate = (data) => async (dispatch) => {
     } else {
       dispatch(setError('Failed to create template.Try again'));
     }
+    dispatch(getAllMyTemplates());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const deleteMyTemplate = (id) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.deleteTemplate(id);
     if (response.status === 200) {
       await dispatch(deleteTemplate(response.data.id));
       await dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
   } catch (err) {
     if (err.response.status === 400 || err.response.status === 404 || err.response.status === 409) {
@@ -97,8 +106,10 @@ export const deleteMyTemplate = (id) => async (dispatch) => {
     } else {
       dispatch(setError('Failed to delete template.Try again'));
     }
+    dispatch(getAllMyTemplates());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };

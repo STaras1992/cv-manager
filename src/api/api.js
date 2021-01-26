@@ -81,7 +81,6 @@ export const auth = async () => {
   return await axiosInstance.post('/user/auth');
 };
 
-export const logout = async (data) => {
-  //return await axiosInstance.post('/user/logout', data);
-  //TODO
+export const logout = async () => {
+  return await axiosInstance.post('/user/logout');
 };

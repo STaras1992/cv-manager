@@ -1,4 +1,5 @@
 export const LIGHT_BLUE = '#4000FF';
+export const EXOTIC_BLUE = '#2BC0E4';
 export const BLUE = '#2b32b2';
 export const PURPLE = '#320362';
 export const DARK_BLUE = '#130f40';

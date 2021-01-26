@@ -1,8 +1,7 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
-import Container from '@material-ui/core/Container';
 import Nav from './components/Nav/Nav.js';
 import CvPanel from './components/CvPanel/CvPanel.js';
 import CoverPanel from './components/CoverPanel/CoverPanel.js';
@@ -23,10 +22,9 @@ const App = () => {
 
   return (
     <div className='app'>
-      {/* <Container> */}
       <Nav />
       <Switch>
-        <Route exact path='/' render={(routeParams) => <HomePage />} />
+        <Route exact path='/' render={(routeParams) => <HomePage {...routeParams} />} />
         <Route exact path='/signup' render={(routeParams) => <SignUp {...routeParams} />} />
         <Route exact path='/login' render={(routeParams) => <Login {...routeParams} />} />
         <PrivateRoute exact path='/cv' render={(routeParams) => <CvPanel {...routeParams} />} />
@@ -34,7 +32,6 @@ const App = () => {
         <PrivateRoute exact path='/template' render={(routeParams) => <TemplatePanel {...routeParams} />} />
         <PrivateRoute exact path='/email' render={(routeParams) => <SendMailPage {...routeParams} />} />
       </Switch>
-      {/* </Container> */}
     </div>
   );
 };

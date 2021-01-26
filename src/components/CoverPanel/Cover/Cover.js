@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-// import MuiAccordion from '@material-ui/core/Accordion';
-// import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-// import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -10,10 +7,22 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import clsx from 'clsx';
 import CoverIcon from '@material-ui/icons/Sort';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../../utills/editorUtils.js';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
-import { LIGHT_BLUE, DARK_BLUE, RED_ERROR, DARK_GREY, BLUE, LIGHT, PURPLE, DARK } from '../../../consts/colors.js';
+import {
+  LIGHT_BLUE,
+  DARK_BLUE,
+  RED_ERROR,
+  DARK_GREY,
+  LIME,
+  EXOTIC_BLUE,
+  BLUE,
+  LIGHT,
+  PURPLE,
+  DARK,
+} from '../../../consts/colors.js';
 import MyToolTip from '../../common/MyToolTip.js';
 import './Cover.css';
 import 'draft-js/dist/Draft.css';
@@ -22,9 +31,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiAccordion-root': {
       // maxWidth: '80%',
+
       border: '1px solid rgba(0, 0, 0, .125)',
       borderRadius: '2px',
       boxShadow: 'none',
+      transition: 'all 0.1s ease-in-out',
       '&:not(:last-child)': {
         borderBottom: 0,
       },
@@ -33,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
       },
       '&$expanded': {
         margin: 'auto',
+      },
+      '&:hover': {
+        transform: 'scale(1.015,1) translateY(4px) ',
+        zIndex: 2,
+        opacity: 1,
+        // backgroundColor: 'white',
       },
       [theme.breakpoints.down('sm')]: {
         maxWidth: '100%',
@@ -43,8 +60,18 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: '1px solid rgba(0, 0, 0, .125)',
       marginBottom: -1,
       minHeight: '56px',
+      transition: 'all 0.1s ease-in-out',
+      opacity: 0.95,
+
       '&$expanded': {
         minHeight: '56px',
+      },
+      '&:hover': {
+        backgroundColor: 'white',
+      },
+      '&:focus': {
+        backgroundColor: EXOTIC_BLUE,
+        opacity: 1,
       },
       '& .MuiAccordionSummary-content': {
         display: 'flex',
@@ -65,7 +92,10 @@ const useStyles = makeStyles((theme) => ({
         },
       },
     },
-    '& .MuiAccordiondDetails-root': {},
+    '& .MuiCollapse-container': {
+      backgroundColor: 'white',
+      opacity: 1,
+    },
   },
   titleContainer: {
     display: 'flex',
@@ -102,7 +132,7 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
   }, [content]);
 
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, 'accordion')}>
       <Accordion square expanded={expanded === id} onChange={handleChange(id)}>
         <AccordionSummary>
           <div className={classes.titleContainer}>

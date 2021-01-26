@@ -70,8 +70,8 @@ const TemplatePanel = ({ classes }) => {
   };
 
   const closeFormHandler = (e) => {
-    resetFormInput();
     setOpenForm(false);
+    resetFormInput();
   };
 
   const editTemplate = (id) => {

@@ -63,6 +63,7 @@ const CvPanel = ({ classes }) => {
 
   const handleDialogOk = () => {
     dispatch(deleteMyCv(deleteId));
+    setOpenDialog(false); //
   };
 
   const handleDialogCancel = () => {
@@ -75,6 +76,9 @@ const CvPanel = ({ classes }) => {
 
   const closeFormHandler = (e) => {
     setOpenForm(false);
+    setIsEditMode(false);
+    setOpenForm(false);
+    setEditItem(null);
   };
 
   // const editCv = (id, name, description, file) => {

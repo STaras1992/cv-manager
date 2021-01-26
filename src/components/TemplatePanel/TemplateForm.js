@@ -14,6 +14,7 @@ import { getAllCovers } from '../../actions/coverActions.js';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
 import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
+import ConfirmDialog from '../common/ConfirmDialog.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -27,8 +28,8 @@ const schema = yup.object().shape({
       `Must be less than ${MAX_DESCRIPTION_LENGTH} characters`,
       (val) => val.length <= MAX_DESCRIPTION_LENGTH
     ),
-  cvSelect: yup.string().required('Please select cv!'),
-  coverSelect: yup.string(),
+  cvSelect: yup.string().required('Please select cv'),
+  coverSelect: yup.string().required('Please select cover'),
 });
 
 // const useStyles = makeStyles((theme) => ({
@@ -66,9 +67,10 @@ const TemplateForm = ({
 }) => {
   // const classes = useStyles();
   const dispatch = useDispatch();
-
+  const [data, setData] = useState(null);
   const cvList = useSelector((state) => state.cv.items.map((item) => ({ id: item.id, name: item.name })));
   const coverList = useSelector((state) => state.cover.items.map((item) => ({ id: item.id, name: item.name })));
+  const [openDialog, setOpenDialog] = useState(false);
 
   const formObject = useForm({
     mode: 'all',
@@ -77,8 +79,27 @@ const TemplateForm = ({
 
   const { handleSubmit, reset, control, register, errors, clearErrors } = formObject;
 
-  const onSubmit = (data) => {
-    saveTemplate(data.name, data.description, data.cvSelect, data.coverSelect);
+  const onSubmit = (formData) => {
+    if (mode === 'new') {
+      saveTemplate(formData.name, formData.description, formData.cvSelect, formData.coverSelect);
+      return;
+    }
+    setData({
+      name: formData.name,
+      description: formData.description,
+      cv: formData.cvSelect,
+      cover: formData.coverSelect,
+    });
+    setOpenDialog(true);
+  };
+
+  const handleDialogOk = () => {
+    saveTemplate(data.name, data.description, data.cv, data.cover);
+    setOpenDialog(false);
+  };
+
+  const handleDialogCancel = () => {
+    setOpenDialog(false);
   };
 
   const handleReset = () => {
@@ -129,7 +150,7 @@ const TemplateForm = ({
           label='Cover'
           options={coverList}
           defaultValue={initCoverId}
-          required={false}
+          required={true}
           errorobj={errors}
         />
         <div className={classes.submitContainer}>
@@ -138,6 +159,13 @@ const TemplateForm = ({
         </div>
         {/* </Container> */}
       </form>
+      <ConfirmDialog
+        open={openDialog}
+        dialogTitle='Update template?'
+        dialogText='All previus data will be updated'
+        handleOk={handleDialogOk}
+        handleClose={handleDialogCancel}
+      />
     </FormProvider>
   );
 };

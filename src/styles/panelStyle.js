@@ -1,5 +1,5 @@
 import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT, HEADER_MARGIN } from '../consts/measures.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, LIME } from '../consts/colors.js';
+import { LIME } from '../consts/colors.js';
 
 const styles = (theme) => ({
   root: {
@@ -10,9 +10,6 @@ const styles = (theme) => ({
     marginTop: HEADER_MARGIN,
     marginLeft: SIDE_PANEL_WIDTH_SHORT,
     '& .MuiListItem-root': {},
-    // [theme.breakpoints.down('xs')]: {
-    //   marginLeft: '70px',
-    // },
   },
   addButtonContainer: {
     marginTop: '50px',

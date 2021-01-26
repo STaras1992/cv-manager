@@ -19,7 +19,7 @@ const setResponseSuccess = () => ({ type: COVER_RESPONSE_SUCCESS });
 const setResponseFail = () => ({ type: COVER_RESPONSE_FAIL });
 
 export const getAllCovers = () => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.getAllCovers();
@@ -36,11 +36,11 @@ export const getAllCovers = () => async (dispatch) => {
     // dispatch(setResponseFail());
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const addNewCover = (data) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.addCover(data);
@@ -48,6 +48,7 @@ export const addNewCover = (data) => async (dispatch) => {
     if (response.status === 201) {
       await dispatch(addCover(response.data.item));
       dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
   } catch (err) {
     if (err.response.status === 400 || err.response.status === 404 || err.response.status === 409) {
@@ -59,19 +60,21 @@ export const addNewCover = (data) => async (dispatch) => {
     //update list if error occured
     dispatch(getAllCovers());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const editMyCover = (data) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.updateCover(data);
     if (response.status === 200) {
       await dispatch(updateCover(response.data.item));
       dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
     dispatch(setError(''));
   } catch (err) {
@@ -83,19 +86,21 @@ export const editMyCover = (data) => async (dispatch) => {
     //update list if error occured
     dispatch(getAllCovers());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const deleteMyCover = (id) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.deleteCover(id);
     if (response.status === 200) {
       await dispatch(deleteCover(response.data.id));
       dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
   } catch (err) {
     if (err.response.status === 400 || err.response.status === 404 || err.response.status === 409) {
@@ -106,7 +111,8 @@ export const deleteMyCover = (id) => async (dispatch) => {
     //update list if error occured
     dispatch(getAllCovers());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };

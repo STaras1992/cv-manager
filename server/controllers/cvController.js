@@ -192,7 +192,7 @@ exports.updateCv = async (req, res, next) => {
     let type = null;
     let file = null;
 
-    if (await isCvExist(name, req.body.userId)) {
+    if (await isCvExist(name, req.body.userId, id)) {
       res.status(409).json({ status: 'fail', message: `'${name}' already used.Please try different name` });
       return;
     }

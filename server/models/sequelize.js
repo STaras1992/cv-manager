@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 const { applyExtraSetup } = require('./extra-setup');
 const { clearBucket } = require('../utills/awsBucketHelper');
+const cron = require('node-cron');
 
 const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, process.env.SQL_PASSWORD, {
   dialect: 'mysql',
@@ -27,14 +28,15 @@ const modelDefiners = [
   require('./cover.model'),
   require('./template.model'),
   require('./user.model'),
+  require('./token.model.js'),
 ];
 
 for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-resetDb();
-
 applyExtraSetup(sequelize);
+
+//resetDb();
 
 module.exports = sequelize;

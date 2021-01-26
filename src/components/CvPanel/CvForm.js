@@ -31,8 +31,9 @@ import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '..
 import FormTitle from '../common/FormTitle.js';
 import FormFileInput from '../common/FormFileInput.js';
 import formStyle from '../../styles/formStyle.js';
+import ConfirmDialog from '../common/ConfirmDialog.js';
 
-const schema = yup.object().shape({
+const newModeSchema = yup.object().shape({
   name: yup
     .string()
     .required('Name is required field')
@@ -46,10 +47,33 @@ const schema = yup.object().shape({
     ),
   cvFile: yup
     .mixed()
-    .required('File is required')
+
     .test('fileSelected', 'File is required', (value) => {
+      console.log('value:', value);
       return value && value.length > 0;
     })
+    .test('fileSize', 'File is too large', (value) => {
+      return value.length === 0 || (value.length > 0 && value[0].size < 3000000);
+    })
+    .test('type', 'Only doc, docx, pdf format supported', (value) => {
+      return value.length === 0 || (value.length > 0 && FILE_FORMATS.includes(value[0].type));
+    }),
+});
+
+const editModeSchema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Name is required field')
+    .test('len', `Must be less than ${MAX_NAME_LENGTH} characters`, (val) => val.length <= MAX_NAME_LENGTH),
+  description: yup
+    .string()
+    .test(
+      'len',
+      `Must be less than ${MAX_DESCRIPTION_LENGTH} characters`,
+      (val) => val.length <= MAX_DESCRIPTION_LENGTH
+    ),
+  cvFile: yup
+    .mixed()
     .test('fileSize', 'File is too large', (value) => {
       return value.length === 0 || (value.length > 0 && value[0].size < 3000000);
     })
@@ -61,14 +85,16 @@ const schema = yup.object().shape({
 const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = 'new', saveCv, closeForm, classes }) => {
   //const classes = useStyles();
   const dispatch = useDispatch();
+  const [data, setData] = useState(null);
   const [isAfterReset, setIsAfterReset] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const formObject = useForm({
     defaultValues: {
       cvFile: null,
     },
     mode: 'all',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(mode === 'new' ? newModeSchema : editModeSchema),
   });
 
   const { handleSubmit, reset, control, register, watch, errors, clearErrors } = formObject;
@@ -76,8 +102,25 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
   const file = watch('cvFile');
 
   const onSubmit = (data) => {
+    if (mode === 'new') {
+      if (data.cvFile.length > 0) saveCv(data.name, data.description, data.cvFile[0]);
+      else saveCv(data.name, data.description, initFile);
+      return;
+    }
+    setData(data);
+    setOpenDialog(true);
+  };
+
+  const handleDialogOk = () => {
+    //new File choosed
     if (data.cvFile.length > 0) saveCv(data.name, data.description, data.cvFile[0]);
+    //edit instance with same file
     else saveCv(data.name, data.description, initFile);
+    setOpenDialog(false);
+  };
+
+  const handleDialogCancel = () => {
+    setOpenDialog(false);
   };
 
   const handleClose = () => {
@@ -120,6 +163,13 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
         </div>
         {/* </Container> */}
       </form>
+      <ConfirmDialog
+        open={openDialog}
+        dialogTitle='Update CV?'
+        dialogText='All previus data will be updated'
+        handleOk={handleDialogOk}
+        handleClose={handleDialogCancel}
+      />
     </FormProvider>
   );
 };

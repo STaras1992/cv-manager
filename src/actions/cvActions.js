@@ -23,7 +23,7 @@ const setResponseSuccess = () => ({ type: CV_RESPONSE_SUCCESS });
 const setResponseFail = () => ({ type: CV_RESPONSE_FAIL });
 
 export const getAllCvs = () => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.getAllCv();
@@ -40,11 +40,11 @@ export const getAllCvs = () => async (dispatch) => {
     // dispatch(setResponseFail());
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const addNewCv = (data) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   let formData = new FormData();
   formData.append('file', data.file);
@@ -62,6 +62,7 @@ export const addNewCv = (data) => async (dispatch) => {
           type: response.data.data.type,
         })
       );
+      dispatch(showErrorOff);
       dispatch(setResponseSuccess());
     }
   } catch (err) {
@@ -84,19 +85,21 @@ export const addNewCv = (data) => async (dispatch) => {
     //update list if error occured
     dispatch(getAllCvs());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const deleteMyCv = (id) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     const response = await api.deleteCv(id);
     if (response.status === 200) {
       await dispatch(deleteCv(response.data.id));
       dispatch(setResponseSuccess());
+      dispatch(showErrorOff);
     }
   } catch (err) {
     if (err.response.status === 404 || err.response.status === 400) {
@@ -107,13 +110,14 @@ export const deleteMyCv = (id) => async (dispatch) => {
     //update list if error occured
     dispatch(getAllCvs());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };
 
 export const editMyCv = (data) => async (dispatch) => {
-  dispatch(showErrorOff);
+  // dispatch(showErrorOff);
   dispatch(setLoadingOn);
   try {
     let dataToSend = {};
@@ -141,6 +145,7 @@ export const editMyCv = (data) => async (dispatch) => {
       dispatch(setResponseSuccess());
     }
     dispatch(setError(''));
+    dispatch(showErrorOff);
   } catch (err) {
     if (err.response.status === 404 || err.response.status === 400 || err.response.status === 409) {
       dispatch(setError(err.response.data.message));
@@ -150,7 +155,8 @@ export const editMyCv = (data) => async (dispatch) => {
     //update list if error occured
     dispatch(getAllCvs());
     dispatch(setResponseFail());
+    dispatch(showErrorOn);
   }
   dispatch(setLoadingOff);
-  dispatch(showErrorOn);
+  // dispatch(showErrorOn);
 };

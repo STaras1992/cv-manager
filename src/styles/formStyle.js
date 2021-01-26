@@ -1,5 +1,3 @@
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../consts/colors.js';
-
 const styles = {
   root: {
     width: '100%',

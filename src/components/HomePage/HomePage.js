@@ -178,15 +178,17 @@ const HomePage = ({ classes }) => {
           <div className={clsx(myClasses.cvCard, myClasses.card)}>
             <HorizontalCard
               title='Cv storage'
-              text='Manage your CV files.Accesable storage from any place.Just upload CV document,give him unique name and be sure you can apply for your next job at any moment'
+              text='Manage your CV files. Accesable storage from any place.Just upload CV document, give him unique name and be sure you can apply for your next job at any moment'
               image={cvImage}
+              path='/cv'
             />
           </div>
           <div className={clsx(myClasses.coverCard, myClasses.card)}>
             <HorizontalCard
               title='Cover letter'
-              text='Write and manage your own email cover letters for specific job types.Use html editor for ensure good looking email content'
+              text='Write, style and manage your own email cover letters for any type of job. Use html text editor for ensure hight quality content for all of your job apply.'
               image={coverImage}
+              path='/cover'
             />
           </div>
           <div className={clsx(myClasses.templateCard, myClasses.card)}>
@@ -194,10 +196,11 @@ const HomePage = ({ classes }) => {
               title='Templates'
               text='Connect your CV documents with created cover letters in unique templates for fast and easy job apply and abbility to edit the content at any point.'
               image={templateImage}
+              path='/template'
             />
           </div>
         </div>
-        <div className={myClasses.actionButtonsContainer}>
+        {/* <div className={myClasses.actionButtonsContainer}>
           <div className={myClasses.actionButton}>
             <Link to={'/cv'}>
               <MyButton styles={{ width: '220px' }} name='My CV' theme='light' type='button' />
@@ -213,7 +216,7 @@ const HomePage = ({ classes }) => {
               <MyButton styles={{ width: '220px' }} name='My templates' theme='light' type='button' />
             </Link>
           </div>
-        </div>
+        </div> */}
         <div className={myClasses.applyJobContainer}>
           <span style={{ color: 'white' }}>Apply for a job </span>
           <IconButton component={Link} to='/email' className={myClasses.applyIcon}>

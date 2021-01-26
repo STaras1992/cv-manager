@@ -8,11 +8,13 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const xss = require('xss-clean');
+const cron = require('node-cron');
 const cvRouter = require('./routes/cvRouter.js');
 const coverRouter = require('./routes/coverRouter.js');
 const templateRouter = require('./routes/templateRouter.js');
 const mailRouter = require('./routes/mailRouter.js');
 const userRouter = require('./routes/userRouter.js');
+const { refreshBlackList } = require('./utills/dbHelper.js');
 
 const app = express();
 app.use(bodyParser.json({ limit: '5mb' }));
@@ -30,9 +32,9 @@ app.use(fileupload());
 // const { models } = require('./models/sequelize');
 
 const limiter = rateLimit({
-  max: 50,
+  max: 100,
   windowMs: 300000, //5min
-  message: 'Too many requests from this IP,try later',
+  message: 'Too many requests from same IP.Try later',
 });
 app.use('/api', limiter);
 
@@ -41,5 +43,17 @@ app.use('/api/cover', coverRouter);
 app.use('/api/template', templateRouter);
 app.use('/api/email', mailRouter);
 app.use('/api/user', userRouter);
+
+cron.schedule(
+  '* * * * *',
+  async () => {
+    await refreshBlackList();
+    console.log('Blacklist refreshed');
+  },
+  {
+    scheduled: true,
+    timezone: 'Asia/Jerusalem',
+  }
+);
 
 module.exports = app;

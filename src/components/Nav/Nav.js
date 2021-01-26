@@ -129,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Nav = () => {
+const Nav = ({ location }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const open = useSelector((state) => state.options.isSidePanelOpen);

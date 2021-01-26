@@ -42,8 +42,8 @@ export const login = (data) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   try {
     deleteCookie('jwt');
-    //const response = await api.logout();
-    dispatch(userLoggedOut());
+    const response = await api.logout();
+    if (response.status === 200) dispatch(userLoggedOut());
   } catch (err) {
     console.log(err.message);
   }
@@ -56,9 +56,7 @@ export const checkAuth = () => async (dispatch) => {
       dispatch(userLoggedIn(response.data.user));
     }
   } catch (err) {
-    // if (err.response.status === 409 || err.response.status === 400 || err.response.status === 401)
-    //   dispatch(setError(err.response.data.message));
-    // else dispatch(setError('Failed to sign up. Try again'));
-    console.log(err.message);
+    dispatch(userLoggedOut());
+    console.log(err.message); //DEV
   }
 };

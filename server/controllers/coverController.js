@@ -127,7 +127,7 @@ exports.updateCover = async (req, res, next) => {
   try {
     const { id, name, content } = req.body;
 
-    if (await isCoverExist(name, req.body.userId)) {
+    if (await isCoverExist(name, req.body.userId, id)) {
       res.status(409).json({
         status: 'fail',
         message: `'${name}' already used.Please try different name`,

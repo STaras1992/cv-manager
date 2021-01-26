@@ -49,14 +49,17 @@ const CoverPanel = ({ classes }) => {
 
   const closeFormHandler = (e) => {
     setOpenForm(false);
+    setIsEditMode(false);
+    setOpenForm(false);
+    setEditItem(null);
   };
 
   const saveCover = async (name, content) => {
     if (isEditMode) {
       dispatch(editMyCover({ id: editItem.id, name: name, content: content }));
-      setIsEditMode(false);
-      setOpenForm(false);
-      setEditItem(null);
+      // setIsEditMode(false);
+      // setOpenForm(false);
+      // setEditItem(null);
     } else dispatch(addNewCover({ name: name, content: content }));
   };
 

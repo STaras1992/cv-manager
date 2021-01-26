@@ -17,6 +17,7 @@ import parser from 'html-react-parser';
 import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
+import ConfirmDialog from '../common/ConfirmDialog.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -33,9 +34,10 @@ const useStyles = makeStyles((theme) => ({
 
 const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, closeForm, classes }) => {
   const myClasses = useStyles();
-  // const [name, setName] = useState('');
+  const [data, setData] = useState(null);
   const [initEditorContent, setInitEditorContent] = useState('');
   const [content, setContent] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
 
   const formObject = useForm({
     mode: 'all',
@@ -44,14 +46,29 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
 
   const { handleSubmit, reset, errors, clearErrors } = formObject;
 
-  const onSubmit = (data) => {
-    let json;
-    json = convertEditorContentToJson(content);
-    saveCover(data.name, json);
+  const onSubmit = (formData) => {
+    if (mode === 'new') {
+      saveCover(formData.name, convertEditorContentToJson(content));
+      return;
+    }
+    setData({ name: formData.name, content: convertEditorContentToJson(content) });
+    setOpenDialog(true);
+    // let json;
+    // json = convertEditorContentToJson(content);
+    // saveCover(data.name, json);
   };
 
   const handleClose = () => {
     closeForm();
+  };
+
+  const handleDialogOk = () => {
+    saveCover(data.name, data.content);
+    setOpenDialog(false);
+  };
+
+  const handleDialogCancel = () => {
+    setOpenDialog(false);
   };
 
   const handleReset = () => {
@@ -92,6 +109,13 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
           <MyButton name='Reset' theme='dark' type='reset' />
         </div>
       </form>
+      <ConfirmDialog
+        open={openDialog}
+        dialogTitle='Update cover?'
+        dialogText='All previus data will be updated'
+        handleOk={handleDialogOk}
+        handleClose={handleDialogCancel}
+      />
     </FormProvider>
   );
 };

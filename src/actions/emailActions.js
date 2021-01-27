@@ -40,7 +40,7 @@ const getCvData = async (id, dispatch) => {
 const getCoverData = async (id, dispatch) => {
   try {
     if (id === '') {
-      dispatch(setCover({ id: 0, name: 'empty', content: '' }));
+      dispatch(setCover({ id: 0, name: 'empty', content: '', direction: 'LTR' }));
     } else {
       const response = await api.getCoverById(id);
       dispatch(setCover(response.data.item));

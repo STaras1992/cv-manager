@@ -2,19 +2,29 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { stateToHTML } from 'draft-js-export-html';
 
+export const makeHtml = (content, direction, email) => {
+  console.log(direction);
+  let html = stateToHTML(content);
+  html = wrapHtmlWithTextDirection(html, direction);
+  html = wrapHtmlWithFooter(html, email);
+  html = makeHtmlPage(html);
+  return html;
+};
+
 export const wrapHtmlWithTextDirection = (html, direction) => {
   const newHtml = `<div style="direction:${direction.toLowerCase()}">${html}</div>`;
   return newHtml;
 };
 
-const wrapHtmlWithFooter = (html) => {
+const wrapHtmlWithFooter = (html, email) => {
   const newHtml = `${html}<br/><br/><br/><br/>
-  <div style="text-align:'center'">
+  <div styles="text-align:center">
         <p style="color:#808080;font-size:10px;">
-          This message was sent from stas23061992@gmail.com by
+          This message was sent by
           <a style="color:#454545;font-size:10px;text-decoration:none" href='http://18.193.76.149/' target='_blank' rel='noopener noreferrer'>
             CV-Manager
           </a>
+          from ${email}
           <br />
           All reply messages sent directly to the applicant.
           <br />© CV-Manager, Stas Tarasenko
@@ -31,7 +41,7 @@ const wrapHtmlWithFooter = (html) => {
 // h6 {margin:2px 0;}
 // p    {margin:2px 0;}
 
-const maketHtmlPage = (htmlBody) => {
+const makeHtmlPage = (htmlBody) => {
   const newHtml = `<!DOCTYPE html>
   <html>
   <head>
@@ -46,28 +56,6 @@ const maketHtmlPage = (htmlBody) => {
   </html>`;
 
   return newHtml;
-};
-
-export const makeHtml = (content, direction, email) => {
-  let html = stateToHTML(content);
-  html = wrapHtmlWithTextDirection(html, direction);
-  html = wrapHtmlWithFooter(html);
-  html = maketHtmlPage(html);
-  html = `${html}<br/><br/><br/><br/>
-  <div styles="text-align:'center'">
-        <p style="color:#808080;font-size:10px;">
-          This message was sent by
-          <a style="color:#454545;font-size:10px;text-decoration:none" href='http://18.193.76.149/' target='_blank' rel='noopener noreferrer'>
-            CV-Manager
-          </a>
-          from ${email} 
-          <br />
-          All reply messages sent directly to the applicant.
-          <br />© CV-Manager, Stas Tarasenko
-        </p>
-      </div>`;
-  console.log('Send:', html);
-  return html;
 };
 
 export const useHtmlWrapWith = () => {

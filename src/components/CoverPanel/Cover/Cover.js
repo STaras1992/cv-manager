@@ -32,12 +32,11 @@ import 'draft-js/dist/Draft.css';
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiAccordion-root': {
-      // maxWidth: '80%',
-
       border: '1px solid rgba(0, 0, 0, .125)',
       borderRadius: '2px',
       boxShadow: 'none',
       transition: 'all 0.1s ease-in-out',
+      opacity: 0.95,
       '&:not(:last-child)': {
         borderBottom: 0,
       },
@@ -46,12 +45,13 @@ const useStyles = makeStyles((theme) => ({
       },
       '&$expanded': {
         margin: 'auto',
+        opacity: '1!important', //dont work ?
       },
       '&:hover': {
         transform: 'scale(1.015,1) translateY(4px) ',
         zIndex: 2,
         opacity: 1,
-        // backgroundColor: 'white',
+        backgroundColor: 'white',
       },
       [theme.breakpoints.down('sm')]: {
         maxWidth: '100%',
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: -1,
       minHeight: '56px',
       transition: 'all 0.1s ease-in-out',
-      opacity: 0.95,
+      // opacity: 0.95,
 
       '&$expanded': {
         minHeight: '56px',
@@ -72,8 +72,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'white',
       },
       '&:focus': {
-        backgroundColor: EXOTIC_BLUE,
-        opacity: 1,
+        // backgroundColor: EXOTIC_BLUE,
+        // opacity: 1,
       },
       '& .MuiAccordionSummary-content': {
         display: 'flex',
@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiCollapse-container': {
       backgroundColor: 'white',
-      opacity: 1,
+      // opacity: 1,
     },
   },
   titleContainer: {
@@ -118,7 +118,6 @@ const useStyles = makeStyles((theme) => ({
 const Cover = ({ id, name, content, direction, expanded, deleteCover, editCover, handleChange }) => {
   const classes = useStyles();
   const [editorState, setEditorState] = useState(EditorState.createWithContent(convertJsonToEditorContent(content))); //EditorState.createWithContent(convertJsonToEditorContent(content))
-
   const onDeleteClick = (e) => {
     e.stopPropagation();
     deleteCover(id);

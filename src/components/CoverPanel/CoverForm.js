@@ -19,6 +19,7 @@ import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js'
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
 import MySwitch from '../common/MySwitch.js';
+import BiSwitch from '../common/BiSwitch.js';
 import { RTL, LTR } from '../../consts/strings.js';
 
 const schema = yup.object().shape({
@@ -31,6 +32,15 @@ const schema = yup.object().shape({
 const useStyles = makeStyles((theme) => ({
   editor: {
     width: '100%',
+  },
+  directionSwitch: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  directionSwitchLabel: {
+    padding: '5px',
+    color: 'white',
   },
 }));
 
@@ -131,13 +141,21 @@ const CoverForm = ({
             direction={textDirectionLtr ? LTR : RTL}
             onContentChange={onContentChanged}
           />
+          <BiSwitch
+            classes={{ root: myClasses.directionSwitch, label: myClasses.directionSwitchLabel }}
+            labelLeft={LTR}
+            labelRight={RTL}
+            checked={textDirectionLtr}
+            handleChange={handleChangeDirection}
+          />
         </div>
-        <MySwitch
+        {/* <MySwitch
           label={textDirectionLtr ? LTR : RTL}
           name='textDirection'
           value={textDirectionLtr}
           handleChange={handleChangeDirection}
-        />
+        /> */}
+
         <div className={classes.submitContainer}>
           <MyButton name='Save' theme='dark' type='submit' />
           <MyButton name='Reset' theme='dark' type='reset' />

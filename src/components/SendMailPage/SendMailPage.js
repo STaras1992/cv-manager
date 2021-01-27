@@ -21,13 +21,14 @@ import { convertJsonToEditorContent, convertEditorContentToJson } from '../../ut
 import { useHtmlWrapWith } from '../../utills/html.js';
 import MyCheckBox from '../common/MyCheckBox.js';
 import MySwitch from '../common/MySwitch.js';
+import BiSwitch from '../common/BiSwitch.js';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Alert from '../common/Alert.js';
 import { setLoadingOn, setLoadingOff } from '../../actions/optionsActions.js';
 import { sendEmailRequest, getData, setSended } from '../../actions/emailActions.js';
 import { makeHtml } from '../../utills/html.js';
-import { EDIT, DELETE } from '../../consts/strings.js';
+import { EDIT, DELETE, RTL, LTR } from '../../consts/strings.js';
 import 'draft-js/dist/Draft.css';
 
 // function Alert(props) {
@@ -73,6 +74,14 @@ const useStyles = makeStyles({
     alignItems: 'center',
     marginBottom: '50px',
   },
+  directionSwitch: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  directionSwitchLabel: {
+    padding: '5px',
+  },
 });
 
 const SendMailPage = ({ classes }) => {
@@ -93,6 +102,7 @@ const SendMailPage = ({ classes }) => {
   const showError = useSelector((state) => state.options.showError);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const userEmailAdress = useSelector((state) => state.user.user.email);
+  const [textDirectionLtr, setTextDirectionLtr] = useState(true);
 
   const makeMail = (data) => {
     dispatch(setLoadingOn);
@@ -118,10 +128,12 @@ const SendMailPage = ({ classes }) => {
     setShowSnackbar(false);
   };
 
+  const handleChangeDirection = () => {
+    setTextDirectionLtr(!textDirectionLtr);
+  };
+
   useEffect(() => {
-    if (data) {
-      dispatch(getData(data.cv, data.cover));
-    }
+    data && dispatch(getData(data.cv, data.cover));
   }, [data]);
 
   useEffect(() => {
@@ -132,16 +144,18 @@ const SendMailPage = ({ classes }) => {
           from: data.from,
           subject: data.subject,
           file: selectedCv.file,
-          cover: makeHtml(contentState, selectedCover.direction, userEmailAdress),
+          cover: makeHtml(contentState, textDirectionLtr ? LTR : RTL, userEmailAdress),
         })
       );
     }
   }, [isSending]);
 
   useEffect(() => {
+    console.log(selectedCover);
     if (selectedCover !== null && selectedCv !== null && data !== null) {
       setContentState(convertJsonToEditorContent(selectedCover.content));
       setInitContentState(convertJsonToEditorContent(selectedCover.content));
+      setTextDirectionLtr(selectedCover.direction === 'LTR');
       setShowBody(true);
     }
   }, [selectedCover, selectedCv]);
@@ -198,11 +212,26 @@ const SendMailPage = ({ classes }) => {
                 <div className={myClasses.body}>
                   <div className={myClasses.editorBlock}>
                     {editMode ? (
-                      <RichTextEditor
-                        initContent={initContentState}
-                        textAlignment={selectedCover.direction === 'LTR' ? 'left' : 'right'}
-                        onContentChange={onContentChanged}
-                      />
+                      <div>
+                        <RichTextEditor
+                          initContent={initContentState}
+                          direction={textDirectionLtr ? LTR : RTL}
+                          onContentChange={onContentChanged}
+                        />
+                        <BiSwitch
+                          classes={{ root: myClasses.directionSwitch, label: myClasses.directionSwitchLabel }}
+                          labelLeft={LTR}
+                          labelRight={RTL}
+                          checked={textDirectionLtr}
+                          handleChange={handleChangeDirection}
+                        />
+                        {/* <MySwitch
+                          label={textDirectionLtr ? LTR : RTL}
+                          name='textDirection'
+                          value={textDirectionLtr}
+                          handleChange={handleChangeDirection}
+                        /> */}
+                      </div>
                     ) : (
                       <Editor
                         blockStyleFn={getBlockStyle}

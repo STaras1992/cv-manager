@@ -10,6 +10,7 @@ import MyButton from '../common/MyButton.js';
 import TextField from '@material-ui/core/TextField';
 import FormSelect from '../common/FormSelect.js';
 import FormInput from '../common/FormInput.js';
+import { FormInputUnControlled } from '../common/FormInput.js';
 import { getAllCvs } from '../../actions/cvActions.js';
 import { getAllCovers } from '../../actions/coverActions.js';
 import { getAllMyTemplates } from '../../actions/templateActions.js';
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const schema = yup.object().shape({
   to: yup.string().required('Recipient email adress is required').email('Bad email adress'),
-  from: yup.string().required('Sender email adress is required').email('Bad email adress'),
+  // from: yup.string().required('Sender email adress is required').email('Bad email adress'),
   subject: yup.string().test('len', `Must be less than 80 characters`, (val) => val.length <= 80),
   cv: yup.string().required('Cv is required'),
   cover: yup.string(),
@@ -37,7 +38,7 @@ const schema = yup.object().shape({
 
 const defaultValues = {
   to: '',
-  from: '',
+  // from: '',
   subject: '',
   cv: '',
   cover: '',
@@ -48,6 +49,7 @@ const SendForm = ({ makeMail, classes }) => {
   const myClasses = useStyles();
   const dispatch = useDispatch();
 
+  const userEmail = useSelector((state) => state.user.user.email);
   const cvOptions = useSelector((state) => state.cv.items.map((item) => ({ id: item.id, name: item.name })));
   const coverOptions = useSelector((state) => state.cover.items.map((item) => ({ id: item.id, name: item.name })));
   const templateOptions = useSelector((state) =>
@@ -67,7 +69,7 @@ const SendForm = ({ makeMail, classes }) => {
 
   const onSubmit = (data) => {
     console.log(data);
-    makeMail(data);
+    makeMail({ ...data, from: userEmail });
   };
 
   const onReset = () => {
@@ -93,7 +95,8 @@ const SendForm = ({ makeMail, classes }) => {
       <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
         {/* <Container className={classes.root}> */}
         <FormInput name='to' label='To' required={true} errorobj={errors} defaultValue='' />
-        <FormInput name='from' label='From' required={true} errorobj={errors} defaultValue='' />
+        {/* <FormInput name='from' label='From' required={true} errorobj={errors} defaultValue={userEmail} /> */}
+        <FormInputUnControlled label='From' value={userEmail} readonly />
         <FormInput name='subject' label='Subject' required={false} errorobj={errors} defaultValue='' />
         <div className={myClasses.useTemplateContainer}>
           <FormSelect name='template' label='Template' options={templateOptions} defaultValue='' />

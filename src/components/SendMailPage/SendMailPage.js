@@ -16,14 +16,23 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Typography } from '@material-ui/core';
 import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
-import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
+import { RichTextEditor, getBlockStyle, FormRichTextEditor } from '../common/RichTextEditor.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import { useHtmlWrapWith } from '../../utills/html.js';
 import MyCheckBox from '../common/MyCheckBox.js';
 import MySwitch from '../common/MySwitch.js';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import Alert from '../common/Alert.js';
 import { setLoadingOn, setLoadingOff } from '../../actions/optionsActions.js';
 import { sendEmailRequest, getData, setSended } from '../../actions/emailActions.js';
 import { makeHtml } from '../../utills/html.js';
+import { EDIT, DELETE } from '../../consts/strings.js';
+import 'draft-js/dist/Draft.css';
+
+// function Alert(props) {
+//   return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
+// }
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -79,9 +88,11 @@ const SendMailPage = ({ classes }) => {
   const isSended = useSelector((state) => state.email.isSended);
   const selectedCv = useSelector((state) => state.email.selectedCv, shallowEqual);
   const selectedCover = useSelector((state) => state.email.selectedCover, shallowEqual);
-  //const [html, setHtml, wrapWithReplyTo, wrapWithWebsite, wrapWithFirstName, wrapWithLastName] = useHtmlWrapWith();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
+  const showError = useSelector((state) => state.options.showError);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const userEmailAdress = useSelector((state) => state.user.user.email);
 
   const makeMail = (data) => {
     dispatch(setLoadingOn);
@@ -89,7 +100,6 @@ const SendMailPage = ({ classes }) => {
   };
 
   const sendMail = () => {
-    // console.log(convertEditorContentToJson(contentState));
     setIsSending(true);
   };
 
@@ -99,6 +109,13 @@ const SendMailPage = ({ classes }) => {
 
   const onContentChanged = (newContentState) => {
     setContentState(newContentState);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSnackbar(false);
   };
 
   useEffect(() => {
@@ -115,12 +132,9 @@ const SendMailPage = ({ classes }) => {
           from: data.from,
           subject: data.subject,
           file: selectedCv.file,
-          // cover: stateToHTML(contentState),
-          cover: makeHtml(contentState),
+          cover: makeHtml(contentState, selectedCover.direction, userEmailAdress),
         })
       );
-      // console.log('done');
-      // setIsSending(false);
     }
   }, [isSending]);
 
@@ -139,9 +153,12 @@ const SendMailPage = ({ classes }) => {
   }, [editMode]);
 
   useEffect(() => {
+    //on first enter isSending = false so message not fired
     if (isSended && isSending) {
       setIsSending(false);
       dispatch(setSended(false));
+      setShowSnackbar(true);
+      setShowBody(false); //TODO uncomment, commented for test
     }
   }, [isSended]);
 
@@ -177,37 +194,48 @@ const SendMailPage = ({ classes }) => {
                 </div>
                 <Divider />
 
-                {showBody && (
-                  <div className={myClasses.body}>
-                    <div className={myClasses.editorBlock}>
-                      {editMode ? (
-                        <RichTextEditor initContent={initContentState} onContentChange={onContentChanged} />
-                      ) : (
-                        <Editor
-                          // editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(selectedCover.content)))}
-                          editorState={EditorState.createWithContent(contentState)}
-                          readOnly={true}
-                        />
-                      )}
-                    </div>
+                {/* {showBody && ( */}
+                <div className={myClasses.body}>
+                  <div className={myClasses.editorBlock}>
+                    {editMode ? (
+                      <RichTextEditor
+                        initContent={initContentState}
+                        textAlignment={selectedCover.direction === 'LTR' ? 'left' : 'right'}
+                        onContentChange={onContentChanged}
+                      />
+                    ) : (
+                      <Editor
+                        blockStyleFn={getBlockStyle}
+                        editorState={EditorState.createWithContent(contentState)}
+                        textAlignment={selectedCover.direction === 'LTR' ? 'left' : 'right'}
+                        readOnly={true}
+                      />
+                    )}
                   </div>
-                )}
+                </div>
+                {/* )} */}
               </Paper>
-
-              {/* <MyCheckBox label='edit' name='edit' value={editMode} handleChange={editMail} /> */}
               <MySwitch label='edit' name='edit' value={editMode} handleChange={editMail} />
               <div className={myClasses.sendContainer}>
                 <MyButton disabled={isLoading} name='Send' theme='light' type='button' onClick={sendMail} />
-                {/* <div className={clsx(classes.loading, { [classes.hide]: isLoading })}> */}
                 <CircularProgress className={clsx(classes.loading, { [classes.hide]: !isLoading })} />
-                {/* </div> */}
               </div>
-
-              {/* <MyButton name='Edit' theme='light' type='button' onClick={editMail} /> */}
             </div>
           )}
         </div>
+        {/* <div style={{ color: 'white', direction: 'rtl' }}>אני STAS טרסנקו</div> */}
       </Container>
+      <Snackbar
+        className={classes.snackbar}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        open={showSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={showError ? 'error' : 'success'}>
+          {showError ? 'Failed to send email.Try again' : 'Email sent successfully'}
+        </Alert>
+      </Snackbar>
     </section>
   );
 };

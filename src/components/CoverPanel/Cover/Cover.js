@@ -9,6 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import clsx from 'clsx';
 import CoverIcon from '@material-ui/icons/Sort';
+import { getBlockStyle } from '../../common/RichTextEditor.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../../utills/editorUtils.js';
 import { Editor, EditorState, convertFromRaw } from 'draft-js';
 import {
@@ -24,6 +25,7 @@ import {
   DARK,
 } from '../../../consts/colors.js';
 import MyToolTip from '../../common/MyToolTip.js';
+import { RTL, LTR, EDIT_MODE, NEW_MODE } from '../../../consts/strings.js';
 import './Cover.css';
 import 'draft-js/dist/Draft.css';
 
@@ -113,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChange }) => {
+const Cover = ({ id, name, content, direction, expanded, deleteCover, editCover, handleChange }) => {
   const classes = useStyles();
   const [editorState, setEditorState] = useState(EditorState.createWithContent(convertJsonToEditorContent(content))); //EditorState.createWithContent(convertJsonToEditorContent(content))
 
@@ -124,7 +126,7 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
 
   const onEditClick = (e) => {
     e.stopPropagation();
-    editCover(id, name, content);
+    editCover(id, name, content, direction);
   };
 
   useEffect(() => {
@@ -154,7 +156,13 @@ const Cover = ({ id, name, content, expanded, deleteCover, editCover, handleChan
         </AccordionSummary>
         <AccordionDetails>
           <div className='editor-root'>
-            <Editor editorState={editorState} readOnly={true} />
+            <Editor
+              blockStyleFn={getBlockStyle}
+              textAlignment={direction === LTR ? 'left' : 'right'}
+              // textDirectionality='RTL'
+              editorState={editorState}
+              readOnly={true}
+            />
           </div>
         </AccordionDetails>
       </Accordion>

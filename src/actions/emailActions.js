@@ -1,6 +1,6 @@
 import { SET_ERROR_EMAIL, SET_EMAIL_CV, SET_EMAIL_COVER, SET_SENDED } from '../consts/actionTypes.js';
 import * as api from '../api/api.js';
-import { setLoadingOn, setLoadingOff } from './optionsActions';
+import { setLoadingOn, setLoadingOff, showErrorOn, showErrorOff } from './optionsActions';
 
 const setError = (error) => ({ type: SET_ERROR_EMAIL, payload: error });
 const setCv = (item) => ({ type: SET_EMAIL_CV, payload: item });
@@ -9,6 +9,7 @@ export const setSended = (flag) => ({ type: SET_SENDED, payload: flag });
 
 export const sendEmailRequest = (data) => async (dispatch) => {
   dispatch(setLoadingOn);
+  dispatch(showErrorOff);
   try {
     const response = await api.sendEmail(data);
     if (response.status === 200) {
@@ -16,6 +17,7 @@ export const sendEmailRequest = (data) => async (dispatch) => {
     }
   } catch (err) {
     dispatch(setError('Failed to send email'));
+    dispatch(showErrorOn);
   }
   dispatch(setSended(true));
   dispatch(setLoadingOff);

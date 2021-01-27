@@ -25,13 +25,14 @@ exports.parseAllCoversResponse = (items) => {
     id: item.id,
     name: item.name,
     content: item.content,
+    direction: item.direction,
   }));
 
   return parsedItems;
 };
 
 exports.parseCoverResponse = (item) => {
-  return { id: item.id, name: item.name, content: item.content };
+  return { id: item.id, name: item.name, content: item.content, direction: item.direction };
 };
 
 exports.parseAllTemplatesResponse = (items) => {

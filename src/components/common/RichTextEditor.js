@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertFromRaw } from 'draft-js';
 import { useFormContext, Controller } from 'react-hook-form';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
+import Immutable from 'immutable';
+import { RTL, LTR } from '../../consts/strings.js';
 import './RichTextEditor.css';
 import 'draft-js/dist/Draft.css';
 
 export const RichTextEditor = forwardRef((props, ref) => {
   // const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const { initContent, onContentChange } = props;
+  const { initContent, onContentChange, direction } = props;
   const [editorState, setEditorState] = useState(() =>
     initContent === ''
       ? EditorState.createEmpty()
@@ -88,8 +90,10 @@ export const RichTextEditor = forwardRef((props, ref) => {
           handleKeyCommand={_handleKeyCommand}
           keyBindingFn={_mapKeyToEditorCommand}
           onChange={onChange}
-          placeholder='Your text...'
+          placeholder='Your cover text...'
           ref={editor}
+          textAlignment={direction === LTR ? 'left' : 'right'}
+          // textDirectionality='RTL'
           onFocus={onEditorFocus}
           spellCheck={true}
         />
@@ -108,10 +112,24 @@ const styleMap = {
   },
 };
 
-const getBlockStyle = (block) => {
+export const getBlockStyle = (block) => {
   switch (block.getType()) {
     case 'blockquote':
       return 'RichEditor-blockquote';
+    case 'unstyled':
+      return 'RichEditor-unstyled';
+    case 'header-one':
+      return 'RichEditor-header-one';
+    case 'header-two':
+      return 'RichEditor-header-two';
+    case 'header-three':
+      return 'RichEditor-header-three';
+    case 'header-four':
+      return 'RichEditor-header-four';
+    case 'header-five':
+      return 'RichEditor-header-five';
+    case 'header-six':
+      return 'RichEditor-header-six';
     default:
       return null;
   }
@@ -142,10 +160,10 @@ const BLOCK_TYPES = [
   { label: 'H4', style: 'header-four' },
   { label: 'H5', style: 'header-five' },
   { label: 'H6', style: 'header-six' },
-  { label: 'Blockquote', style: 'blockquote' },
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' },
-  { label: 'Code Block', style: 'code-block' },
+  // { label: 'Blockquote', style: 'blockquote' },
+  // { label: 'UL', style: 'unordered-list-item' },
+  // { label: 'OL', style: 'ordered-list-item' },
+  // { label: 'Code Block', style: 'code-block' },
 ];
 
 const BlockStyleControls = (props) => {
@@ -193,23 +211,23 @@ const InlineStyleControls = (props) => {
   );
 };
 
-export const FormRichTextEditor = (props) => {
-  const { name, defaultValue } = props;
-  const { control } = useFormContext();
+// export const FormRichTextEditor = (props) => {
+//   const { name, defaultValue } = props;
+//   const { control } = useFormContext();
 
-  return (
-    <React.Fragment>
-      <Controller
-        as={RichTextEditor}
-        valueName='editorState'
-        control={control}
-        name={name}
-        onChange={([value]) => value}
-        defaultValue={defaultValue}
-        {...props}
-      />
-    </React.Fragment>
-  );
-};
+//   return (
+//     <React.Fragment>
+//       <Controller
+//         as={RichTextEditor}
+//         valueName='editorState'
+//         control={control}
+//         name={name}
+//         onChange={([value]) => value}
+//         defaultValue={defaultValue}
+//         {...props}
+//       />
+//     </React.Fragment>
+//   );
+// };
 
 export default RichTextEditor;

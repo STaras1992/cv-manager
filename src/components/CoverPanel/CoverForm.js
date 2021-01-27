@@ -18,6 +18,8 @@ import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
+import MySwitch from '../common/MySwitch.js';
+import { RTL, LTR } from '../../consts/strings.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -32,12 +34,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, closeForm, classes }) => {
+const CoverForm = ({
+  initName = '',
+  initContent = '',
+  initDirection = LTR,
+  mode = 'new',
+  saveCover,
+  closeForm,
+  classes,
+}) => {
   const myClasses = useStyles();
   const [data, setData] = useState(null);
   const [initEditorContent, setInitEditorContent] = useState('');
   const [content, setContent] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const [textDirectionLtr, setTextDirectionLtr] = useState(true);
 
   const formObject = useForm({
     mode: 'all',
@@ -48,10 +59,14 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
 
   const onSubmit = (formData) => {
     if (mode === 'new') {
-      saveCover(formData.name, convertEditorContentToJson(content));
+      saveCover(formData.name, convertEditorContentToJson(content), textDirectionLtr ? LTR : RTL);
       return;
     }
-    setData({ name: formData.name, content: convertEditorContentToJson(content) });
+    setData({
+      name: formData.name,
+      content: convertEditorContentToJson(content),
+      direction: textDirectionLtr ? LTR : RTL,
+    });
     setOpenDialog(true);
     // let json;
     // json = convertEditorContentToJson(content);
@@ -63,7 +78,7 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
   };
 
   const handleDialogOk = () => {
-    saveCover(data.name, data.content);
+    saveCover(data.name, data.content, data.direction);
     setOpenDialog(false);
   };
 
@@ -74,7 +89,12 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
   const handleReset = () => {
     reset({ name: '' });
     clearErrors();
+    setTextDirectionLtr(true);
     setInitEditorContent(EditorState.createEmpty().getCurrentContent());
+  };
+
+  const handleChangeDirection = () => {
+    setTextDirectionLtr(!textDirectionLtr);
   };
 
   const onContentChanged = (newContent) => {
@@ -92,6 +112,10 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
   }, [initContent]);
 
   useEffect(() => {
+    setTextDirectionLtr(initDirection === LTR);
+  }, [initDirection]);
+
+  useEffect(() => {
     setContent(initEditorContent);
   }, [initEditorContent]);
 
@@ -102,8 +126,18 @@ const CoverForm = ({ initName = '', initContent = '', mode = 'new', saveCover, c
         {/* <FormInputUnControlled name='name' required={true} label='Name' onChange={onNameChange} value={name} /> */}
         <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
         <div className={myClasses.editor}>
-          <RichTextEditor initContent={initEditorContent} onContentChange={onContentChanged} />
+          <RichTextEditor
+            initContent={initEditorContent}
+            direction={textDirectionLtr ? LTR : RTL}
+            onContentChange={onContentChanged}
+          />
         </div>
+        <MySwitch
+          label={textDirectionLtr ? LTR : RTL}
+          name='textDirection'
+          value={textDirectionLtr}
+          handleChange={handleChangeDirection}
+        />
         <div className={classes.submitContainer}>
           <MyButton name='Save' theme='dark' type='submit' />
           <MyButton name='Reset' theme='dark' type='reset' />

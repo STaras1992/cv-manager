@@ -19,5 +19,12 @@ module.exports = (sequelize) => {
     content: {
       type: DataTypes.JSON,
     },
+    direction: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      validate: {
+        isIn: [['RTL', 'LTR']],
+      },
+    },
   });
 };

@@ -47,6 +47,7 @@ exports.createCover = async (req, res, next) => {
     const resultItem = await user.createCover({
       name: req.body.name,
       content: req.body.content,
+      direction: req.body.direction,
     });
 
     // const resultItem = await models.cover.create({
@@ -125,7 +126,7 @@ exports.deleteCover = async (req, res, next) => {
 
 exports.updateCover = async (req, res, next) => {
   try {
-    const { id, name, content } = req.body;
+    const { id, name, content, direction } = req.body;
 
     if (await isCoverExist(name, req.body.userId, id)) {
       res.status(409).json({
@@ -136,7 +137,7 @@ exports.updateCover = async (req, res, next) => {
     }
 
     const updated = await models.cover.update(
-      { name: name, content: content },
+      { name: name, content: content, direction: direction },
       { where: { id: id, userId: req.body.userId } }
     );
 

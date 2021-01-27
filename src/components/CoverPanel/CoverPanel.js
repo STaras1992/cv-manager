@@ -16,6 +16,8 @@ import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
+import { RTL, LTR, EDIT_MODE, NEW_MODE } from '../../consts/strings.js';
+
 const useStyles = makeStyles((theme) => ({}));
 
 function Alert(props) {
@@ -54,13 +56,13 @@ const CoverPanel = ({ classes }) => {
     setEditItem(null);
   };
 
-  const saveCover = async (name, content) => {
+  const saveCover = async (name, content, direction) => {
     if (isEditMode) {
-      dispatch(editMyCover({ id: editItem.id, name: name, content: content }));
+      dispatch(editMyCover({ id: editItem.id, name: name, content: content, direction: direction }));
       // setIsEditMode(false);
       // setOpenForm(false);
       // setEditItem(null);
-    } else dispatch(addNewCover({ name: name, content: content }));
+    } else dispatch(addNewCover({ name: name, content: content, direction: direction }));
   };
 
   const deleteCover = (id) => {
@@ -71,14 +73,15 @@ const CoverPanel = ({ classes }) => {
 
   const handleDialogOk = () => {
     dispatch(deleteMyCover(deleteId));
+    setOpenDialog(false);
   };
 
   const handleDialogCancel = () => {
     setOpenDialog(false);
   };
 
-  const editCover = (id, name, content) => {
-    setEditItem({ id: id, name: name, content: content });
+  const editCover = (id, name, content, direction) => {
+    setEditItem({ id: id, name: name, content: content, direction: direction });
     setIsEditMode(true);
     setOpenForm(true);
   };
@@ -112,7 +115,7 @@ const CoverPanel = ({ classes }) => {
   // }, [successResponse]);
 
   useEffect(() => {
-    console.log('showError', showError);
+    // console.log('showError', showError);
     // console.log('succesResponse', successResponse);
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
   }, [showError]);
@@ -123,6 +126,7 @@ const CoverPanel = ({ classes }) => {
       id={cover.id}
       name={cover.name}
       content={cover.content}
+      direction={cover.direction}
       expanded={coverExpanded}
       deleteCover={deleteCover}
       editCover={editCover}
@@ -148,6 +152,7 @@ const CoverPanel = ({ classes }) => {
           <CoverForm
             initName={editItem ? editItem.name : ''}
             initContent={editItem ? editItem.content : ''}
+            initDirection={editItem ? editItem.direction : LTR}
             mode={isEditMode ? 'edit' : 'new'}
             saveCover={saveCover}
             closeForm={closeFormHandler}

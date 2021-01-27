@@ -2,10 +2,8 @@ const gmailSender = require('../utills/gmailSender');
 
 exports.sendMail = async (req, res, next) => {
   try {
-    console.log(req.body);
-    const gmailResponse = await gmailSender.sendMail(req.body);
-    console.log(gmailResponse);
-
+    const gmailResponse = await gmailSender.sendMail(req.body); //TODO UNCOMMENT@!
+    // const gmailResponse = null;
     if (gmailResponse) {
       res.status(200).json({
         status: 'succes',

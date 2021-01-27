@@ -45,7 +45,7 @@ app.use('/api/email', mailRouter);
 app.use('/api/user', userRouter);
 
 cron.schedule(
-  '* * * * *',
+  '0 0 * * *', //every day on 00:00
   async () => {
     await refreshBlackList();
     console.log('Blacklist refreshed');

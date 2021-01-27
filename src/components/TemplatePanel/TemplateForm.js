@@ -15,6 +15,7 @@ import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.j
 import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
+import { EDIT, DELETE, NEW_MODE, EDIT_MODE } from '../../consts/strings.js';
 
 const schema = yup.object().shape({
   name: yup

@@ -14,6 +14,7 @@ import Template from './Template/Template.js';
 import TemplateForm from './TemplateForm.js';
 import DocListItem from '../common/DocListItem.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
+import { EDIT, DELETE } from '../../consts/strings.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -124,7 +125,7 @@ const TemplatePanel = ({ classes }) => {
       id={template.id}
       name={template.name}
       description={template.description}
-      actions={['delete', 'edit']}
+      actions={[DELETE, EDIT]}
       onEdit={editTemplate}
       onDelete={deleteTemplate}
     />
@@ -153,7 +154,6 @@ const TemplatePanel = ({ classes }) => {
             initCoverId={editItem ? editItem.cover : ''}
             saveTemplate={saveTemplate}
             closeForm={closeFormHandler}
-            //deleteTemplate={deleteTemplate}
           />
         )}
       </Container>

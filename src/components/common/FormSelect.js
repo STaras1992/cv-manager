@@ -1,16 +1,14 @@
 import React, { forwardRef } from 'react';
-import { useForm, Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, LIME } from '../../consts/colors.js';
+import { LIME } from '../../consts/colors.js';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '50%',
     minWidth: '260px',
@@ -50,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MuiSelect = forwardRef((props, ref) => {
+const MuiSelect = forwardRef((props) => {
   const classes = useStyles();
   const { label, name, options, required, errorobj } = props;
 
@@ -82,7 +80,7 @@ const MuiSelect = forwardRef((props, ref) => {
 });
 
 function FormSelect(props) {
-  const { name, label, options, defaultValue } = props;
+  const { name, label, defaultValue } = props;
   const { control } = useFormContext();
 
   return (

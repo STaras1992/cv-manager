@@ -8,25 +8,12 @@ import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FileIcon from '@material-ui/icons/InsertDriveFile';
 import EditIcon from '@material-ui/icons/Edit';
-import Tooltip from '@material-ui/core/Tooltip';
 import MyToolTip from './MyToolTip.js';
-import {
-  LIGHT_BLUE,
-  BLUE,
-  DARK_BLUE,
-  LIGHT,
-  DARK,
-  GREEN_SUCCESS,
-  PURPLE,
-  DARK_GREY,
-  RED_ERROR,
-  LIME,
-  EXOTIC_BLUE,
-} from '../../consts/colors.js';
+import { LIGHT_BLUE, BLUE, DARK_BLUE, LIGHT, PURPLE, DARK_GREY } from '../../consts/colors.js';
+import { EDIT, DELETE, OPEN } from '../../consts/strings.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,11 +28,13 @@ const useStyles = makeStyles((theme) => ({
       padding: 0,
       marginBottom: '5px',
       borderRadius: '2px',
+      opacity: 0.95,
       transition: 'all 0.3s ease-in-out',
 
       '&:hover': {
         transform: 'scale(1.03,1.03)',
         backgroundColor: 'white',
+        opacity: 1,
         '& .MuiAvatar-root': {
           backgroundColor: LIGHT_BLUE,
         },
@@ -111,17 +100,17 @@ const useStyles = makeStyles((theme) => ({
 const DocList = ({ id, name, description, type = '', file = '', actions = [], onEdit, onDelete }) => {
   const classes = useStyles();
 
-  const onDeleteClick = (e) => {
+  const onDeleteClick = () => {
     onDelete(id);
   };
 
-  const onEditClick = (e) => {
+  const onEditClick = () => {
     onEdit(id);
   };
 
   const listActions = actions.map((action, index) => {
     switch (action) {
-      case 'delete': {
+      case DELETE: {
         return (
           <MyToolTip key={index} title='delete' position='top'>
             <IconButton
@@ -136,7 +125,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
           </MyToolTip>
         );
       }
-      case 'edit': {
+      case EDIT: {
         return (
           <MyToolTip key={index} title='edit' position='top'>
             <IconButton key={index} className={classes.iconButton} edge='end' aria-label='edit' onClick={onEditClick}>
@@ -145,7 +134,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
           </MyToolTip>
         );
       }
-      case 'open': {
+      case OPEN: {
         return (
           <MyToolTip key={index} title='file' position='top'>
             <IconButton
@@ -172,10 +161,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
     <div className={classes.root}>
       <ListItem>
         <ListItemAvatar>
-          <Avatar>
-            {/* <FolderIcon /> */}
-            {type !== '' ? type : <FileIcon />}
-          </Avatar>
+          <Avatar>{type !== '' ? type : <FileIcon />}</Avatar>
         </ListItemAvatar>
         <ListItemText
           style={{ wordBreak: 'break-all' }}

@@ -5,7 +5,7 @@ const {
   fileTypeFromName,
   bucketKeyCreator,
 } = require('../utills/parseHelper.js');
-const { uploadFile, clearBucket, deleteFile } = require('../utills/awsBucketHelper');
+const { uploadFile, deleteFile } = require('../utills/awsBucketHelper');
 const { isCvExist } = require('../utills/dbHelper');
 
 exports.getAllCv = async (req, res, next) => {
@@ -35,7 +35,6 @@ exports.getAllCv = async (req, res, next) => {
 
 exports.getCv = async (req, res, next) => {
   try {
-    // const result = await models.cv.findByPk(req.params.id);
     const result = await models.cv.findOne({ where: { id: req.params.id, userId: req.body.userId } });
 
     if (result) {
@@ -93,13 +92,6 @@ exports.createCv = async (req, res, next) => {
       type: type,
     });
 
-    // const rdsResult = await models.cv.create({
-    //   name: name,
-    //   description: description,
-    //   file: '',
-    //   type: type,
-    // });
-
     const s3Result = await uploadFile(file, name, '' + rdsResult.id);
 
     // Problem with upload to s3 bucket.Remove SQL instance
@@ -148,7 +140,6 @@ exports.createCv = async (req, res, next) => {
 
 exports.deleteCv = async (req, res, next) => {
   try {
-    // const item = await models.cv.findByPk(req.params.id);
     const item = await models.cv.findOne({ where: { id: req.params.id, userId: req.body.userId } });
     if (!item) {
       res.status(404).json({
@@ -158,7 +149,7 @@ exports.deleteCv = async (req, res, next) => {
     }
 
     const key = bucketKeyCreator(item.name, item.id, item.type);
-    const awsResult = await deleteFile(key);
+    await deleteFile(key);
 
     const result = await models.cv.destroy({
       where: { id: item.id },

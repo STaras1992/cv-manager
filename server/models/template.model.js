@@ -15,11 +15,5 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.STRING,
     },
-    // cv: {
-    //   type: DataTypes.INTEGER,
-    // },
-    // cover: {
-    //   type: DataTypes.INTEGER,
-    // },
   });
 };

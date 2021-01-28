@@ -50,11 +50,6 @@ exports.createCover = async (req, res, next) => {
       direction: req.body.direction,
     });
 
-    // const resultItem = await models.cover.create({
-    //   name: req.body.name,
-    //   content: req.body.content,
-    // });
-
     console.log(`Cover ${resultItem.id} created`);
 
     res.status(201).json({

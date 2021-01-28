@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import styles from '../../styles/panelStyle.js';
 import IconButton from '@material-ui/core/IconButton';
 import HorizontalCard from '../common/HorizontalCard.js';
 import { Link } from 'react-router-dom';
 import ApplyIcon from '@material-ui/icons/PlayCircleFilled';
-import SendIcon from '@material-ui/icons/Send';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, GREEN_SUCCESS, LIME } from '../../consts/colors.js';
+import { LIGHT_BLUE, LIGHT, GREEN_SUCCESS, LIME } from '../../consts/colors.js';
 import cvImage from '../../images/cv2.jpeg';
 import coverImage from '../../images/cover1.jpeg';
 import templateImage from '../../images/template1.jpg';
-import ConfirmDialog from '../common/ConfirmDialog.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -148,14 +144,8 @@ const useStyles = makeStyles((theme) => ({
 
 const HomePage = ({ classes }) => {
   const myClasses = useStyles();
-  const dispatch = useDispatch();
 
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
-  const isLoading = useSelector((state) => state.options.isLoading);
-
-  // useEffect(() => {
-  //   dispatch(checkAuth());
-  // }, []);
 
   return (
     <div
@@ -200,23 +190,6 @@ const HomePage = ({ classes }) => {
             />
           </div>
         </div>
-        {/* <div className={myClasses.actionButtonsContainer}>
-          <div className={myClasses.actionButton}>
-            <Link to={'/cv'}>
-              <MyButton styles={{ width: '220px' }} name='My CV' theme='light' type='button' />
-            </Link>
-          </div>
-          <div className={myClasses.actionButton}>
-            <Link to={'/cover'}>
-              <MyButton styles={{ width: '220px' }} name='My cover letters' theme='light' type='button' />
-            </Link>
-          </div>
-          <div className={myClasses.actionButton}>
-            <Link to={'/template'}>
-              <MyButton styles={{ width: '220px' }} name='My templates' theme='light' type='button' />
-            </Link>
-          </div>
-        </div> */}
         <div className={myClasses.applyJobContainer}>
           <span style={{ color: 'white' }}>Apply for a job </span>
           <IconButton component={Link} to='/email' className={myClasses.applyIcon}>

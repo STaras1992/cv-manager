@@ -10,17 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import {
-  LIGHT_BLUE,
-  DARK_BLUE,
-  LIME,
-  DARK_GREY,
-  PURPLE,
-  LIGHT,
-  DARK,
-  RED_ERROR,
-  GREEN_SUCCESS,
-} from '../../consts/colors.js';
+import { PURPLE } from '../../consts/colors.js';
 
 const styles = (theme) => ({
   root: {

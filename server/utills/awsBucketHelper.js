@@ -51,10 +51,7 @@ exports.emptyFolder = async (dir = '') => {
     Prefix: dir,
   };
 
-  // console.log('listParams:\n' + JSON.stringify(listParams));
-
   const listedObjects = await S3.listObjectsV2(listParams).promise();
-  // console.log('listedObjects:\n' + JSON.stringify(listedObjects));
 
   if (listedObjects.Contents.length === 0) return;
 

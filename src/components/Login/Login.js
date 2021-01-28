@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import { Link } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -15,16 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import * as yup from 'yup';
-import clsx from 'clsx';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import MyButton from '../common/MyButton.js';
+import { useForm, FormProvider } from 'react-hook-form';
 import { FormInput } from '../common/FormInputLogin.js';
-import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
-import { FILE_FORMATS } from '../../consts/structs.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
-import { HEADER_MARGIN, SIDE_PANEL_WIDTH_SHORT, SIDE_PANEL_WIDTH_WIDE } from '../../consts/measures.js';
-import styles from '../../styles/panelStyle.js';
+import { RED_ERROR } from '../../consts/colors.js';
+import { HEADER_MARGIN, SIDE_PANEL_WIDTH_SHORT } from '../../consts/measures.js';
 import { login } from '../../actions/userActions.js';
 
 function Copyright() {
@@ -94,14 +86,13 @@ const Login = (props) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const error = useSelector((state) => state.user.loginError);
-  const [showError, setShowError] = useState(false);
 
   const formObject = useForm({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, reset, controll, register, errors, clearErrors } = formObject;
+  const { handleSubmit, errors } = formObject;
 
   const onSubmit = (data) => {
     dispatch(login(data));

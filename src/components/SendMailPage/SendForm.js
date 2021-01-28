@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Container from '@material-ui/core/Container';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import InputTextField from '../common/InputTextField.js';
+import { useForm, FormProvider } from 'react-hook-form';
 import MyButton from '../common/MyButton.js';
-import TextField from '@material-ui/core/TextField';
 import FormSelect from '../common/FormSelect.js';
 import FormInput from '../common/FormInput.js';
 import { FormInputUnControlled } from '../common/FormInput.js';
 import { getAllCvs } from '../../actions/cvActions.js';
 import { getAllCovers } from '../../actions/coverActions.js';
 import { getAllMyTemplates } from '../../actions/templateActions.js';
-import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
-import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -93,7 +88,6 @@ const SendForm = ({ makeMail, classes }) => {
   return (
     <FormProvider {...formObject}>
       <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
-        {/* <Container className={classes.root}> */}
         <FormInput name='to' label='To' required={true} errorobj={errors} defaultValue='' />
         {/* <FormInput name='from' label='From' required={true} errorobj={errors} defaultValue={userEmail} /> */}
         <FormInputUnControlled label='From' value={userEmail} readonly />
@@ -115,7 +109,6 @@ const SendForm = ({ makeMail, classes }) => {
         <div className={classes.submitContainer}>
           <MyButton name='Preview' theme='dark' type='submit' />
         </div>
-        {/* </Container> */}
       </form>
     </FormProvider>
   );

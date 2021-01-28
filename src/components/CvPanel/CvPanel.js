@@ -1,32 +1,21 @@
 import React, { useState, useEffect } from 'react';
-
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { addNewCv, getAllCvs, deleteMyCv, editMyCv, setError } from '../../actions/cvActions.js';
-
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { addNewCv, getAllCvs, deleteMyCv, editMyCv } from '../../actions/cvActions.js';
+import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
 import clsx from 'clsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Cv from './Cv/Cv.js';
 import CvForm from './CvForm.js';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import DocViewer from '../common/DocViewer.js';
 import MyButton from '../common/MyButton.js';
-import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
 import DocListItem from '../common/DocListItem.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
-
-const useStyles = makeStyles((theme) => ({}));
-
-function Alert(props) {
-  return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
-}
+import { DELETE, EDIT, OPEN, EDIT_MODE, NEW_MODE } from '../../consts/strings.js';
+import Alert from '../common/Alert.js';
 
 const CvPanel = ({ classes }) => {
-  const myClasses = useStyles();
   const dispatch = useDispatch();
   const items = useSelector((state) => [...state.cv.items], shallowEqual);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
@@ -45,19 +34,14 @@ const CvPanel = ({ classes }) => {
     //save edited instance
     if (isEditMode) {
       dispatch(editMyCv({ id: editItem.id, name: name, description: description, file: file }));
-      // setIsEditMode(false);
-      // setOpenForm(false);
-      // setEditItem(null);
     }
     //save new instance
     else dispatch(addNewCv({ name: name, description: description, file: file }));
   };
 
   const deleteCv = (id) => {
-    //setDeleteObject({ accept: true, id: id });
     setDeleteId(id);
     setOpenDialog(true);
-
     // dispatch(deleteMyCv(id));
   };
 
@@ -70,22 +54,20 @@ const CvPanel = ({ classes }) => {
     setOpenDialog(false);
   };
 
-  const openFormHandler = (e) => {
+  const openFormHandler = () => {
     setOpenForm(true);
   };
 
-  const closeFormHandler = (e) => {
+  const closeFormHandler = () => {
     setOpenForm(false);
     setIsEditMode(false);
     setOpenForm(false);
     setEditItem(null);
   };
 
-  // const editCv = (id, name, description, file) => {
   const editCv = (id) => {
     const item = items.find((item) => item.id === id);
     setEditItem(item);
-    // setEditItem({ id: id, name: name, description: description, file: file });
     setIsEditMode(true);
     setOpenForm(true);
   };
@@ -102,9 +84,7 @@ const CvPanel = ({ classes }) => {
     dispatch(getAllCvs());
   }, []);
 
-  /* Check api response for errors */
   useEffect(() => {
-    // console.log('cv error:', requestError.message);
     if (isEditMode) {
       if (requestError.message === '') {
         setIsEditMode(false);
@@ -112,35 +92,11 @@ const CvPanel = ({ classes }) => {
         setEditItem(null);
       }
     }
-    // if (requestError.message === null) {
-    //   if (showSnackbar) setShowSnackbar(false);
-    //   return;
-    // }
-    // if (requestError.message === '') closeFormHandler();
-    // setShowSnackbar(true);
-    // if (successResponse && openForm) closeFormHandler();
   }, [requestError]);
 
-  // useEffect(() => {
-  //   // console.log('succesResponse', successResponse);
-  //   if (successResponse && openForm) setOpenForm(false);
-  //   // if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
-  // }, [successResponse]);
-
   useEffect(() => {
-    // console.log('showErrorCv', showError);
-    // if (!showError && showSnackbar) setShowSnackbar(false);
-    // if (showError && requestError) {
-    //   !showSnackbar && setShowSnackbar(true);
-    // }
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
   }, [showError]);
-
-  // useEffect(() => {
-  //   if (deleteObject.accept) {
-  //     dispatch(deleteMyCv(deleteObject.id));
-  //   }
-  // }, [deleteObject]);
 
   const cvItems = items.map((cv) => (
     <DocListItem
@@ -150,7 +106,7 @@ const CvPanel = ({ classes }) => {
       description={cv.description}
       type={cv.type}
       file={cv.file}
-      actions={['delete', 'edit', 'open']}
+      actions={[DELETE, EDIT, OPEN]}
       onEdit={editCv}
       onDelete={deleteCv}
     />
@@ -175,12 +131,11 @@ const CvPanel = ({ classes }) => {
             initName={editItem ? editItem.name : ''}
             initDescription={editItem ? editItem.description : ''}
             initFile={editItem ? editItem.file : ''}
-            mode={isEditMode ? 'edit' : 'new'}
+            mode={isEditMode ? EDIT_MODE : NEW_MODE}
             saveCv={saveNewCv}
             closeForm={closeFormHandler}
           />
         )}
-        {/* {fileOpen && <DocViewer source={file} />} */}
       </Container>
       <Snackbar
         className={classes.snackbar}

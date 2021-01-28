@@ -1,7 +1,6 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
-import { useFormContext } from 'react-hook-form';
 import FileInput from '../common/FileInput.js';
 import clsx from 'clsx';
 import { RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
@@ -31,14 +30,11 @@ const useStyles = makeStyles({
 
 const FormFileInput = ({ name, errors, isSelected }) => {
   const classes = useStyles();
-  const { watch } = useFormContext();
 
-  const file = watch('cvFile');
   return (
     <div className={classes.root}>
       <div className={classes.inputContainer}>
         <FileInput name={name} label='Upload file' required={true} errorobj={errors} />
-        {/* <div className={file && file.length > 0 ? classes.inputStatusIcon : classes.hide}> */}
         <div className={clsx(classes.inputStatusIcon, { [classes.hide]: !isSelected })}>
           <CheckIcon />
         </div>

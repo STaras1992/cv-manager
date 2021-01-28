@@ -1,7 +1,7 @@
 .RichEditor-root {
   background: #fff;
   border: 1px solid #ddd;
-  font-family: 'Georgia', serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   padding: 10px;
 }
@@ -9,7 +9,7 @@
 .RichEditor-editor {
   border-top: 1px solid #ddd;
   cursor: text;
-  font-size: 16px;
+  font-size: 14px;
   margin-top: 10px;
 }
 
@@ -32,14 +32,14 @@
   color: #666;
   font-family: 'Hoefler Text', 'Georgia', serif;
   font-style: italic;
-  margin: 16px 0;
+  margin: 14px 0;
   padding: 10px 10px;
 }
 
 .RichEditor-editor .public-DraftStyleDefault-pre {
   background-color: rgba(0, 0, 0, 0.05);
   font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
-  font-size: 16px;
+  font-size: 14px;
   padding: 10px;
 }
 

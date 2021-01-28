@@ -23,7 +23,6 @@ module.exports = (sequelize) => {
       },
     },
     type: {
-      // allowNull: false,
       type: DataTypes.STRING,
       validate: {
         isIn: [['pdf', 'doc', 'docx', 'txt']],

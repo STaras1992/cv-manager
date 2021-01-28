@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import MyButton from '../common/MyButton.js';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -8,24 +8,14 @@ import List from '@material-ui/core/List';
 import { getAllMyTemplates, editMyTemplate, addNewTemplate, deleteMyTemplate } from '../../actions/templateActions.js';
 import clsx from 'clsx';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import panelStyle from '../../styles/panelStyle.js';
-import Template from './Template/Template.js';
 import TemplateForm from './TemplateForm.js';
 import DocListItem from '../common/DocListItem.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
-import { EDIT, DELETE } from '../../consts/strings.js';
-
-const useStyles = makeStyles((theme) => ({
-  root: {},
-}));
-
-function Alert(props) {
-  return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
-}
+import { EDIT, DELETE, EDIT_MODE, NEW_MODE } from '../../consts/strings.js';
+import Alert from '../common/Alert.js';
 
 const TemplatePanel = ({ classes }) => {
-  //const classes = useStyles();
   const dispatch = useDispatch();
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
@@ -48,9 +38,6 @@ const TemplatePanel = ({ classes }) => {
     //save edited instance
     if (isEditMode) {
       dispatch(editMyTemplate({ id: editItem.id, name: name, description: description, cv: cv, cover: cover }));
-      // setIsEditMode(false);
-      // setOpenForm(false);
-      // setEditItem(null);
     }
     //save new instance
     else dispatch(addNewTemplate({ name: name, description: description, cv: cv, cover: cover }));
@@ -99,7 +86,6 @@ const TemplatePanel = ({ classes }) => {
   }, []);
 
   useEffect(() => {
-    // console.log('requestError:', requestError);
     if (isEditMode) {
       if (requestError.message === '') {
         setIsEditMode(false);
@@ -109,13 +95,7 @@ const TemplatePanel = ({ classes }) => {
     }
   }, [requestError]);
 
-  // useEffect(() => {
-  //   console.log('successResponse:', successResponse);
-  //   if (successResponse && openForm) setOpenForm(false);
-  // }, [successResponse]);
-
   useEffect(() => {
-    console.log('showError:', showError);
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
   }, [showError]);
 
@@ -147,7 +127,7 @@ const TemplatePanel = ({ classes }) => {
         </div>
         {openForm && (
           <TemplateForm
-            mode={isEditMode ? 'edit' : 'new'}
+            mode={isEditMode ? EDIT_MODE : NEW_MODE}
             initName={editItem ? editItem.name : ''}
             initDescription={editItem ? editItem.description : ''}
             initCvId={editItem ? editItem.cv : ''}

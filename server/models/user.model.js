@@ -22,8 +22,5 @@ module.exports = (sequelize) => {
       allowNull: false,
       type: DataTypes.STRING,
     },
-    website: {
-      type: DataTypes.STRING,
-    },
   });
 };

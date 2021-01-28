@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ProfileIcon from '@material-ui/icons/AccountCircle';
@@ -22,8 +20,8 @@ import { getMenuItems } from '../../utills/menu.js';
 import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT } from '../../consts/measures.js';
 import { Link } from 'react-router-dom';
 import { openSidePanel, closeSidePanel } from '../../actions/optionsActions.js';
-import { login, logout } from '../../actions/userActions.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, DARK_GREY, RED_ERROR, LIME, GREEN_SUCCESS } from '../../consts/colors.js';
+import { logout } from '../../actions/userActions.js';
+import { LIGHT, LIME } from '../../consts/colors.js';
 import { showErrorOff } from '../../actions/optionsActions.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -57,9 +55,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    // [theme.breakpoints.down('xs')]: {
-    //   width: `calc(100% - ${SIDE_PANEL_WIDTH_SHORT})`,
-    // },
   },
 
   drawer: {

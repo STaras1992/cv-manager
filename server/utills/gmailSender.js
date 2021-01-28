@@ -15,16 +15,15 @@ const transport = {
 
 const transporter = nodemailer.createTransport(transport);
 
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) {
-    console.log(error);
+    console.log(error.message);
   } else {
     console.log('Server is ready to send mails');
   }
 });
 
 exports.verifyAdress = async (adress) => {
-  // return validator.validate(adress);
   const promise = await new Promise(async (resolve, reject) => {
     if (validator.validate(adress)) {
       resolve(true);
@@ -48,20 +47,6 @@ exports.sendMail = async (data) => {
       replyTo: data.from,
     },
   };
-
-  // transporter.sendMail(mailOptions, function (err, data) {
-  //   if (err) {
-  //     console.log(err.message);
-  //     res.status(500).json({
-  //       status: 'fail',
-  //     });
-  //   } else {
-  //     console.log('Mail sent...');
-  //     res.status(200).json({
-  //       status: 'success',
-  //     });
-  //   }
-  // });
 
   const promise = await new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err, data) => {

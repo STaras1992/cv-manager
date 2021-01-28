@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useFormContext, Controller, useForm } from 'react-hook-form';
+import React from 'react';
+import { useFormContext, Controller } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
-import { LIGHT_BLUE, PURPLE, BLUE, DARK_GREY, DARK_BLUE, LIGHT, DARK, RED_ERROR, LIME } from '../../consts/colors.js';
-import clsx from 'clsx';
+import { PURPLE, BLUE, DARK_GREY, DARK, RED_ERROR } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // width: '80%',
-    // minWidth: '290px',
     margin: '10px 0px',
     '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
       borderColor: DARK_GREY,
@@ -45,10 +41,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FormInput = ({ name = '', label = '', required = false, errorobj = {}, defaultValue = '' }) => {
+export const FormInput = ({ name = '', label = '', errorobj = {}, defaultValue = '' }) => {
   const classes = useStyles();
   const { control } = useFormContext();
-  //const { name, theme, label, required, errorobj, defaultValue } = props;
   let isError = false;
   let errorMessage = '';
 
@@ -59,14 +54,7 @@ export const FormInput = ({ name = '', label = '', required = false, errorobj = 
 
   return (
     <Controller
-      as={
-        <TextField
-          //className={clsx(classes.root, { [classes.light]: theme === 'light', [classes.dark]: theme === 'dark' })}
-          classes={{ root: classes.root }}
-          //   autoComplete='off'
-          variant='outlined'
-        />
-      }
+      as={<TextField classes={{ root: classes.root }} variant='outlined' />}
       name={name}
       control={control}
       defaultValue={defaultValue}

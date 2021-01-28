@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Container from '@material-ui/core/Container';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import InputTextField from '../common/InputTextField.js';
+import { useForm, FormProvider } from 'react-hook-form';
 import MyButton from '../common/MyButton.js';
 import FormSelect from '../common/FormSelect.js';
 import FormInput from '../common/FormInput.js';
@@ -15,7 +13,7 @@ import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.j
 import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
-import { EDIT, DELETE, NEW_MODE, EDIT_MODE } from '../../consts/strings.js';
+import { NEW_MODE } from '../../consts/strings.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -33,40 +31,16 @@ const schema = yup.object().shape({
   coverSelect: yup.string().required('Please select cover'),
 });
 
-// const useStyles = makeStyles((theme) => ({
-//   // root: {
-//   //   width: '100%',
-//   //   display: 'flex',
-//   //   flexDirection: 'column',
-//   //   justifyContent: 'flex-start',
-//   // },
-//   // formControll: {},
-//   // textField: {
-//   //   width: '80%',
-//   //   '& .MuiTextField-root': {
-//   //     color: 'white',
-//   //     borderColor: 'white',
-//   //   },
-//   // },
-//   // selectField: {
-//   //   width: '50%',
-//   // },
-//   // formTitle: {
-//   //   margin: '50px 0',
-//   // },
-// }));
-
 const TemplateForm = ({
   initName = '',
   initDescription = '',
   initCvId = '',
   initCoverId = '',
-  mode = 'new',
+  mode = NEW_MODE,
   saveTemplate,
   closeForm,
   classes,
 }) => {
-  // const classes = useStyles();
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const cvList = useSelector((state) => state.cv.items.map((item) => ({ id: item.id, name: item.name })));
@@ -78,10 +52,10 @@ const TemplateForm = ({
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, reset, control, register, errors, clearErrors } = formObject;
+  const { handleSubmit, reset, errors, clearErrors } = formObject;
 
   const onSubmit = (formData) => {
-    if (mode === 'new') {
+    if (mode === NEW_MODE) {
       saveTemplate(formData.name, formData.description, formData.cvSelect, formData.coverSelect);
       return;
     }
@@ -118,17 +92,12 @@ const TemplateForm = ({
   }, []);
 
   useEffect(() => {
-    // console.log('initCvId:', initCvId);
-    // console.log('initCoverId:', initCoverId);
-    // console.log('cvList:', cvList);
-    // console.log('coverList:', coverList);
     reset({ name: initName, description: initDescription, cvSelect: initCvId, coverSelect: initCoverId });
   }, [initName, initCvId, initDescription, initCoverId]);
 
   return (
     <FormProvider {...formObject}>
       <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
-        {/* <Container className={classes.root}> */}
         <FormTitle mode={mode} label='template' handleClose={handleClose} />
         <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
         <FormInput
@@ -158,7 +127,6 @@ const TemplateForm = ({
           <MyButton name='Save' theme='dark' type='submit' />
           <MyButton name='Reset' theme='dark' type='reset' />
         </div>
-        {/* </Container> */}
       </form>
       <ConfirmDialog
         open={openDialog}

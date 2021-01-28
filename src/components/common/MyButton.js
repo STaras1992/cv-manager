@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK } from '../../consts/colors.js';
+import { DARK_BLUE, LIGHT, DARK } from '../../consts/colors.js';
 
 const styles = (theme) => ({
   root: {},
@@ -57,7 +57,6 @@ const MyButton = ({ name, theme, type = 'button', onClick, classes, styles }) =>
       [classes.buttonDarkToLight]: theme === 'dark',
       [classes.buttonLightToDark]: theme === 'light',
     })}
-    //className={theme === 'dark' ? classes.buttonDarkToLight : classes.buttonLightToDark}
     type={type}
     variant='contained'
     onClick={onClick}

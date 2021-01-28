@@ -1,37 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
-import clsx from 'clsx';
 import { yupResolver } from '@hookform/resolvers/yup';
-import FormControl from '@material-ui/core/FormControl';
-import CheckIcon from '@material-ui/icons/Check';
-import ErrorIcon from '@material-ui/icons/Error';
-import UploadIcon from '@material-ui/icons/Publish';
-import TopArrowIcon from '@material-ui/icons/VerticalAlignTop';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import InputTextField from '../common/InputTextField.js';
+import { useForm, FormProvider } from 'react-hook-form';
 import MyButton from '../common/MyButton.js';
-import FormSelect from '../common/FormSelect.js';
-import FileInput from '../common/FileInput.js';
 import FormInput from '../common/FormInput.js';
-import { getAllCvs } from '../../actions/cvActions.js';
-import { getAllCovers } from '../../actions/coverActions.js';
 import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
 import { FILE_FORMATS } from '../../consts/structs.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
 import FormTitle from '../common/FormTitle.js';
 import FormFileInput from '../common/FormFileInput.js';
 import formStyle from '../../styles/formStyle.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
+import { NEW_MODE } from '../../consts/strings.js';
 
 const newModeSchema = yup.object().shape({
   name: yup
@@ -83,8 +63,6 @@ const editModeSchema = yup.object().shape({
 });
 
 const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = 'new', saveCv, closeForm, classes }) => {
-  //const classes = useStyles();
-  const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [isAfterReset, setIsAfterReset] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -94,15 +72,15 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
       cvFile: null,
     },
     mode: 'all',
-    resolver: yupResolver(mode === 'new' ? newModeSchema : editModeSchema),
+    resolver: yupResolver(mode === NEW_MODE ? newModeSchema : editModeSchema),
   });
 
-  const { handleSubmit, reset, control, register, watch, errors, clearErrors } = formObject;
+  const { handleSubmit, reset, watch, errors, clearErrors } = formObject;
 
   const file = watch('cvFile');
 
   const onSubmit = (data) => {
-    if (mode === 'new') {
+    if (mode === NEW_MODE) {
       if (data.cvFile.length > 0) saveCv(data.name, data.description, data.cvFile[0]);
       else saveCv(data.name, data.description, initFile);
       return;
@@ -141,7 +119,6 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
   return (
     <FormProvider {...formObject}>
       <form className={classes.root} onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>
-        {/* <Container className={classes.root}> */}
         <FormTitle mode={mode} label='CV' handleClose={handleClose} />
         <FormInput name='name' label='Name' required={true} defaultValue={initName} errorobj={errors} />
         <FormInput
@@ -161,7 +138,6 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
           <MyButton name='Save' theme='dark' type='submit' />
           <MyButton name='Reset' theme='dark' type='reset' />
         </div>
-        {/* </Container> */}
       </form>
       <ConfirmDialog
         open={openDialog}

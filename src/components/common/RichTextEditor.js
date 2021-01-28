@@ -1,20 +1,13 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertFromRaw } from 'draft-js';
-import { useFormContext, Controller } from 'react-hook-form';
-import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
-import Immutable from 'immutable';
-import { RTL, LTR } from '../../consts/strings.js';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { LTR } from '../../consts/strings.js';
 import './RichTextEditor.css';
 import 'draft-js/dist/Draft.css';
 
-export const RichTextEditor = forwardRef((props, ref) => {
-  // const [editorState, setEditorState] = useState(EditorState.createEmpty());
+export const RichTextEditor = forwardRef((props) => {
   const { initContent, onContentChange, direction } = props;
   const [editorState, setEditorState] = useState(() =>
-    initContent === ''
-      ? EditorState.createEmpty()
-      : // : EditorState.createWithContent(convertJsonToEditorContent(props.initState))
-        EditorState.createWithContent(initContent)
+    initContent === '' ? EditorState.createEmpty() : EditorState.createWithContent(initContent)
   );
   const editor = useRef(null);
 
@@ -66,10 +59,6 @@ export const RichTextEditor = forwardRef((props, ref) => {
   const onEditorFocus = () => {
     editor.current.focus();
   };
-
-  // useEffect(() => {
-  //   props.onContentChange(editorState);
-  // }, [editorState]);
 
   useEffect(() => {
     if (initContent !== '') {
@@ -210,24 +199,5 @@ const InlineStyleControls = (props) => {
     </div>
   );
 };
-
-// export const FormRichTextEditor = (props) => {
-//   const { name, defaultValue } = props;
-//   const { control } = useFormContext();
-
-//   return (
-//     <React.Fragment>
-//       <Controller
-//         as={RichTextEditor}
-//         valueName='editorState'
-//         control={control}
-//         name={name}
-//         onChange={([value]) => value}
-//         defaultValue={defaultValue}
-//         {...props}
-//       />
-//     </React.Fragment>
-//   );
-// };
 
 export default RichTextEditor;

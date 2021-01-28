@@ -1,12 +1,8 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { purple } from '@material-ui/core/colors';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { withStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { LIGHT_BLUE, BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS, LIME } from '../../consts/colors.js';
+import { LIGHT_BLUE, LIGHT } from '../../consts/colors.js';
 
 const AntSwitch = withStyles((theme) => ({
   root: {
@@ -23,7 +19,6 @@ const AntSwitch = withStyles((theme) => ({
       '& + $track': {
         opacity: 1,
         backgroundColor: LIGHT,
-        // borderColor: theme.palette.primary.main,
       },
     },
   },
@@ -40,17 +35,6 @@ const AntSwitch = withStyles((theme) => ({
   },
   checked: {},
 }))(Switch);
-
-const useStyle = makeStyles(() => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  label: {
-    padding: '5px',
-  },
-}));
 
 const BiSwitch = ({ labelLeft = 'LEFT', labelRight = 'RIGHT', checked, handleChange, classes = {} }) => {
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -10,22 +10,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import clsx from 'clsx';
 import CoverIcon from '@material-ui/icons/Sort';
 import { getBlockStyle } from '../../common/RichTextEditor.js';
-import { convertJsonToEditorContent, convertEditorContentToJson } from '../../../utills/editorUtils.js';
-import { Editor, EditorState, convertFromRaw } from 'draft-js';
-import {
-  LIGHT_BLUE,
-  DARK_BLUE,
-  RED_ERROR,
-  DARK_GREY,
-  LIME,
-  EXOTIC_BLUE,
-  BLUE,
-  LIGHT,
-  PURPLE,
-  DARK,
-} from '../../../consts/colors.js';
+import { convertJsonToEditorContent } from '../../../utills/editorUtils.js';
+import { Editor, EditorState } from 'draft-js';
+import { LIGHT_BLUE, DARK_GREY, LIGHT, PURPLE } from '../../../consts/colors.js';
 import MyToolTip from '../../common/MyToolTip.js';
-import { RTL, LTR, EDIT_MODE, NEW_MODE } from '../../../consts/strings.js';
+import { LTR } from '../../../consts/strings.js';
 import './Cover.css';
 import 'draft-js/dist/Draft.css';
 
@@ -63,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: -1,
       minHeight: '56px',
       transition: 'all 0.1s ease-in-out',
-      // opacity: 0.95,
 
       '&$expanded': {
         minHeight: '56px',
@@ -96,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiCollapse-container': {
       backgroundColor: 'white',
-      // opacity: 1,
     },
   },
   titleContainer: {

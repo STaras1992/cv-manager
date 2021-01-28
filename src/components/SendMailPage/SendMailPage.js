@@ -1,39 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Form from './SendForm.js';
-import * as api from '../../api/api.js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import panelStyle from '../../styles/panelStyle.js';
 import Container from '@material-ui/core/Container';
 import clsx from 'clsx';
-import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MyButton from '../common/MyButton.js';
-import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Typography } from '@material-ui/core';
-import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
-import { RichTextEditor, getBlockStyle, FormRichTextEditor } from '../common/RichTextEditor.js';
-import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
-import { useHtmlWrapWith } from '../../utills/html.js';
-import MyCheckBox from '../common/MyCheckBox.js';
+import { Editor, EditorState } from 'draft-js';
+import { RichTextEditor, getBlockStyle } from '../common/RichTextEditor.js';
+import { convertJsonToEditorContent } from '../../utills/editorUtils.js';
 import MySwitch from '../common/MySwitch.js';
 import BiSwitch from '../common/BiSwitch.js';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import Alert from '../common/Alert.js';
-import { setLoadingOn, setLoadingOff } from '../../actions/optionsActions.js';
+import { setLoadingOn } from '../../actions/optionsActions.js';
 import { sendEmailRequest, getData, setSended } from '../../actions/emailActions.js';
 import { makeHtml } from '../../utills/html.js';
-import { EDIT, DELETE, RTL, LTR } from '../../consts/strings.js';
+import { RTL, LTR } from '../../consts/strings.js';
 import 'draft-js/dist/Draft.css';
-
-// function Alert(props) {
-//   return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
-// }
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -60,8 +47,6 @@ const useStyles = makeStyles({
     },
   },
   body: {
-    fontSize: '18px',
-    fontWeight: '600',
     paddingTop: '40px',
   },
   contentPaper: {
@@ -151,7 +136,6 @@ const SendMailPage = ({ classes }) => {
   }, [isSending]);
 
   useEffect(() => {
-    console.log(selectedCover);
     if (selectedCover !== null && selectedCv !== null && data !== null) {
       setContentState(convertJsonToEditorContent(selectedCover.content));
       setInitContentState(convertJsonToEditorContent(selectedCover.content));
@@ -207,8 +191,6 @@ const SendMailPage = ({ classes }) => {
                   Attachment: <span>{selectedCv.name + '.' + selectedCv.type}</span>
                 </div>
                 <Divider />
-
-                {/* {showBody && ( */}
                 <div className={myClasses.body}>
                   <div className={myClasses.editorBlock}>
                     {editMode ? (
@@ -225,12 +207,6 @@ const SendMailPage = ({ classes }) => {
                           checked={textDirectionLtr}
                           handleChange={handleChangeDirection}
                         />
-                        {/* <MySwitch
-                          label={textDirectionLtr ? LTR : RTL}
-                          name='textDirection'
-                          value={textDirectionLtr}
-                          handleChange={handleChangeDirection}
-                        /> */}
                       </div>
                     ) : (
                       <Editor
@@ -242,7 +218,6 @@ const SendMailPage = ({ classes }) => {
                     )}
                   </div>
                 </div>
-                {/* )} */}
               </Paper>
               <MySwitch label='edit' name='edit' value={editMode} handleChange={editMail} />
               <div className={myClasses.sendContainer}>

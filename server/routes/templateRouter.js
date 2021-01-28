@@ -1,6 +1,5 @@
 const express = require('express');
 const templateController = require('../controllers/templateController.js');
-const authController = require('../controllers/authController');
 const { protect } = require('../middlewares/auth.js');
 
 const router = express.Router();

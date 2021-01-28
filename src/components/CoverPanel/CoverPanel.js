@@ -1,28 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import List from '@material-ui/core/List';
 import Cover from './Cover/Cover.js';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { addNewCover, getAllCovers, deleteMyCover, editMyCover } from '../../actions/coverActions.js';
 import Container from '@material-ui/core/Container';
-import Form from './NewCoverForm.js';
 import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
 import CoverForm from './CoverForm.js';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { SIDE_PANEL_WIDTH_WIDE, HEADER_MARGIN } from '../../consts/measures.js';
 import styles from '../../styles/panelStyle.js';
-import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
-import { RTL, LTR, EDIT_MODE, NEW_MODE } from '../../consts/strings.js';
-
-const useStyles = makeStyles((theme) => ({}));
-
-function Alert(props) {
-  return <MuiAlert elevation={6} style={{ fontSize: '30px' }} variant='filled' {...props} />;
-}
+import { LTR, EDIT_MODE, NEW_MODE } from '../../consts/strings.js';
+import Alert from '../common/Alert.js';
 
 const CoverPanel = ({ classes }) => {
   const dispatch = useDispatch();
@@ -45,11 +35,11 @@ const CoverPanel = ({ classes }) => {
     setCoverExpanded(newExpanded ? id : null);
   };
 
-  const openFormHandler = (e) => {
+  const openFormHandler = () => {
     setOpenForm(true);
   };
 
-  const closeFormHandler = (e) => {
+  const closeFormHandler = () => {
     setOpenForm(false);
     setIsEditMode(false);
     setOpenForm(false);
@@ -59,9 +49,6 @@ const CoverPanel = ({ classes }) => {
   const saveCover = async (name, content, direction) => {
     if (isEditMode) {
       dispatch(editMyCover({ id: editItem.id, name: name, content: content, direction: direction }));
-      // setIsEditMode(false);
-      // setOpenForm(false);
-      // setEditItem(null);
     } else dispatch(addNewCover({ name: name, content: content, direction: direction }));
   };
 
@@ -108,15 +95,7 @@ const CoverPanel = ({ classes }) => {
     }
   }, [requestError]);
 
-  // useEffect(() => {
-  //   // console.log('showErrorCv', showError);
-  //   console.log('succesResponse', successResponse);
-  //   if (successResponse && openForm) setOpenForm(false);
-  // }, [successResponse]);
-
   useEffect(() => {
-    // console.log('showError', showError);
-    // console.log('succesResponse', successResponse);
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
   }, [showError]);
 
@@ -153,7 +132,7 @@ const CoverPanel = ({ classes }) => {
             initName={editItem ? editItem.name : ''}
             initContent={editItem ? editItem.content : ''}
             initDirection={editItem ? editItem.direction : LTR}
-            mode={isEditMode ? 'edit' : 'new'}
+            mode={isEditMode ? EDIT_MODE : NEW_MODE}
             saveCover={saveCover}
             closeForm={closeFormHandler}
           />

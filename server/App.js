@@ -1,13 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
 const fileupload = require('express-fileupload');
-const xss = require('xss-clean');
 const cron = require('node-cron');
 const cvRouter = require('./routes/cvRouter.js');
 const coverRouter = require('./routes/coverRouter.js');
@@ -22,14 +19,12 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 app.use(cookieParser());
 app.use(helmet());
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
-// app.use(morgan('dev'));
 app.use((req, res, next) => {
   // res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept');
   next();
 });
 app.use(fileupload());
-// const { models } = require('./models/sequelize');
 
 const limiter = rateLimit({
   max: 100,

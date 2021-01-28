@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useFormContext, Controller, useForm } from 'react-hook-form';
+import React from 'react';
+import { useFormContext, Controller } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import UploadIcon from '@material-ui/icons/Publish';
 import Button from '@material-ui/core/Button';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
+import { LIGHT_BLUE, DARK_BLUE, LIGHT } from '../../consts/colors.js';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '200px',
     height: '45px',
@@ -48,10 +47,9 @@ const useStyles = makeStyles((theme) => ({
 const FileInput = (props) => {
   const classes = useStyles();
   const { control, register } = useFormContext();
-  const { name, label, required, onChange, errorobj } = props;
+  const { name, errorobj } = props;
   let isError = false;
   let errorMessage = '';
-  // const [file, setFile] = useState(null);
 
   if (errorobj && errorobj.hasOwnProperty(name)) {
     isError = true;
@@ -60,7 +58,7 @@ const FileInput = (props) => {
 
   return (
     <Controller
-      render={({ onChange, onBlur, name }) => (
+      render={({ onBlur, name }) => (
         <Button className={classes.root} variant='contained' startIcon={<UploadIcon />} component='label'>
           Upload File
           <div className={classes.fileInput}>
@@ -78,6 +76,3 @@ const FileInput = (props) => {
 };
 
 export default FileInput;
-{
-  /* <input ref={register} type='file' name={'cvFile'} /> */
-}

@@ -1,26 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
-import clsx from 'clsx';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Container from '@material-ui/core/Container';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import MyButton from '../common/MyButton.js';
-import { FormInput, FormInputUnControlled } from '../common/FormInput.js';
-import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '../../consts/measures.js';
-import { FILE_FORMATS } from '../../consts/structs.js';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, GREEN_SUCCESS } from '../../consts/colors.js';
+import { FormInput } from '../common/FormInput.js';
+import { MAX_NAME_LENGTH } from '../../consts/measures.js';
 import FormTitle from '../common/FormTitle.js';
 import formStyle from '../../styles/formStyle.js';
-import parser from 'html-react-parser';
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-import { RichTextEditor, FormRichTextEditor } from '../common/RichTextEditor.js';
+import { EditorState } from 'draft-js';
+import { RichTextEditor } from '../common/RichTextEditor.js';
 import { convertJsonToEditorContent, convertEditorContentToJson } from '../../utills/editorUtils.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
-import MySwitch from '../common/MySwitch.js';
 import BiSwitch from '../common/BiSwitch.js';
-import { RTL, LTR } from '../../consts/strings.js';
+import { RTL, LTR, NEW_MODE } from '../../consts/strings.js';
 
 const schema = yup.object().shape({
   name: yup
@@ -29,7 +22,7 @@ const schema = yup.object().shape({
     .test('len', `Must be less than ${MAX_NAME_LENGTH} characters`, (val) => val.length <= MAX_NAME_LENGTH),
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   editor: {
     width: '100%',
   },
@@ -48,7 +41,7 @@ const CoverForm = ({
   initName = '',
   initContent = '',
   initDirection = LTR,
-  mode = 'new',
+  mode = NEW_MODE,
   saveCover,
   closeForm,
   classes,
@@ -68,7 +61,7 @@ const CoverForm = ({
   const { handleSubmit, reset, errors, clearErrors } = formObject;
 
   const onSubmit = (formData) => {
-    if (mode === 'new') {
+    if (mode === NEW_MODE) {
       saveCover(formData.name, convertEditorContentToJson(content), textDirectionLtr ? LTR : RTL);
       return;
     }
@@ -78,9 +71,6 @@ const CoverForm = ({
       direction: textDirectionLtr ? LTR : RTL,
     });
     setOpenDialog(true);
-    // let json;
-    // json = convertEditorContentToJson(content);
-    // saveCover(data.name, json);
   };
 
   const handleClose = () => {
@@ -149,12 +139,6 @@ const CoverForm = ({
             handleChange={handleChangeDirection}
           />
         </div>
-        {/* <MySwitch
-          label={textDirectionLtr ? LTR : RTL}
-          name='textDirection'
-          value={textDirectionLtr}
-          handleChange={handleChangeDirection}
-        /> */}
 
         <div className={classes.submitContainer}>
           <MyButton name='Save' theme='dark' type='submit' />

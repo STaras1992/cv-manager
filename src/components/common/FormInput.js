@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useFormContext, Controller, useForm } from 'react-hook-form';
+import React from 'react';
+import { useFormContext, Controller } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
-import { LIGHT_BLUE, DARK_BLUE, LIGHT, DARK, RED_ERROR, LIME } from '../../consts/colors.js';
+import { LIME } from '../../consts/colors.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,13 +42,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FormInputUnControlled = ({ label, name, value = '', required, onChange }) => {
+export const FormInputUnControlled = ({ label, name, value = '', onChange }) => {
   const classes = useStyles();
-  // const [value, setValue] = useState('');
-
-  // useEffect(() => {
-  //   setValue(initValue);
-  // }, [initValue]);
 
   return (
     <FormControl name={name}>
@@ -70,7 +65,7 @@ export const FormInputUnControlled = ({ label, name, value = '', required, onCha
 export const FormInput = (props) => {
   const classes = useStyles();
   const { control } = useFormContext();
-  const { name, label, required, errorobj, defaultValue } = props;
+  const { name, label, errorobj, defaultValue } = props;
   let isError = false;
   let errorMessage = '';
 

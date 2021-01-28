@@ -12,6 +12,5 @@ exports.blacklistToken = async (token) => {
 
 exports.checkInBlacklist = async (token) => {
   const result = await models.token.findByPk(token);
-  console.log(result);
   return !!result;
 };

@@ -130,7 +130,7 @@ exports.createCv = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     res.status(500).json({
       status: 'fail',
       message: err.message, //DEV

@@ -38,9 +38,8 @@ exports.deleteFile = (key) => {
       if (err) {
         throw err;
       }
-      console.log(`File deleted successfully. ${JSON.stringify(data)}`);
     } catch (err) {
-      console.log(`File failed to delete\n` + err);
+      console.log(err.message);
     }
   });
 };

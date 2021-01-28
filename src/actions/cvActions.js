@@ -78,7 +78,7 @@ export const addNewCv = (data) => async (dispatch) => {
         dispatch(setError(err.response.data.message));
         break;
       default:
-        console.log(`unexpected error (${err.response.status})`);
+        //console.log(`Unexpected error (${err.response.status})`);
         dispatch(setError('Failed to save cv. Try again'));
         break;
     }
@@ -133,9 +133,10 @@ export const editMyCv = (data) => async (dispatch) => {
       dataToSend.append('name', data.name);
       dataToSend.append('description', data.description);
     }
-    //Ther was some error in process.
+    //There was some error in process.
     else {
-      console.log('Bad selected file!'); //DEV
+      // console.log('Bad selected file!'); //DEV
+      return;
     }
 
     const response = await api.updateCv(dataToSend);

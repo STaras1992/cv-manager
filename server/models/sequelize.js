@@ -15,10 +15,10 @@ const sequelize = new Sequelize(process.env.SQL_DATABASE, process.env.SQL_USER, 
 const resetDb = async () => {
   try {
     await sequelize.sync({ force: true });
-    console.log('sync success');
+    console.log('Sequelize sync success');
     await clearBucket();
   } catch (err) {
-    console.log('sync error:', err.message);
+    console.log('Sequelize sync error:', err.message);
   }
 };
 

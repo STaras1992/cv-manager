@@ -2,7 +2,7 @@ import * as axios from 'axios';
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  baseURL: 'http://localhost:4000/api',
+  baseURL: process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:3001/api',
 });
 
 //cv methods:
@@ -17,11 +17,6 @@ export const deleteCv = async (id) => {
 };
 export const getCvById = async (id) => {
   return await axiosInstance.get(`/cv/${id}`);
-  // if (response.status === 200) {
-  //   return response.data.item;
-  // } else {
-  //   throw new Error("Can't find cv");
-  // }
 };
 export const updateCv = async (data) => {
   return await axiosInstance.patch(`/cv`, data);
@@ -42,11 +37,6 @@ export const updateCover = async (data) => {
 };
 export const getCoverById = async (id) => {
   return await axiosInstance.get(`/cover/${id}`);
-  // if (response.status === 200) {
-  //   return response.data.item;
-  // } else {
-  //   throw new Error("Can't find cv");
-  // }
 };
 
 //template methods

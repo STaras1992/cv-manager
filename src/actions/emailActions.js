@@ -24,7 +24,6 @@ export const sendEmailRequest = (data) => async (dispatch) => {
 };
 
 const getCvData = async (id, dispatch) => {
-  console.log('getCvData..');
   try {
     const response = await api.getCvById(id);
     dispatch(setCv(response.data.item));
@@ -32,7 +31,7 @@ const getCvData = async (id, dispatch) => {
     if (err.response.status === 404) {
       dispatch(setError(err.response.data.message));
     } else {
-      console.log(`unexpected error ${err.response.status}`);
+      // console.log(`Unexpected error ${err.response.status}`);
     }
   }
 };
@@ -49,13 +48,12 @@ const getCoverData = async (id, dispatch) => {
     if (err.response.status === 404) {
       dispatch(setError(err.response.data.message));
     } else {
-      console.log(`unexpected error ${err.response.status}`);
+      //console.log(`Unexpected error ${err.response.status}`);
     }
   }
 };
 
 export const getData = (cvId, coverId) => async (dispatch) => {
-  //console.log('get data:', cvId, coverId);
   dispatch(setLoadingOn);
   getCvData(cvId, dispatch);
   getCoverData(coverId, dispatch);

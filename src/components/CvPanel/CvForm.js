@@ -29,7 +29,6 @@ const newModeSchema = yup.object().shape({
     .mixed()
 
     .test('fileSelected', 'File is required', (value) => {
-      console.log('value:', value);
       return value && value.length > 0;
     })
     .test('fileSize', 'File is too large', (value) => {

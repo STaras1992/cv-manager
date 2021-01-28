@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT, SET_ERROR_USER, SET_ERROR_SIGNUP, SET_ERROR_LOGIN } from '../consts/actionTypes.js';
+import { LOGIN, LOGOUT, SET_ERROR_SIGNUP, SET_ERROR_LOGIN } from '../consts/actionTypes.js';
 
 const initState = {
   user: {},

@@ -5,7 +5,7 @@ const app = require('./App.js');
 
 dotenv.config({ path: './config.env' });
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3001;
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
@@ -14,7 +14,7 @@ async function assertDatabaseConnectionOk() {
     console.log('Database connection OK!');
   } catch (error) {
     console.log('Unable to connect to the database:');
-    console.log(error);
+    console.log(error.message);
     process.exit(1);
   }
 }

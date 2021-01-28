@@ -23,7 +23,6 @@ export const getAllMyTemplates = () => async (dispatch) => {
   dispatch(setLoadingOn);
   try {
     const response = await api.getAllTemplates();
-    console.log('response:', response);
     if (response.status === 200) {
       await dispatch(getAllTemplates(response.data.items));
       await dispatch(setResponseSuccess());

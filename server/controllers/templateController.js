@@ -78,7 +78,6 @@ exports.deleteTemplate = async (req, res, next) => {
         status: 'success',
         id: reqId,
       });
-      console.log(`Template with id ${reqId} deleted succesfully`);
     } else {
       res.status(404).json({
         status: 'fail',

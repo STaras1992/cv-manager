@@ -22,13 +22,12 @@ exports.isTemplateExist = async (name, userId, includeId = -1) => {
 exports.refreshBlackList = async () => {
   try {
     const tokensToRemove = await models.token.findAll({ where: { expires: { [Op.lte]: Date.now() } } }, { raw: true });
-    console.log(tokensToRemove);
     if (tokensToRemove) {
       tokensToRemove.forEach(async (token) => {
         await models.token.destroy({ where: { jwt: token.jwt } });
       });
     }
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };

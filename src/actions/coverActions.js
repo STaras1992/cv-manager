@@ -54,7 +54,7 @@ export const addNewCover = (data) => async (dispatch) => {
     if (err.response.status === 400 || err.response.status === 404 || err.response.status === 409) {
       dispatch(setError(err.response.data.message));
     } else {
-      console.log(`unexpected error (${err.response.status})`);
+      //console.log(`Unexpected error (${err.response.status})`);
       dispatch(setError('Failed to create cover. Try again'));
     }
     //update list if error occured

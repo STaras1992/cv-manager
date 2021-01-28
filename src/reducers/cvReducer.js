@@ -5,8 +5,6 @@ import {
   UPDATE_MY_CV,
   SET_LOADING_CV,
   SET_ERROR_CV,
-  ENABLE_SHOW_ERROR_CV,
-  DISABLE_SHOW_ERROR_CV,
   CV_RESPONSE_SUCCESS,
   CV_RESPONSE_FAIL,
 } from '../consts/actionTypes.js';
@@ -15,14 +13,12 @@ const initState = {
   items: [],
   isLoading: false,
   error: { message: null },
-  // showError: false,
   responseStatusSuccess: true,
 };
 
 const cvReducer = (state = initState, action) => {
   switch (action.type) {
     case UPDATE_MY_CVS:
-      // console.log('UPDATE_MY_CVS:\n' + JSON.stringify(action.payload));
       return {
         ...state,
         items: [...action.payload],
@@ -57,17 +53,6 @@ const cvReducer = (state = initState, action) => {
         ...state,
         error: { ...state.error, message: action.payload },
       };
-    // case ENABLE_SHOW_ERROR_CV:
-    //   return {
-    //     ...state,
-    //     showError: true,
-    //   };
-
-    // case DISABLE_SHOW_ERROR_CV:
-    //   return {
-    //     ...state,
-    //     showError: false,
-    //   };
     case CV_RESPONSE_SUCCESS:
       return {
         ...state,

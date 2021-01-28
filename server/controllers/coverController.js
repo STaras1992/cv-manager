@@ -5,7 +5,6 @@ const { isCoverExist } = require('../utills/dbHelper');
 exports.getAllCovers = async (req, res, next) => {
   try {
     const resultItems = await models.cover.findAll({ where: { userId: req.body.userId } }, { raw: true });
-    console.log(resultItems);
     if (resultItems.length === 0) {
       res.status(200).json({
         status: 'success',
@@ -49,8 +48,6 @@ exports.createCover = async (req, res, next) => {
       content: req.body.content,
       direction: req.body.direction,
     });
-
-    console.log(`Cover ${resultItem.id} created`);
 
     res.status(201).json({
       status: 'success',
@@ -103,7 +100,6 @@ exports.deleteCover = async (req, res, next) => {
         status: 'success',
         id: reqId,
       });
-      console.log(`Cover with id ${reqId} deleted succesfully`);
     } else {
       res.status(404).json({
         status: 'fail',
@@ -142,7 +138,6 @@ exports.updateCover = async (req, res, next) => {
         status: 'success',
         item: updatedItem,
       });
-      console.log(`Cover with id ${id} updated succesfully`);
     } else {
       res.status(404).json({
         status: 'fail',

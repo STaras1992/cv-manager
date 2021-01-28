@@ -11,13 +11,11 @@ const initState = {
 const emailReducer = (state = initState, action) => {
   switch (action.type) {
     case SET_EMAIL_CV:
-      //   console.log('SET_EMAIL_CV');
       return {
         ...state,
         selectedCv: action.payload,
       };
     case SET_EMAIL_COVER:
-      // console.log('SET_EMAIL_COVER');
       return {
         ...state,
         selectedCover: action.payload,

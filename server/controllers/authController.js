@@ -100,7 +100,6 @@ exports.protect = async (req, res, next) => {
     }
 
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    console.log(decoded);
     //check if user still exist
     const freshUser = await models.user.findByPk(decoded.id);
     if (!freshUser) {

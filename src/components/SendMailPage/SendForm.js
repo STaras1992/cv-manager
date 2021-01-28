@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -56,14 +57,13 @@ const SendForm = ({ makeMail, classes }) => {
     mode: 'all',
     resolver: yupResolver(schema),
   });
-  const { handleSubmit, reset, control, register, setValue, errors, watch, clearErrors } = formObject;
+  const { handleSubmit, reset, setValue, errors, watch, clearErrors } = formObject;
 
   const template = watch('template');
 
   const selectedTemplate = useSelector((state) => state.template.items.find((item) => item.id === template));
 
   const onSubmit = (data) => {
-    console.log(data);
     makeMail({ ...data, from: userEmail });
   };
 

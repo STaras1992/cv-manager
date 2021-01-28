@@ -29,7 +29,6 @@ const coverReducer = (state = initState, action) => {
         items: [...state.items, JSON.parse(JSON.stringify(action.payload))],
       };
     case DELETE_MY_COVER:
-      //payload type=string,items.id = number. so do toString for compare
       return {
         ...state,
         items: state.items.filter((item) => item.id.toString() !== action.payload.toString()),

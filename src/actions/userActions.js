@@ -19,7 +19,7 @@ export const signup = (data) => async (dispatch) => {
   } catch (err) {
     if (err.response.status === 409 || err.response.status === 400) dispatch(setSignUpError(err.response.data.message));
     else dispatch(setSignUpError('Failed to sign up. Try again'));
-    console.log(err.message); //DEV
+    //console.log(err.message); //DEV
   }
 };
 
@@ -35,7 +35,7 @@ export const login = (data) => async (dispatch) => {
     if (err.response.status === 409 || err.response.status === 400 || err.response.status === 401)
       dispatch(setLoginError(err.response.data.message));
     else dispatch(setLoginError('Failed to sign up. Try again'));
-    console.log(err.message);
+    //console.log(err.message);
   }
 };
 
@@ -45,7 +45,7 @@ export const logout = () => async (dispatch) => {
     const response = await api.logout();
     if (response.status === 200) dispatch(userLoggedOut());
   } catch (err) {
-    console.log(err.message);
+    //console.log(err.message);
   }
 };
 
@@ -57,6 +57,6 @@ export const checkAuth = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(userLoggedOut());
-    console.log(err.message); //DEV
+    //console.log(err.message); //DEV
   }
 };

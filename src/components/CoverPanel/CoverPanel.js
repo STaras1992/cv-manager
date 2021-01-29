@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Cover from './Cover/Cover.js';
 import { withStyles } from '@material-ui/core/styles';
 import { addNewCover, getAllCovers, deleteMyCover, editMyCover } from '../../actions/coverActions.js';
+import { showErrorOff } from '../../actions/optionsActions.js';
 import Container from '@material-ui/core/Container';
 import MyButton from '../common/MyButton.js';
 import clsx from 'clsx';
@@ -97,6 +98,7 @@ const CoverPanel = ({ classes }) => {
 
   useEffect(() => {
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+    dispatch(showErrorOff);
   }, [showError]);
 
   let covers = items.map((cover) => (

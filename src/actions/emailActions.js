@@ -1,6 +1,7 @@
 import { SET_ERROR_EMAIL, SET_EMAIL_CV, SET_EMAIL_COVER, SET_SENDED } from '../consts/actionTypes.js';
 import * as api from '../api/api.js';
 import { setLoadingOn, setLoadingOff, showErrorOn, showErrorOff } from './optionsActions';
+import { catchError } from '../utills/actionsUtils.js';
 
 const setError = (error) => ({ type: SET_ERROR_EMAIL, payload: error });
 const setCv = (item) => ({ type: SET_EMAIL_CV, payload: item });
@@ -16,7 +17,7 @@ export const sendEmailRequest = (data) => async (dispatch) => {
       console.log('Email sent successfully'); //TODO
     }
   } catch (err) {
-    dispatch(setError('Failed to send email'));
+    catchError(err, dispatch, setError); //no message response aspected only 500
     dispatch(showErrorOn);
   }
   dispatch(setSended(true));
@@ -28,11 +29,7 @@ const getCvData = async (id, dispatch) => {
     const response = await api.getCvById(id);
     dispatch(setCv(response.data.item));
   } catch (err) {
-    if (err.response.status === 404) {
-      dispatch(setError(err.response.data.message));
-    } else {
-      // console.log(`Unexpected error ${err.response.status}`);
-    }
+    catchError(err, dispatch, setError);
   }
 };
 
@@ -45,11 +42,7 @@ const getCoverData = async (id, dispatch) => {
       dispatch(setCover(response.data.item));
     }
   } catch (err) {
-    if (err.response.status === 404) {
-      dispatch(setError(err.response.data.message));
-    } else {
-      //console.log(`Unexpected error ${err.response.status}`);
-    }
+    catchError(err, dispatch, setError);
   }
 };
 

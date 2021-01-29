@@ -14,6 +14,7 @@ import DocListItem from '../common/DocListItem.js';
 import ConfirmDialog from '../common/ConfirmDialog.js';
 import { EDIT, DELETE, EDIT_MODE, NEW_MODE } from '../../consts/strings.js';
 import Alert from '../common/Alert.js';
+import { showErrorOff } from '../../actions/optionsActions.js';
 
 const TemplatePanel = ({ classes }) => {
   const dispatch = useDispatch();
@@ -46,7 +47,6 @@ const TemplatePanel = ({ classes }) => {
   const deleteTemplate = (id) => {
     setDeleteId(id);
     setOpenDialog(true);
-    // dispatch(deleteMyTemplate(id));
   };
 
   const handleDialogOk = () => {
@@ -97,6 +97,7 @@ const TemplatePanel = ({ classes }) => {
 
   useEffect(() => {
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+    dispatch(showErrorOff);
   }, [showError]);
 
   const templateItems = items.map((template) => (
@@ -141,7 +142,7 @@ const TemplatePanel = ({ classes }) => {
         className={classes.snackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         open={showSnackbar}
-        autoHideDuration={5000}
+        autoHideDuration={3500}
         onClose={handleCloseSnackbar}
       >
         <Alert onClose={handleCloseSnackbar} severity={'error'}>

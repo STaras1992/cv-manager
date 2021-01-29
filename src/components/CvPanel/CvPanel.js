@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { addNewCv, getAllCvs, deleteMyCv, editMyCv } from '../../actions/cvActions.js';
+import { showErrorOff } from '../../actions/optionsActions.js';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
@@ -96,6 +97,7 @@ const CvPanel = ({ classes }) => {
 
   useEffect(() => {
     if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
+    dispatch(showErrorOff);
   }, [showError]);
 
   const cvItems = items.map((cv) => (
@@ -141,7 +143,7 @@ const CvPanel = ({ classes }) => {
         className={classes.snackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         open={showSnackbar}
-        autoHideDuration={3000}
+        autoHideDuration={3500}
         disableWindowBlurListener={true}
         onClose={handleCloseSnackbar}
       >

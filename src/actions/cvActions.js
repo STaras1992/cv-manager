@@ -4,21 +4,18 @@ import {
   DELETE_MY_CV,
   UPDATE_MY_CV,
   SET_ERROR_CV,
-  ENABLE_SHOW_ERROR_CV,
-  DISABLE_SHOW_ERROR_CV,
   CV_RESPONSE_SUCCESS,
   CV_RESPONSE_FAIL,
 } from '../consts/actionTypes.js';
 import * as api from '../api/api.js';
 import { setLoadingOn, setLoadingOff, showErrorOn, showErrorOff } from './optionsActions';
+import { catchError } from '../utills/actionsUtils.js';
 
 const updateCvs = (items) => ({ type: UPDATE_MY_CVS, payload: items });
 const updateEditedCv = (item) => ({ type: UPDATE_MY_CV, payload: item });
 const addCv = (item) => ({ type: ADD_MY_CV, payload: item });
 const deleteCv = (id) => ({ type: DELETE_MY_CV, payload: id });
 const setError = (error) => ({ type: SET_ERROR_CV, payload: error });
-// const showErrorOn = () => ({ type: ENABLE_SHOW_ERROR_CV });
-// export const showErrorOff = () => ({ type: DISABLE_SHOW_ERROR_CV });
 const setResponseSuccess = () => ({ type: CV_RESPONSE_SUCCESS });
 const setResponseFail = () => ({ type: CV_RESPONSE_FAIL });
 
@@ -32,11 +29,12 @@ export const getAllCvs = () => async (dispatch) => {
       // dispatch(setResponseSuccess());
     }
   } catch (err) {
-    if (err.response.status === 400 || err.response.status === 409) {
-      dispatch(setError(err.response.message));
-    } else {
-      dispatch(setError('Failed to load cv data'));
-    }
+    catchError(err, dispatch, setError);
+    // if (err.response.status === 400 || err.response.status === 409) {
+    //   dispatch(setError(err.response.message));
+    // } else {
+    //   dispatch(setError('Failed to load cv data'));
+    // }
     // dispatch(setResponseFail());
   }
   dispatch(setLoadingOff);
@@ -66,22 +64,23 @@ export const addNewCv = (data) => async (dispatch) => {
       dispatch(setResponseSuccess());
     }
   } catch (err) {
-    //switch for different handling in future
-    switch (err.response.status) {
-      case 400:
-        dispatch(setError(err.response.data.message));
-        break;
-      case 404:
-        dispatch(setError(err.response.data.message));
-        break;
-      case 409:
-        dispatch(setError(err.response.data.message));
-        break;
-      default:
-        //console.log(`Unexpected error (${err.response.status})`);
-        dispatch(setError('Failed to save cv. Try again'));
-        break;
-    }
+    catchError(err, dispatch, setError);
+
+    // switch (err.response.status) {
+    //   case 400:
+    //     dispatch(setError(err.response.data.message));
+    //     break;
+    //   case 404:
+    //     dispatch(setError(err.response.data.message));
+    //     break;
+    //   case 409:
+    //     dispatch(setError(err.response.data.message));
+    //     break;
+    //   default:
+    //     //console.log(`Unexpected error (${err.response.status})`);
+    //     dispatch(setError('Failed to save cv. Try again'));
+    //     break;
+    // }
     //update list if error occured
     dispatch(getAllCvs());
     dispatch(setResponseFail());
@@ -102,11 +101,12 @@ export const deleteMyCv = (id) => async (dispatch) => {
       dispatch(showErrorOff);
     }
   } catch (err) {
-    if (err.response.status === 404 || err.response.status === 400) {
-      dispatch(setError(err.response.data.message));
-    } else {
-      dispatch(setError('Failed to delete cv.Try again'));
-    }
+    catchError(err, dispatch, setError);
+    // if (err.response.status === 404 || err.response.status === 400) {
+    //   dispatch(setError(err.response.data.message));
+    // } else {
+    //   dispatch(setError('Failed to delete cv.Try again'));
+    // }
     //update list if error occured
     dispatch(getAllCvs());
     dispatch(setResponseFail());
@@ -148,11 +148,12 @@ export const editMyCv = (data) => async (dispatch) => {
     dispatch(setError(''));
     dispatch(showErrorOff);
   } catch (err) {
-    if (err.response.status === 404 || err.response.status === 400 || err.response.status === 409) {
-      dispatch(setError(err.response.data.message));
-    } else {
-      dispatch(setError('Failed to edit cv.Try again'));
-    }
+    catchError(err, dispatch, setError);
+    // if (err.response.status === 404 || err.response.status === 400 || err.response.status === 409) {
+    //   dispatch(setError(err.response.data.message));
+    // } else {
+    //   dispatch(setError('Failed to edit cv.Try again'));
+    // }
     //update list if error occured
     dispatch(getAllCvs());
     dispatch(setResponseFail());

@@ -5,3 +5,5 @@ export const NEW_MODE = 'new';
 export const DELETE = 'delete';
 export const EDIT = 'edit';
 export const OPEN = 'open';
+export const DEV = 'development';
+export const PROD = 'production';

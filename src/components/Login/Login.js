@@ -125,9 +125,9 @@ const Login = (props) => {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link to='/' variant='body2'>
+                {/* <Link to='/' variant='body2'>
                   Forgot password?
-                </Link>
+                </Link> */}
               </Grid>
               <Grid item>
                 <Link to='/signup' variant='body2'>

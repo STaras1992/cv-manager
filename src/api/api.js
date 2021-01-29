@@ -2,7 +2,7 @@ import * as axios from 'axios';
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  baseURL: process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:3001/api',
+  baseURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api',
 });
 
 //cv methods:

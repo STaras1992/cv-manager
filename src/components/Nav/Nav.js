@@ -124,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Nav = ({ location }) => {
+const Nav = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const open = useSelector((state) => state.options.isSidePanelOpen);
@@ -176,30 +176,37 @@ const Nav = ({ location }) => {
             <MenuIcon />
           </IconButton>
           <div className={classes.profile}>
-            {isLoggedIn ? (
-              <Button color='inherit' onClick={handleLogout}>
-                Logout
-              </Button>
-            ) : (
-              <div>
-                <Button
-                  className={clsx(classes.actionButton, classes.signupButton)}
-                  component={Link}
-                  to='/signup'
-                  color='inherit'
-                >
-                  Sign up
+            <div
+              className={clsx({
+                [classes.hide]: isLoggedIn === null,
+              })}
+            >
+              {isLoggedIn ? (
+                <Button color='inherit' onClick={handleLogout}>
+                  Logout
                 </Button>
-                <Button
-                  className={clsx(classes.actionButton, classes.loginButton)}
-                  component={Link}
-                  to='/login'
-                  color='inherit'
-                >
-                  Login
-                </Button>
-              </div>
-            )}
+              ) : (
+                <div>
+                  <Button
+                    className={clsx(classes.actionButton, classes.signupButton)}
+                    component={Link}
+                    to='/signup'
+                    color='inherit'
+                  >
+                    Sign up
+                  </Button>
+                  <Button
+                    className={clsx(classes.actionButton, classes.loginButton)}
+                    component={Link}
+                    to='/login'
+                    color='inherit'
+                  >
+                    Login
+                  </Button>
+                </div>
+              )}
+            </div>
+
             <IconButton
               classes={{ root: classes.profileIcon, disabled: classes.profileDisabled }}
               disabled={!isLoggedIn}

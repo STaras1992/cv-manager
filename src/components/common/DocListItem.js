@@ -141,7 +141,7 @@ const DocList = ({ id, name, description, type = '', file = '', actions = [], on
               key={index}
               className={clsx(classes.iconButton, classes.fileIconButton)}
               href={file}
-              //target='_blank'
+              target='_blank'
               rel='noopener noreferrer'
               edge='end'
               aria-label='file'

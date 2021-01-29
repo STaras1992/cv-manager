@@ -4,7 +4,7 @@ import { LTR } from '../../consts/strings.js';
 import './RichTextEditor.css';
 import 'draft-js/dist/Draft.css';
 
-export const RichTextEditor = forwardRef((props) => {
+export const RichTextEditor = forwardRef((props, ref) => {
   const { initContent, onContentChange, direction } = props;
   const [editorState, setEditorState] = useState(() =>
     initContent === '' ? EditorState.createEmpty() : EditorState.createWithContent(initContent)

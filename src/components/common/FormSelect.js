@@ -48,7 +48,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MuiSelect = forwardRef((props) => {
+const MuiSelect = forwardRef((props, ref) => {
   const classes = useStyles();
   const { label, name, options, required, errorobj } = props;
 

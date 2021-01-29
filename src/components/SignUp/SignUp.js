@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -12,10 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import * as yup from 'yup';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import clsx from 'clsx';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider } from 'react-hook-form';
 import { FormInput } from '../common/FormInputLogin.js';
-import { RED_ERROR } from '../../consts/colors.js';
+import { RED_ERROR, LIGHT_BLUE } from '../../consts/colors.js';
 import { HEADER_MARGIN, SIDE_PANEL_WIDTH_SHORT } from '../../consts/measures.js';
 import { signup } from '../../actions/userActions.js';
 
@@ -69,9 +71,20 @@ const useStyles = makeStyles((theme) => ({
   },
   errorMessage: {
     margin: 0,
+    marginTop: '-10px',
     padding: 0,
-    fontSize: '18px',
+    fontSize: '17px',
     color: RED_ERROR,
+  },
+  loading: {
+    textAlign: 'center',
+    '& svg': {
+      color: LIGHT_BLUE,
+    },
+  },
+  hide: {
+    display: 'none',
+    // visibility: 'hidden',
   },
 }));
 
@@ -94,9 +107,10 @@ const schema = yup.object().shape({
 const SignUp = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+  const isLoading = useSelector((state) => state.options.isLoading);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const error = useSelector((state) => state.user.signUpError);
-  const [showError, setShowError] = useState(false);
 
   const formObject = useForm({
     mode: 'onSubmit',
@@ -106,18 +120,12 @@ const SignUp = (props) => {
   const { handleSubmit, errors } = formObject;
 
   const onSubmit = async (data) => {
-    setShowError(false);
     dispatch(signup(data));
   };
 
   useEffect(() => {
     isLoggedIn && props.history.push('/');
   }, [isLoggedIn]);
-
-  useEffect(() => {
-    if (error.message && error.message !== '') setShowError(true);
-    else setShowError(false);
-  }, [error]);
 
   return (
     <FormProvider {...formObject}>
@@ -131,7 +139,7 @@ const SignUp = (props) => {
             Sign up
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
               <Grid item xs={12} sm={6}>
                 <FormInput name='firstName' label='First Name' required={true} defaultValue={''} errorobj={errors} />
               </Grid>
@@ -142,11 +150,20 @@ const SignUp = (props) => {
                 <FormInput name='email' label='Email' required={true} defaultValue={''} errorobj={errors} />
               </Grid>
               <Grid item xs={12}>
-                <FormInput name='password' label='Password' required={true} defaultValue={''} errorobj={errors} />
+                <FormInput
+                  name='password'
+                  label='Password'
+                  required={true}
+                  defaultValue={''}
+                  errorobj={errors}
+                  autoComplete='off'
+                />
               </Grid>
-
               <Grid item xs={12}>
-                {showError && <p className={classes.errorMessage}>{error.message}</p>}
+                <p className={clsx(classes.errorMessage, { [classes.hide]: isLoading })}>{error.message}</p>
+                <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
+                  <CircularProgress />
+                </div>
               </Grid>
             </Grid>
             <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>

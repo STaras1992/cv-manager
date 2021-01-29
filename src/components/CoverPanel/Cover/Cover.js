@@ -15,7 +15,6 @@ import { Editor, EditorState } from 'draft-js';
 import { LIGHT_BLUE, DARK_GREY, LIGHT, PURPLE } from '../../../consts/colors.js';
 import MyToolTip from '../../common/MyToolTip.js';
 import { LTR } from '../../../consts/strings.js';
-import './Cover.css';
 import 'draft-js/dist/Draft.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '2px',
       boxShadow: 'none',
       transition: 'all 0.1s ease-in-out',
-      opacity: 0.95,
+      opacity: 0.97,
       '&:not(:last-child)': {
         borderBottom: 0,
       },
@@ -100,6 +99,10 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  editor: {
+    width: '100%',
+    wordBreak: 'break-all',
+  },
 }));
 
 const Cover = ({ id, name, content, direction, expanded, deleteCover, editCover, handleChange }) => {
@@ -141,7 +144,7 @@ const Cover = ({ id, name, content, direction, expanded, deleteCover, editCover,
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <div className='editor-root'>
+          <div className={classes.editor}>
             <Editor
               blockStyleFn={getBlockStyle}
               textAlignment={direction === LTR ? 'left' : 'right'}

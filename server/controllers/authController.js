@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { v4: uuid } = require('uuid');
 const { blacklistToken, checkInBlacklist } = require('../utills/authHelper.js');
+const { isUserExist } = require('../utills/dbHelper');
 
 const createAndSendToken = (user, statusCode, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -34,20 +35,23 @@ const createAndSendToken = (user, statusCode, res) => {
 
 exports.signup = async (req, res, next) => {
   try {
-    let { email, password, firstName, lastName, website } = req.body;
-    const userId = uuid();
+    let { email, password, firstName, lastName } = req.body;
+    // const userId = uuid();
     //Validation TODO
-    const existUser = await models.user.findOne({ where: { email: email } });
 
-    if (existUser) {
+    // const existUser = await models.user.findOne({ where: { email: email } });
+
+    // if (existUser) {
+    if (await isUserExist(email)) {
       res.status(409).json({ status: 'fail', message: 'User with current email already exist' });
       return;
     }
 
-    const hash = await bcrypt.hash(password, 12);
-    password = hash;
+    // const hash = await bcrypt.hash(password, 12);
+    // password = hash;
 
-    const newUser = await models.user.create({ id: userId, email, password, firstName, lastName, website });
+    // const newUser = await models.user.create({ id: userId, email, password, firstName, lastName });
+    const newUser = await createNewUser(req);
 
     if (!newUser) {
       res.status(400).json({ status: 'fail', message: 'Failed to create user' });
@@ -168,5 +172,41 @@ exports.logout = async (req, res, next) => {
     else res.status(400).json({ status: 'fail', message: 'Failed to logout' });
   } catch (err) {
     res.status(500).json({ status: 'fail', message: err.message });
+  }
+};
+
+const createNewUser = async (req) => {
+  try {
+    let { email, password, firstName, lastName } = req.body;
+    const userId = uuid();
+    const hash = await bcrypt.hash(password, 12);
+    password = hash;
+
+    const newUser = await models.user.create({ id: userId, email, password, firstName, lastName });
+
+    if (newUser) {
+      const tempCv = await newUser.createCv({
+        name: 'cv-example',
+        description: 'Example of CV document.',
+        file: 'https://stas-docs.s3.eu-central-1.amazonaws.com/cv_template.pdf',
+        type: 'pdf',
+      });
+      const tempCover = await newUser.createCover({
+        name: 'cover-example',
+        content:
+          '{"blocks":[{"key":"flbnp","text":"היי שלום שש","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
+        direction: 'RTL',
+      });
+      const tempTemplate = await newUser.createTemplate({
+        name: 'template-example',
+        description: 'Example of template with cv and cover examples',
+        cv: tempCv.id,
+        cover: tempCover.id,
+      });
+      return newUser;
+    }
+    return null;
+  } catch (err) {
+    return null;
   }
 };

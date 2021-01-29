@@ -2,7 +2,7 @@ import { LOGIN, LOGOUT, SET_ERROR_SIGNUP, SET_ERROR_LOGIN } from '../consts/acti
 
 const initState = {
   user: {},
-  isLoggedIn: true,
+  isLoggedIn: null,
   loginError: { message: null },
   signUpError: { message: null },
 };

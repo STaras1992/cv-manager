@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FormInput = ({ name = '', label = '', errorobj = {}, defaultValue = '' }) => {
+export const FormInput = ({ name = '', label = '', errorobj = {}, defaultValue = '', ...props }) => {
   const classes = useStyles();
   const { control } = useFormContext();
   let isError = false;
@@ -62,6 +62,7 @@ export const FormInput = ({ name = '', label = '', errorobj = {}, defaultValue =
       fullWidth={true}
       error={isError}
       helperText={errorMessage}
+      {...props}
     />
   );
 };

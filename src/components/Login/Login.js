@@ -12,10 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import * as yup from 'yup';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider } from 'react-hook-form';
 import { FormInput } from '../common/FormInputLogin.js';
-import { RED_ERROR } from '../../consts/colors.js';
+import { RED_ERROR, LIGHT_BLUE } from '../../consts/colors.js';
+import clsx from 'clsx';
 import { HEADER_MARGIN, SIDE_PANEL_WIDTH_SHORT } from '../../consts/measures.js';
 import { login } from '../../actions/userActions.js';
 
@@ -70,8 +72,18 @@ const useStyles = makeStyles((theme) => ({
   errorMessage: {
     margin: 0,
     padding: 0,
-    fontSize: '18px',
+    fontSize: '17px',
     color: RED_ERROR,
+  },
+  loading: {
+    textAlign: 'center',
+    '& svg': {
+      color: LIGHT_BLUE,
+    },
+  },
+  hide: {
+    display: 'none',
+    // visibility: 'hidden',
   },
 }));
 
@@ -82,8 +94,8 @@ const schema = yup.object().shape({
 
 const Login = (props) => {
   const classes = useStyles();
-
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.options.isLoading);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const error = useSelector((state) => state.user.loginError);
 
@@ -99,6 +111,7 @@ const Login = (props) => {
   };
 
   useEffect(() => {
+    console.log('push');
     isLoggedIn && props.history.push('/');
   }, [isLoggedIn]);
 
@@ -115,9 +128,19 @@ const Login = (props) => {
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <FormInput name='email' label='Email' required={true} defaultValue={''} errorobj={errors} />
-            <FormInput name='password' label='Password' required={true} defaultValue={''} errorobj={errors} />
+            <FormInput
+              name='password'
+              label='Password'
+              required={true}
+              defaultValue={''}
+              errorobj={errors}
+              autoComplete='off'
+            />
             <div>
-              <p className={classes.errorMessage}>{error.message}</p>
+              <p className={clsx(classes.errorMessage, { [classes.hide]: isLoading })}>{error.message}</p>
+            </div>
+            <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
+              <CircularProgress />
             </div>
             {/* <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' /> */}
             <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>

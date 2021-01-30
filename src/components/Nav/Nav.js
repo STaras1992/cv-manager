@@ -95,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    cursor: 'default',
   },
   userName: {
     margin: 0,

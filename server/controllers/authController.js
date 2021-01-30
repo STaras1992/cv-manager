@@ -198,8 +198,8 @@ const createNewUser = async (req) => {
       const tempCover = await newUser.createCover({
         name: 'cover-example',
         content:
-          '{"blocks":[{"key":"flbnp","text":"היי שלום שש","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
-        direction: 'RTL',
+          '{"blocks":[{"key":"flbnp","text":"Hello from CV Manager.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
+        direction: 'LTR',
       });
       const tempTemplate = await newUser.createTemplate({
         name: 'template-example',

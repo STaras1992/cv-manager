@@ -13,6 +13,7 @@ import { LIGHT_BLUE, LIGHT, GREEN_SUCCESS, LIME } from '../../consts/colors.js';
 import cvImage from '../../images/cv2.jpeg';
 import coverImage from '../../images/cover1.jpeg';
 import templateImage from '../../images/template1.jpg';
+import Copyright from '../common/Copyright.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,6 +117,7 @@ const useStyles = makeStyles((theme) => ({
   },
   applyJobContainer: {
     display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '50px',
     color: LIME,
@@ -140,6 +142,9 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  copyright: {
+    paddingRight: '25px',
+  },
 }));
 
 const HomePage = ({ classes }) => {
@@ -155,9 +160,7 @@ const HomePage = ({ classes }) => {
     >
       <Container className={myClasses.root} maxWidth='lg'>
         <div className={myClasses.title}>
-          <Typography variant='h1' color='secondary'>
-            CV Manager
-          </Typography>
+          <Typography variant='h1'>CV Manager</Typography>
         </div>
         <div className={myClasses.subTitle}>
           <Typography variant='h4' color='secondary'>
@@ -195,6 +198,9 @@ const HomePage = ({ classes }) => {
           <IconButton component={Link} to='/email' className={myClasses.applyIcon}>
             <ApplyIcon />
           </IconButton>
+        </div>
+        <div className={myClasses.copyright}>
+          <Copyright />
         </div>
       </Container>
     </div>

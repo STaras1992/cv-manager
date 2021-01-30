@@ -21,7 +21,7 @@ import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT } from '../../consts/meas
 import { Link } from 'react-router-dom';
 import { openSidePanel, closeSidePanel } from '../../actions/optionsActions.js';
 import { logout } from '../../actions/userActions.js';
-import { LIGHT, LIME, RED_ERROR } from '../../consts/colors.js';
+import { LIGHT, LIME } from '../../consts/colors.js';
 import { showErrorOff } from '../../actions/optionsActions.js';
 
 const useStyles = makeStyles((theme) => ({

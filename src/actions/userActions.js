@@ -2,6 +2,7 @@ import { LOGIN, LOGOUT, SET_ERROR_SIGNUP, SET_ERROR_LOGIN } from '../consts/acti
 import { deleteCookie } from '../utills/cookies.js';
 import * as api from '../api/api.js';
 import { setLoadingOn, setLoadingOff } from './optionsActions';
+import { catchError } from '../utills/actionsUtils.js';
 
 const userLoggedIn = (user) => ({ type: LOGIN, payload: user });
 const userLoggedOut = () => ({ type: LOGOUT });
@@ -18,10 +19,10 @@ export const signup = (data) => async (dispatch) => {
     }
     dispatch(setSignUpError(''));
   } catch (err) {
-    if (err.response && (err.response.status === 409 || err.response.status === 400))
-      dispatch(setSignUpError(err.response.data.message));
-    else dispatch(setSignUpError('Failed to sign up. Try again'));
-    //console.log(err.message); //DEV
+    catchError(err, dispatch, setSignUpError);
+    // if (err.response && (err.response.status === 409 || err.response.status === 400))
+    //   dispatch(setSignUpError(err.response.data.message));
+    // else dispatch(setSignUpError('Failed to sign up. Try again'));
   }
   dispatch(setLoadingOff);
 };
@@ -36,10 +37,10 @@ export const login = (data) => async (dispatch) => {
     }
     dispatch(setLoginError(''));
   } catch (err) {
-    if (err.response && (err.response.status === 409 || err.response.status === 400 || err.response.status === 401))
-      dispatch(setLoginError(err.response.data.message));
-    else dispatch(setLoginError('Failed to sign up. Try again'));
-    //console.log(err.message);
+    catchError(err, dispatch, setLoginError);
+    // if (err.response && (err.response.status === 409 || err.response.status === 400 || err.response.status === 401))
+    //   dispatch(setLoginError(err.response.data.message));
+    // else dispatch(setLoginError('Failed to login. Try again'));
   }
   dispatch(setLoadingOff);
 };
@@ -49,9 +50,7 @@ export const logout = () => async (dispatch) => {
     deleteCookie('jwt');
     const response = await api.logout();
     if (response.status === 200) dispatch(userLoggedOut());
-  } catch (err) {
-    //console.log(err.message);
-  }
+  } catch (err) {}
 };
 
 export const checkAuth = () => async (dispatch) => {
@@ -62,6 +61,5 @@ export const checkAuth = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(userLoggedOut());
-    //console.log(err.message); //DEV
   }
 };

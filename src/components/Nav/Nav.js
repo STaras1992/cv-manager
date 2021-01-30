@@ -21,7 +21,7 @@ import { SIDE_PANEL_WIDTH_WIDE, SIDE_PANEL_WIDTH_SHORT } from '../../consts/meas
 import { Link } from 'react-router-dom';
 import { openSidePanel, closeSidePanel } from '../../actions/optionsActions.js';
 import { logout } from '../../actions/userActions.js';
-import { LIGHT, LIME } from '../../consts/colors.js';
+import { LIGHT, LIME, RED_ERROR } from '../../consts/colors.js';
 import { showErrorOff } from '../../actions/optionsActions.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -90,11 +90,25 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  loginContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userName: {
+    margin: 0,
+    padding: 0,
+    paddingTop: '5px',
+    marginBottom: '-10px',
+    color: LIME,
+    fontSize: '13px',
+  },
   profileIcon: {
     '& svg': {
-      fontSize: '36px',
+      fontSize: '32px',
       color: LIME,
-      transition: 'all 0.8s ease-in-out',
+      transition: 'all 0.4s ease-in-out',
     },
   },
   profileDisabled: {
@@ -103,7 +117,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   actionButton: {
-    transition: 'all 0.3s ease-in-out',
+    fontSize: '14px',
+    transition: 'all 0.2s ease-in-out',
     '&:hover': {
       color: LIME,
     },
@@ -130,7 +145,8 @@ const Nav = (props) => {
   const open = useSelector((state) => state.options.isSidePanelOpen);
   const [menuItems] = useState(getMenuItems());
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-
+  const userEmail = useSelector((state) => state.user.user.firstName);
+  console.log(userEmail);
   const handleDrawerOpen = () => {
     dispatch(openSidePanel);
   };
@@ -182,7 +198,7 @@ const Nav = (props) => {
               })}
             >
               {isLoggedIn ? (
-                <Button color='inherit' onClick={handleLogout}>
+                <Button className={classes.actionButton} color='inherit' onClick={handleLogout}>
                   Logout
                 </Button>
               ) : (
@@ -206,13 +222,15 @@ const Nav = (props) => {
                 </div>
               )}
             </div>
-
-            <IconButton
-              classes={{ root: classes.profileIcon, disabled: classes.profileDisabled }}
-              disabled={!isLoggedIn}
-            >
-              <ProfileIcon />
-            </IconButton>
+            <div className={classes.loginContainer}>
+              <p className={classes.userName}>{userEmail}</p>
+              <IconButton
+                classes={{ root: classes.profileIcon, disabled: classes.profileDisabled }}
+                disabled={!isLoggedIn}
+              >
+                <ProfileIcon />
+              </IconButton>
+            </div>
           </div>
         </Toolbar>
       </AppBar>

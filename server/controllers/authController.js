@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const { v4: uuid } = require('uuid');
 const { blacklistToken, checkInBlacklist } = require('../utills/authHelper.js');
 const { isUserExist } = require('../utills/dbHelper');
+const gmailSender = require('../utills/gmailSender');
 
 const createAndSendToken = (user, statusCode, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -18,9 +19,9 @@ const createAndSendToken = (user, statusCode, res) => {
     httpOnly: true,
   };
 
-  //   if (process.env.NODE_ENV === 'production') {
-  //     cookieOptions.secure = true;
-  //   }
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true;
+  }
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -35,22 +36,13 @@ const createAndSendToken = (user, statusCode, res) => {
 
 exports.signup = async (req, res, next) => {
   try {
-    let { email, password, firstName, lastName } = req.body;
-    // const userId = uuid();
-    //Validation TODO
+    let { email } = req.body;
 
-    // const existUser = await models.user.findOne({ where: { email: email } });
-
-    // if (existUser) {
     if (await isUserExist(email)) {
       res.status(409).json({ status: 'fail', message: 'User with current email already exist' });
       return;
     }
 
-    // const hash = await bcrypt.hash(password, 12);
-    // password = hash;
-
-    // const newUser = await models.user.create({ id: userId, email, password, firstName, lastName });
     const newUser = await createNewUser(req);
 
     if (!newUser) {
@@ -58,6 +50,7 @@ exports.signup = async (req, res, next) => {
       return;
     }
 
+    gmailSender.reconfigSender(email);
     createAndSendToken(newUser, 201, res);
   } catch (err) {
     res.status(500).json({
@@ -68,26 +61,34 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if (!(email && password)) {
-    res.status(400).json({ status: 'fail', message: 'Email and password are required' });
-    return;
+    if (!(email && password)) {
+      res.status(400).json({ status: 'fail', message: 'Email and password are required' });
+      return;
+    }
+
+    const user = await models.user.findOne({ where: { email: email } });
+    if (!user) {
+      res.status(401).json({ status: 'fail', message: 'Incorrect email or password' });
+      return;
+    }
+
+    const isLoginCorrect = await bcrypt.compare(password, user.password);
+    if (!isLoginCorrect) {
+      res.status(401).json({ status: 'fail', message: 'Incorrect email or password' });
+      return;
+    }
+
+    gmailSender.reconfigSender(email);
+    createAndSendToken(user, 200, res);
+  } catch (err) {
+    res.status(500).json({
+      status: 'fail',
+      message: err.message,
+    });
   }
-
-  const user = await models.user.findOne({ where: { email: email } });
-  if (!user) {
-    res.status(401).json({ status: 'fail', message: 'Incorrect email or password' });
-    return;
-  }
-
-  const isLoginCorrect = await bcrypt.compare(password, user.password);
-  if (!isLoginCorrect) {
-    res.status(401).json({ status: 'fail', message: 'Incorrect email or password' });
-    return;
-  }
-
-  createAndSendToken(user, 200, res);
 };
 
 exports.protect = async (req, res, next) => {
@@ -104,6 +105,7 @@ exports.protect = async (req, res, next) => {
     }
 
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
     //check if user still exist
     const freshUser = await models.user.findByPk(decoded.id);
     if (!freshUser) {
@@ -127,7 +129,7 @@ exports.checkAuth = async (req, res, next) => {
     }
 
     if (!token) {
-      res.status(400).json({ status: 'fail', message: 'Not authorized' });
+      res.status(401).json({ status: 'fail', message: 'Not authorized' });
       return;
     }
 
@@ -141,9 +143,11 @@ exports.checkAuth = async (req, res, next) => {
     //check if user still exist
     const freshUser = await models.user.findByPk(decoded.id);
     if (!freshUser) {
-      res.status(400).json({ status: 'fail', message: 'Not authorized' });
+      res.status(401).json({ status: 'fail', message: 'Not authorized' });
       return;
     }
+
+    gmailSender.reconfigSender(freshUser.email);
 
     res.status(200).json({
       status: 'success',

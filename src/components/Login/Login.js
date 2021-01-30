@@ -111,7 +111,6 @@ const Login = (props) => {
   };
 
   useEffect(() => {
-    console.log('push');
     isLoggedIn && props.history.push('/');
   }, [isLoggedIn]);
 

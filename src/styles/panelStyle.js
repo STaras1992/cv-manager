@@ -9,7 +9,9 @@ const styles = (theme) => ({
     alignItems: 'center',
     marginTop: HEADER_MARGIN,
     marginLeft: SIDE_PANEL_WIDTH_SHORT,
-    '& .MuiListItem-root': {},
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 0,
+    },
   },
   addButtonContainer: {
     marginTop: '50px',
@@ -17,8 +19,8 @@ const styles = (theme) => ({
   },
   expanded: {
     marginLeft: `calc(${SIDE_PANEL_WIDTH_WIDE}px + 10px)`,
-    [theme.breakpoints.down('xs')]: {
-      marginLeft: SIDE_PANEL_WIDTH_SHORT,
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 0,
     },
   },
   loading: {

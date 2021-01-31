@@ -141,7 +141,7 @@ const CvForm = ({ initName = '', initDescription = '', initFile = null, mode = '
       <ConfirmDialog
         open={openDialog}
         dialogTitle='Update CV?'
-        dialogText='All previus data will be updated'
+        dialogText='All previous data will be updated'
         handleOk={handleDialogOk}
         handleClose={handleDialogCancel}
       />

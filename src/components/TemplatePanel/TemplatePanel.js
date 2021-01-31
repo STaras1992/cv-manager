@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -18,11 +18,13 @@ import { showErrorOff } from '../../actions/optionsActions.js';
 
 const TemplatePanel = ({ classes }) => {
   const dispatch = useDispatch();
+  const topRef = useRef(null);
+  const bottomRef = useRef(null);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
   const requestError = useSelector((state) => state.template.error);
-  const showError = useSelector((state) => state.options.showError);
-  const successResponse = useSelector((state) => state.template.responseStatusSuccess);
+  // const showError = useSelector((state) => state.options.showError);
+  // const successResponse = useSelector((state) => state.template.responseStatusSuccess);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const items = useSelector((state) => state.template.items);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -36,12 +38,9 @@ const TemplatePanel = ({ classes }) => {
   };
 
   const saveTemplate = async (name, description, cv, cover) => {
-    //save edited instance
     if (isEditMode) {
       dispatch(editMyTemplate({ id: editItem.id, name: name, description: description, cv: cv, cover: cover }));
-    }
-    //save new instance
-    else dispatch(addNewTemplate({ name: name, description: description, cv: cv, cover: cover }));
+    } else dispatch(addNewTemplate({ name: name, description: description, cv: cv, cover: cover }));
   };
 
   const deleteTemplate = (id) => {
@@ -60,6 +59,7 @@ const TemplatePanel = ({ classes }) => {
   const closeFormHandler = (e) => {
     setOpenForm(false);
     resetFormInput();
+    scrollTo(topRef);
   };
 
   const editTemplate = (id) => {
@@ -67,6 +67,7 @@ const TemplatePanel = ({ classes }) => {
     setEditItem(item);
     setIsEditMode(true);
     setOpenForm(true);
+    scrollTo(bottomRef);
   };
 
   const resetFormInput = () => {
@@ -81,6 +82,10 @@ const TemplatePanel = ({ classes }) => {
     setShowSnackbar(false);
   };
 
+  const scrollTo = (scrollRef) => {
+    scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   useEffect(() => {
     dispatch(getAllMyTemplates());
   }, []);
@@ -91,14 +96,15 @@ const TemplatePanel = ({ classes }) => {
         setIsEditMode(false);
         setOpenForm(false);
         setEditItem(null);
+        scrollTo(topRef);
       }
     }
   }, [requestError]);
 
   useEffect(() => {
-    if (!successResponse && showError && !showSnackbar) setShowSnackbar(true);
-    dispatch(showErrorOff);
-  }, [showError]);
+    if (openForm) scrollTo(bottomRef);
+    else scrollTo(topRef);
+  }, [openForm]);
 
   const templateItems = items.map((template) => (
     <DocListItem
@@ -119,7 +125,7 @@ const TemplatePanel = ({ classes }) => {
       })}
     >
       <Container>
-        <List>{templateItems}</List>
+        <List ref={topRef}>{templateItems}</List>
         <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
           <CircularProgress />
         </div>
@@ -137,6 +143,7 @@ const TemplatePanel = ({ classes }) => {
             closeForm={closeFormHandler}
           />
         )}
+        <div style={{ height: openForm ? 0 : '250px' }} ref={bottomRef}></div>
       </Container>
       <Snackbar
         className={classes.snackbar}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -47,6 +47,7 @@ const CoverForm = ({
   classes,
 }) => {
   const myClasses = useStyles();
+
   const [data, setData] = useState(null);
   const [initEditorContent, setInitEditorContent] = useState('');
   const [content, setContent] = useState('');
@@ -148,7 +149,7 @@ const CoverForm = ({
       <ConfirmDialog
         open={openDialog}
         dialogTitle='Update cover?'
-        dialogText='All previus data will be updated'
+        dialogText='All previous data will be updated'
         handleOk={handleDialogOk}
         handleClose={handleDialogCancel}
       />

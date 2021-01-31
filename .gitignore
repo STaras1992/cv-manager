@@ -1,7 +1,11 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+
+/server/.env
+cv-manager\src\.env
 # dependencies
 /node_modules
+
 /server/node_modules
 /server/.env
 /.pnp
@@ -23,3 +27,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+src/.env

@@ -77,6 +77,9 @@ const useStyles = makeStyles((theme) => ({
     }),
     overflowX: 'hidden',
     width: SIDE_PANEL_WIDTH_SHORT,
+    [theme.breakpoints.down('sm')]: {
+      width: 0,
+    },
   },
 
   toolbar: {
@@ -135,8 +138,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   hide: {
-    // display: 'none',
     visibility: 'hidden',
+  },
+  remove: {
+    display: 'none',
   },
 }));
 
@@ -147,7 +152,7 @@ const Nav = (props) => {
   const [menuItems] = useState(getMenuItems());
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const userEmail = useSelector((state) => state.user.user.firstName);
-  console.log(userEmail);
+
   const handleDrawerOpen = () => {
     dispatch(openSidePanel);
   };
@@ -192,7 +197,11 @@ const Nav = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <div className={classes.profile}>
+          <div
+            className={clsx(classes.profile, {
+              [classes.remove]: open,
+            })}
+          >
             <div
               className={clsx({
                 [classes.hide]: isLoggedIn === null,

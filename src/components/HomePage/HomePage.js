@@ -76,19 +76,19 @@ const useStyles = makeStyles((theme) => ({
   },
   cvCard: {
     paddingRight: '10vw',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       padding: 0,
     },
   },
   coverCard: {
     paddingLeft: '10vw',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       padding: 0,
     },
   },
   templateCard: {
     paddingRight: '10vw',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       padding: 0,
     },
   },

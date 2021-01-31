@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Form from './SendForm.js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -71,7 +71,8 @@ const useStyles = makeStyles({
 
 const SendMailPage = ({ classes }) => {
   const myClasses = useStyles();
-
+  const topRef = useRef(null);
+  const bottomRef = useRef(null);
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [showBody, setShowBody] = useState(false);
@@ -117,6 +118,10 @@ const SendMailPage = ({ classes }) => {
     setTextDirectionLtr(!textDirectionLtr);
   };
 
+  const scrollTo = (scrollRef) => {
+    scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   useEffect(() => {
     data && dispatch(getData(data.cv, data.cover));
   }, [data]);
@@ -156,7 +161,8 @@ const SendMailPage = ({ classes }) => {
       setIsSending(false);
       dispatch(setSended(false));
       setShowSnackbar(true);
-      setShowBody(false); //TODO uncomment, commented for test
+      setShowBody(false);
+      scrollTo(topRef);
     }
   }, [isSended]);
 
@@ -167,6 +173,7 @@ const SendMailPage = ({ classes }) => {
       })}
     >
       <Container>
+        <div ref={topRef}></div>
         <Form makeMail={makeMail} />
         <div className={myClasses.contentContainer}>
           <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
@@ -188,7 +195,7 @@ const SendMailPage = ({ classes }) => {
                 </div>
                 <Divider />
                 <div className={myClasses.mailField}>
-                  Attachment: <span>{selectedCv.name + '.' + selectedCv.type}</span>
+                  Attachment: <span>{'originalFileName.' + selectedCv.type}</span>
                 </div>
                 <Divider />
                 <div className={myClasses.body}>
@@ -227,7 +234,6 @@ const SendMailPage = ({ classes }) => {
             </div>
           )}
         </div>
-        {/* <div style={{ color: 'white', direction: 'rtl' }}>אני STAS טרסנקו</div> */}
       </Container>
       <Snackbar
         className={classes.snackbar}

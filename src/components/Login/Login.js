@@ -38,16 +38,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     background: 'white',
     marginTop: HEADER_MARGIN,
-    paddingLeft: SIDE_PANEL_WIDTH_SHORT,
-    paddingRight: SIDE_PANEL_WIDTH_SHORT,
-    [theme.breakpoints.down('sm')]: {
-      //   paddingLeft: SIDE_PANEL_WIDTH_SHORT,
-      //   paddingRight: SIDE_PANEL_WIDTH_SHORT,
-    },
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: SIDE_PANEL_WIDTH_SHORT + 20,
-      paddingRight: 20,
-    },
   },
   paper: {
     marginTop: theme.spacing(8),

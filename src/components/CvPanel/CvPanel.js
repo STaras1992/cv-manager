@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { addNewCv, getAllCvs, deleteMyCv, editMyCv } from '../../actions/cvActions.js';
 import { showErrorOff } from '../../actions/optionsActions.js';
@@ -18,6 +18,8 @@ import Alert from '../common/Alert.js';
 
 const CvPanel = ({ classes }) => {
   const dispatch = useDispatch();
+  const topRef = useRef(null);
+  const bottomRef = useRef(null);
   const items = useSelector((state) => [...state.cv.items], shallowEqual);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
@@ -43,12 +45,11 @@ const CvPanel = ({ classes }) => {
   const deleteCv = (id) => {
     setDeleteId(id);
     setOpenDialog(true);
-    // dispatch(deleteMyCv(id));
   };
 
   const handleDialogOk = () => {
     dispatch(deleteMyCv(deleteId));
-    setOpenDialog(false); //
+    setOpenDialog(false);
   };
 
   const handleDialogCancel = () => {
@@ -64,6 +65,7 @@ const CvPanel = ({ classes }) => {
     setIsEditMode(false);
     setOpenForm(false);
     setEditItem(null);
+    // scrollTo(topRef);
   };
 
   const editCv = (id) => {
@@ -71,6 +73,7 @@ const CvPanel = ({ classes }) => {
     setEditItem(item);
     setIsEditMode(true);
     setOpenForm(true);
+    scrollTo(bottomRef);
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -80,7 +83,10 @@ const CvPanel = ({ classes }) => {
     setShowSnackbar(false);
   };
 
-  //display files on init
+  const scrollTo = (scrollRef) => {
+    scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   useEffect(() => {
     dispatch(getAllCvs());
   }, []);
@@ -91,6 +97,7 @@ const CvPanel = ({ classes }) => {
         setIsEditMode(false);
         setOpenForm(false);
         setEditItem(null);
+        scrollTo(topRef);
       }
     }
   }, [requestError]);
@@ -121,7 +128,7 @@ const CvPanel = ({ classes }) => {
       })}
     >
       <Container>
-        <List>{cvItems}</List>
+        <List ref={topRef}>{cvItems}</List>
         <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
           <CircularProgress />
         </div>
@@ -138,6 +145,7 @@ const CvPanel = ({ classes }) => {
             closeForm={closeFormHandler}
           />
         )}
+        <div style={{ height: openForm ? 0 : '250px' }} ref={bottomRef}></div>
       </Container>
       <Snackbar
         className={classes.snackbar}

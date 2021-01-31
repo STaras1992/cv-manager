@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Cover from './Cover/Cover.js';
 import { withStyles } from '@material-ui/core/styles';
@@ -17,7 +17,8 @@ import Alert from '../common/Alert.js';
 
 const CoverPanel = ({ classes }) => {
   const dispatch = useDispatch();
-
+  const topRef = useRef(null);
+  const bottomRef = useRef(null);
   const items = useSelector((state) => state.cover.items);
   const isSidePanelOpen = useSelector((state) => state.options.isSidePanelOpen);
   const isLoading = useSelector((state) => state.options.isLoading);
@@ -72,6 +73,7 @@ const CoverPanel = ({ classes }) => {
     setEditItem({ id: id, name: name, content: content, direction: direction });
     setIsEditMode(true);
     setOpenForm(true);
+    scrollTo(bottomRef);
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -81,7 +83,10 @@ const CoverPanel = ({ classes }) => {
     setShowSnackbar(false);
   };
 
-  //display my files on init
+  const scrollTo = (scrollRef) => {
+    scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   useEffect(() => {
     dispatch(getAllCovers());
   }, []);
@@ -92,6 +97,7 @@ const CoverPanel = ({ classes }) => {
         setIsEditMode(false);
         setOpenForm(false);
         setEditItem(null);
+        scrollTo(topRef);
       }
     }
   }, [requestError]);
@@ -122,7 +128,7 @@ const CoverPanel = ({ classes }) => {
       })}
     >
       <Container maxWidth='lg'>
-        <div>{covers}</div>
+        <div ref={topRef}>{covers}</div>
         <div className={clsx(classes.loading, { [classes.hide]: !isLoading })}>
           <CircularProgress />
         </div>
@@ -139,6 +145,7 @@ const CoverPanel = ({ classes }) => {
             closeForm={closeFormHandler}
           />
         )}
+        <div style={{ height: openForm ? 0 : '250px' }} ref={bottomRef}></div>
       </Container>
       <Snackbar
         className={classes.snackbar}

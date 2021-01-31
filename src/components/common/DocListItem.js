@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
       },
 
       [theme.breakpoints.down('sm')]: {
-        height: '200px',
+        height: '150px',
         justifyContent: 'center',
         alignItems: 'center',
         '& .MuiListItemSecondaryAction-root': {
@@ -77,7 +77,17 @@ const useStyles = makeStyles((theme) => ({
       },
       [theme.breakpoints.down('xs')]: {
         '& .MuiListItemAvatar-root': {
-          display: 'none',
+          minWidth: 0,
+          width: '30px',
+          height: '30px',
+        },
+        '& .MuiAvatar-root': {
+          width: '30px',
+          height: '30px',
+          fontSize: '13px',
+          '& svg': {
+            fontSize: 0,
+          },
         },
       },
     },
@@ -87,8 +97,21 @@ const useStyles = makeStyles((theme) => ({
   },
   titleText: {
     color: PURPLE,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '22px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '16px',
+    },
   },
-  descriptionText: {},
+  descriptionText: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '20px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '14px',
+    },
+  },
   iconButton: {
     '& svg': {
       fontSize: '32px',

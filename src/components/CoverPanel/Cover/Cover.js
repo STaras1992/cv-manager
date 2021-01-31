@@ -51,16 +51,11 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: -1,
       minHeight: '56px',
       transition: 'all 0.1s ease-in-out',
-
       '&$expanded': {
         minHeight: '56px',
       },
       '&:hover': {
         backgroundColor: 'white',
-      },
-      '&:focus': {
-        // backgroundColor: EXOTIC_BLUE,
-        // opacity: 1,
       },
       '& .MuiAccordionSummary-content': {
         display: 'flex',
@@ -75,6 +70,12 @@ const useStyles = makeStyles((theme) => ({
         '& svg': {
           fontSize: '36px',
           color: DARK_GREY,
+          [theme.breakpoints.down('sm')]: {
+            fontSize: '28px',
+          },
+          [theme.breakpoints.down('xs')]: {
+            fontSize: '22px',
+          },
         },
         '&$expanded': {
           margin: '12px 0',
@@ -89,14 +90,29 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexWrap: 'wrap',
+    flexWrap: 'no-wrap',
     wordBreak: 'break-all',
     '& svg': {
       color: `${LIGHT_BLUE} !important`,
       marginRight: '10px',
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
+      [theme.breakpoints.down('sm')]: {
+        marginRight: '5px',
       },
+    },
+    '& .MuiTypography-root': {
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '24px!important',
+      },
+      [theme.breakpoints.down('xs')]: {
+        fontSize: '17px!important',
+      },
+    },
+  },
+  actionsContainer: {
+    display: 'flex',
+    flex: 'no-wrap',
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
     },
   },
   editor: {

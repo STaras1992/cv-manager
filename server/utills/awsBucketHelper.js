@@ -10,7 +10,7 @@ exports.uploadFile = async (file, fileName, id) => {
     Key: bucketKeyCreator(fileName, id, type), // File name you want to save as in S3
     Body: file.data,
     ContentType: file.mimetype,
-    ContentDisposition: contentDisposition(file.name),
+    ContentDisposition: `attachment; filename =${file.name}`, //contentDisposition(file.name),
     ACL: 'public-read',
   };
 

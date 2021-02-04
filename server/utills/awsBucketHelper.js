@@ -4,13 +4,12 @@ const { fileTypeFromName, bucketKeyCreator } = require('./parseHelper.js');
 
 exports.uploadFile = async (file, fileName, id) => {
   const type = fileTypeFromName(file.name);
-
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: bucketKeyCreator(fileName, id, type), // File name you want to save as in S3
     Body: file.data,
     ContentType: file.mimetype,
-    ContentDisposition: `attachment; filename =${file.name}`, //contentDisposition(file.name),
+    ContentDisposition: `attachment; filename=${file.name}`, //contentDisposition(file.name),
     ACL: 'public-read',
   };
 
@@ -69,6 +68,21 @@ exports.emptyFolder = async (dir = '') => {
   else {
     dir === '' ? console.log('Bucket cleared succesfully') : console.log(`Directory ${dir} cleared succesfully`);
   }
+};
+
+exports.getS3File = (key) => {
+  return new Promise((resolve, reject) => {
+    S3.getObject(
+      {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+      },
+      function (err, data) {
+        if (err) return reject(err);
+        else return resolve(data);
+      }
+    );
+  });
 };
 
 exports.clearBucket = () => {

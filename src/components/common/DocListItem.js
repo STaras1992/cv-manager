@@ -122,7 +122,6 @@ const useStyles = makeStyles((theme) => ({
 
 const DocList = ({ id, name, description, type = '', file = '', actions = [], onEdit, onDelete }) => {
   const classes = useStyles();
-
   const onDeleteClick = () => {
     onDelete(id);
   };

@@ -1,5 +1,7 @@
 const validator = require('email-validator');
 const nodemailer = require('nodemailer');
+const { getS3File } = require('./awsBucketHelper');
+const AmazonS3URI = require('amazon-s3-uri');
 const CV_MANAGER = 'cv-manager';
 const STAS = 'stas';
 
@@ -52,13 +54,17 @@ exports.verifyAdress = async (adress) => {
 };
 
 exports.sendMail = async (data) => {
+  const attachment = await prepareAttachments(data.file);
+  if (!attachment) {
+    return null;
+  }
   const mailOptions = {
     from: sender === STAS ? `Stas Tarasenko <${data.from}>` : `CV Manager <${data.from}>`,
     replyTo: data.from,
     to: data.to,
     subject: data.subject,
     html: data.cover,
-    attachments: [{ href: data.file }],
+    attachments: attachment, //[{ href: data.file }],
     headers: {
       replyTo: data.from,
     },
@@ -103,5 +109,18 @@ exports.reconfigSender = (email) => {
         console.log(`Mail sender changed to ${CV_MANAGER}`);
       }
     });
+  }
+};
+
+const prepareAttachments = async (uri) => {
+  try {
+    const { key } = AmazonS3URI(uri);
+    const objectFile = await getS3File(key);
+    const filename = objectFile.ContentDisposition.split('=')[1];
+    console.log(filename);
+    return [{ filename: filename, href: uri }];
+  } catch (err) {
+    console.log(`${uri} is not a valid S3 uri`); // should not happen because `uri` is valid in that example
+    return null;
   }
 };
